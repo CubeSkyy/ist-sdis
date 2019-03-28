@@ -3,8 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<!-- http://maven.apache.org/pom.html#Quick_Overview -->
 
-
-
 	<parent>
 		<groupId>com.forkexec.T02</groupId>
 		<artifactId>ForkExec</artifactId>
