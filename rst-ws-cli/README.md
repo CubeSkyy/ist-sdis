@@ -2,21 +2,24 @@
 
 ## Authors
 
-Group CXX
+Group T02
 
 ### Lead developer 
 
-... ... ...
+| Nome              | NÃºmero   | Github ID          |
+| ----------------- | -------- | ------------------ | 
+|                   |          |                    |
 
-_preencher com nome, número e GitHub ID de membro do grupo que liderou esta parte e depois apagar esta linha_
+
 
 ### Contributors
 
-... ... ...
+| Nome              | NÃºmero   | Github ID          |
+| ----------------- | -------- | ------------------ | 
+|                   |          |                    |
+|                   |          |                    |
 
-... ... ...
 
-_preencher com nome, número e GitHub ID dos membro do grupo que contribuiram com código para esta parte e depois apagar esta linha_
 
 ## About
 

@@ -8,13 +8,12 @@ Distributed Systems 2018-2019, 2nd semester project
 
 Group T02
 
-Ricardo Silva 87700 genlike
+| Nome              | Número   | Github ID          |
+| ----------------- | -------- | ------------------ | 
+| Miguel Coelho     | 87687    | CubeSkyy           |
+| Catarina Pedreira | 87524    | CatarinaPedreira   |
+| Ricardo Silva     | 87700    | genline            |
 
-... ... ...
-
-... ... ...
-
-_preencher com nome, número e GitHub ID de membro do grupo e depois apagar esta linha_
 
 For each module, the README file must identify the lead developer and the contributors.
 The leads should be evenly divided among the group members.
