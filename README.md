@@ -6,10 +6,9 @@ Distributed Systems 2018-2019, 2nd semester project
 
 ## Authors
 
-Group CXX
-_preencher com identificador de grupo e depois apagar esta linha_
+Group T02
 
-... ... ...
+Ricardo Silva 87700 genlike
 
 ... ... ...
 
