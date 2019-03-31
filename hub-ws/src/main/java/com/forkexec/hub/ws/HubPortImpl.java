@@ -8,6 +8,7 @@ import javax.jws.WebService;
 
 import com.forkexec.hub.domain.Hub;
 import com.forkexec.rst.ws.cli.RestaurantClient;
+import com.forkexec.rst.ws.cli.RestaurantClientException;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINamingException;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDIRecord;
@@ -112,21 +113,25 @@ public class HubPortImpl implements HubPortType {
      */
     @Override
     public String ctrlPing(String inputMessage) {
-        String uddiURL = "http://localhost:9090";
-        StringBuilder builder = new StringBuilder();
+
         Collection<UDDIRecord> restaurants;
+        StringBuilder builder = new StringBuilder();
+
         try{
-            UDDINaming uddiNaming = new UDDINaming(uddiURL);
+            UDDINaming uddiNaming = endpointManager.getUddiNaming();
             restaurants = uddiNaming.listRecords("T02_Restaurant%");
             for(UDDIRecord ws : restaurants){
-                RestaurantClient test = new RestaurantClient(ws.getUrl());
-                builder.append(test.ctrlPing("Cliente")).append("\n");
+                RestaurantClient client = new RestaurantClient(ws.getUrl());
+
+                builder.append(client.ctrlPing("Cliente")).append("\n");
             }
-        } catch (Exception e) {
-			return String.format("Failed lookup on UDDI at %s!", uddiURL);
-		}
-        if (restaurants.size() == 0){
-            return String.format("No restaurants found at %s!", uddiURL);
+            if (restaurants.size() == 0){
+                return String.format("No restaurants found at %s!", uddiNaming.getUDDIUrl());
+            }
+        } catch (UDDINamingException e) {
+			return e.getMessage();
+		}catch (RestaurantClientException e){
+            return e.getMessage();
         }
 
         return builder.toString();
