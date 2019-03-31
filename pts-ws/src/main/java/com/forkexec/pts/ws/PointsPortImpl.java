@@ -44,7 +44,21 @@ public class PointsPortImpl implements PointsPortType {
     @Override
     public int spendPoints(final String userEmail, final int pointsToSpend)
 	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceFault_Exception {
-        if ()
+        if (userEmail == null || userEmail.trim().length() == 0)
+            throwInvalidEmailFault("Email invalido!");
+
+        if(pointsToSpend <= 0)
+            throwInvalidPointsFault("Quantidade de pontos a ser gasto invalido!");
+        Points p = Points.getInstance();
+
+        try {
+            p.subtractPoints(userEmail,pointsToSpend);
+            return 0;
+        } catch (InvalidEmailException ief) {
+            throwInvalidEmailFault("Email invalido!" + ief.getMessage());
+        } catch (NotEnoughBalanceException nebf) {
+            throwNotEnoughBalanceFault("Não tem saldo suficiente!" + nebf.getMessage());
+        }
         return -1;
     }
 

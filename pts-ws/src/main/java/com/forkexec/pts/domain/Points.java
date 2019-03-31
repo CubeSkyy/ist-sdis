@@ -1,5 +1,6 @@
 package com.forkexec.pts.domain;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -40,8 +41,37 @@ public class Points {
         return SingletonHolder.INSTANCE;
     }
 
-
+    /**
+     * Sets the initial value of points for created user accounts.
+     * */
     public void setInitialBalance (final int points) {
         initialBalance.set(points);
+    }
+
+    /**
+     *
+     * @param userEmail email of authenticated user.
+     * @return the amounts of points that user has.
+     */
+    public Integer getPoints(String userEmail){
+        return users.get(userEmail);
+    }
+
+    /**
+     *
+     * @param userEmail email of authenticated user.
+     * @param pointsToSpend amount of points to spend
+     */
+    public void subtractPoints(String userEmail, Integer pointsToSpend)
+        throws InvalidEmailException, NotEnoughBalanceException {
+
+        Integer points = getPoints(userEmail);
+        if (points == null) throw new InvalidEmailException("User não presente!");
+
+        synchronized (points) {
+            if (pointsToSpend > points) throw new NotEnoughBalanceException("Não tem saldo suficiente!");
+            points -= pointsToSpend;
+            users.put(userEmail, points);
+        }
     }
 }
