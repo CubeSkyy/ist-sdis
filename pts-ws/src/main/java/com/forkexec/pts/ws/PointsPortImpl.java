@@ -37,7 +37,18 @@ public class PointsPortImpl implements PointsPortType {
     @Override
     public int addPoints(final String userEmail, final int pointsToAdd)
 	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
-        //TODO
+        if (userEmail == null || userEmail.trim().length() == 0)
+            throwInvalidEmailFault("Email invalido!");
+
+        if(pointsToAdd <= 0)
+            throwInvalidPointsFault("Quantidade de pontos a ser adicionada invalida!");
+        Points p = Points.getInstance();
+        try {
+            p.addPoints(userEmail,pointsToAdd);
+            return 0;
+        } catch (InvalidEmailException ief) {
+            throwInvalidEmailFault("Email invalido!" + ief.getMessage());
+        }
         return -1;
     }
 
@@ -48,7 +59,7 @@ public class PointsPortImpl implements PointsPortType {
             throwInvalidEmailFault("Email invalido!");
 
         if(pointsToSpend <= 0)
-            throwInvalidPointsFault("Quantidade de pontos a ser gasto invalido!");
+            throwInvalidPointsFault("Quantidade de pontos a ser gasto invalida!");
         Points p = Points.getInstance();
 
         try {
@@ -86,7 +97,8 @@ public class PointsPortImpl implements PointsPortType {
     /** Return all variables to default values. */
     @Override
     public void ctrlClear() {
-        //TODO
+        Points p = Points.getInstance();
+        p.resetState();
     }
 
     /** Set variables with specific values. */

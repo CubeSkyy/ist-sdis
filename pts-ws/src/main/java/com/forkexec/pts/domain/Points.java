@@ -74,4 +74,20 @@ public class Points {
             users.put(userEmail, points);
         }
     }
+
+    public void addPoints(String userEmail, Integer pointsToSpend)
+            throws InvalidEmailException {
+
+        Integer points = getPoints(userEmail);
+        if (points == null) throw new InvalidEmailException("User não presente!");
+
+        synchronized (points) {
+            users.put(userEmail, points);
+        }
+    }
+
+    public void resetState(){
+        users.clear();
+        setInitialBalance(DEFAULT_INITIAL_BALANCE);
+    }
 }
