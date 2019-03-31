@@ -1,6 +1,7 @@
 package com.forkexec.pts.ws;
 
 import javax.jws.WebService;
+import com.forkexec.pts.domain.*;
 
 /**
  * This class implements the Web Service port type (interface). The annotations
@@ -43,7 +44,7 @@ public class PointsPortImpl implements PointsPortType {
     @Override
     public int spendPoints(final String userEmail, final int pointsToSpend)
 	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceFault_Exception {
-        //TODO
+        if ()
         return -1;
     }
 
@@ -77,7 +78,10 @@ public class PointsPortImpl implements PointsPortType {
     /** Set variables with specific values. */
     @Override
     public void ctrlInit(final int startPoints) throws BadInitFault_Exception {
-        //TODO
+        if (startPoints < 0)
+            throwBadInit("Cannot have negative points");
+        Points p = Points.getInstance();
+        p.setInitialBalance(startPoints);
     }
 
     // Exception helpers -----------------------------------------------------
@@ -87,5 +91,29 @@ public class PointsPortImpl implements PointsPortType {
         final BadInitFault faultInfo = new BadInitFault();
         faultInfo.message = message;
         throw new BadInitFault_Exception(message, faultInfo);
+    }
+
+    private void throwInvalidEmailFault(final String message) throws InvalidEmailFault_Exception {
+        final InvalidEmailFault faultInfo = new InvalidEmailFault();
+        faultInfo.message = message;
+        throw new InvalidEmailFault_Exception(message, faultInfo);
+    }
+
+    private void throwInvalidPointsFault(final String message) throws InvalidPointsFault_Exception {
+        final InvalidPointsFault faultInfo = new InvalidPointsFault();
+        faultInfo.message = message;
+        throw new InvalidPointsFault_Exception(message, faultInfo);
+    }
+
+    private void throwNotEnoughBalanceFault(final String message) throws NotEnoughBalanceFault_Exception {
+        final NotEnoughBalanceFault faultInfo = new NotEnoughBalanceFault();
+        faultInfo.message = message;
+        throw new NotEnoughBalanceFault_Exception(message, faultInfo);
+    }
+
+    private void throwEmailAlreadyExistsFault(final String message) throws EmailAlreadyExistsFault_Exception {
+        final EmailAlreadyExistsFault faultInfo = new EmailAlreadyExistsFault();
+        faultInfo.message = message;
+        throw new EmailAlreadyExistsFault_Exception(message, faultInfo);
     }
 }

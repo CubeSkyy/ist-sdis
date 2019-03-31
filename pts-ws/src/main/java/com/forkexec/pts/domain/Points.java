@@ -1,5 +1,6 @@
 package com.forkexec.pts.domain;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -17,6 +18,8 @@ public class Points {
      * Global with the current value for the initial balance of every new client
      */
     private final AtomicInteger initialBalance = new AtomicInteger(DEFAULT_INITIAL_BALANCE);
+
+    private Map<String, Integer> users = new ConcurrentHashMap<String, Integer>();
 
     // Singleton -------------------------------------------------------------
 
@@ -38,5 +41,7 @@ public class Points {
     }
 
 
-    //TODO
+    public void setInitialBalance (final int points) {
+        initialBalance.set(points);
+    }
 }
