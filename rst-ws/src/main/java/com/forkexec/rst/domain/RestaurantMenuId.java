@@ -1,10 +1,12 @@
 
 package com.forkexec.rst.domain;
 
-public class MenuId {
+public class RestaurantMenuId {
 
     protected String _id;
 
+    public RestaurantMenuId(){}
+    public RestaurantMenuId(String id) { _id = id;}
     /**
      * Gets the value of the id property.
      * 

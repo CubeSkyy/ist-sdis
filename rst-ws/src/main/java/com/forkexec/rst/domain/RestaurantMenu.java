@@ -1,24 +1,42 @@
-
 package com.forkexec.rst.domain;
 
-public class Menu {
+public class RestaurantMenu {
 
-    protected MenuId _id;
+    protected RestaurantMenuId _id;
     protected String _entree;
     protected String _plate;
     protected String _dessert;
+    protected int _quantity;
     protected int _price;
     protected int _preparationTime;
+
+
+    public RestaurantMenu(RestaurantMenuId id,
+                          String entree,
+                          String plate,
+                          String dessert,
+                          int quantity,
+                          int price,
+                          int preparationTime)
+    {
+        setId(id);
+        setPlate(plate);
+        setEntree(entree);
+        setDessert(dessert);
+        setQuantity(quantity);
+        setPrice(price);
+        setPreparationTime(preparationTime);
+    }
 
     /**
      * Gets the value of the id property.
      * 
      * @return
      *     possible object is
-     *     {@link MenuId }
+     *     {@link RestaurantMenuId }
      *     
      */
-    public MenuId getId() {
+    public RestaurantMenuId getId() {
         return _id;
     }
 
@@ -27,10 +45,10 @@ public class Menu {
      * 
      * @param value
      *     allowed object is
-     *     {@link MenuId }
+     *     {@link RestaurantMenuId }
      *     
      */
-    public void setId(MenuId value) {
+    public void setId(RestaurantMenuId value) {
         this._id = value;
     }
 
@@ -137,5 +155,10 @@ public class Menu {
     public void setPreparationTime(int value) {
         this._preparationTime = value;
     }
+
+    public int getQuantity(){ return _quantity;}
+
+    public void setQuantity(int newQuantity) { _quantity = newQuantity;}
+
 
 }
