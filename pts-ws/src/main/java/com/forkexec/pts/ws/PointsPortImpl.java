@@ -2,7 +2,7 @@ package com.forkexec.pts.ws;
 
 import javax.jws.WebService;
 import com.forkexec.pts.domain.*;
-
+import java.util.regex.Pattern;
 /**
  * This class implements the Web Service port type (interface). The annotations
  * below "map" the Java class to the WSDL definitions.
@@ -37,7 +37,9 @@ public class PointsPortImpl implements PointsPortType {
     @Override
     public int addPoints(final String userEmail, final int pointsToAdd)
 	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
-        if (userEmail == null || userEmail.trim().length() == 0)
+        if (userEmail == null
+                || userEmail.trim().length() == 0
+                || checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
             throwInvalidEmailFault("Email invalido!");
 
         if(pointsToAdd <= 0)
@@ -55,7 +57,9 @@ public class PointsPortImpl implements PointsPortType {
     @Override
     public int spendPoints(final String userEmail, final int pointsToSpend)
 	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceFault_Exception {
-        if (userEmail == null || userEmail.trim().length() == 0)
+        if (userEmail == null
+                || userEmail.trim().length() == 0
+                || checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
             throwInvalidEmailFault("Email invalido!");
 
         if(pointsToSpend <= 0)
@@ -141,5 +145,8 @@ public class PointsPortImpl implements PointsPortType {
         final EmailAlreadyExistsFault faultInfo = new EmailAlreadyExistsFault();
         faultInfo.message = message;
         throw new EmailAlreadyExistsFault_Exception(message, faultInfo);
+    }
+    private boolean checkRegexPattern(String text, String regex){
+        return Pattern.compile(regex).matcher(text).matches();
     }
 }
