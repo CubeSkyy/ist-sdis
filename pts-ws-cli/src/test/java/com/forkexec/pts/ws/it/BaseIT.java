@@ -17,6 +17,7 @@ public class BaseIT {
 	protected static Properties testProps;
 
 	protected static PointsClient client;
+	public static final int DEFAULT_INITIAL_BALANCE = 100;
 
 	@BeforeClass
 	public static void oneTimeSetup() throws Exception {
