@@ -27,7 +27,8 @@ public class Points {
     /**
      * Private constructor prevents instantiation from other classes.
      */
-    private Points() { }
+    private Points() {
+    }
 
     /**
      * SingletonHolder is loaded on the first execution of Singleton.getInstance()
@@ -43,50 +44,51 @@ public class Points {
 
     /**
      * Sets the initial value of points for created user accounts.
-     * */
-    public void setInitialBalance (final int points) {
+     */
+    public void setInitialBalance(final int points) {
         initialBalance.set(points);
     }
 
     /**
-     *
      * @param userEmail email of authenticated user.
      * @return the amounts of points that user has.
      */
-    public Integer getPoints(String userEmail){
+    private Integer getPoints(String userEmail) {
         return users.get(userEmail);
     }
 
     /**
-     *
-     * @param userEmail email of authenticated user.
+     * @param userEmail     email of authenticated user.
      * @param pointsToSpend amount of points to spend
      */
     public void subtractPoints(String userEmail, Integer pointsToSpend)
-        throws InvalidEmailException, NotEnoughBalanceException {
+            throws InvalidEmailException, NotEnoughBalanceException {
 
         Integer points = getPoints(userEmail);
         if (points == null) throw new InvalidEmailException("User não presente!");
 
-        synchronized (points) {
-            if (pointsToSpend > points) throw new NotEnoughBalanceException("Não tem saldo suficiente!");
-            points -= pointsToSpend;
-            users.put(userEmail, points);
-        }
+        if (pointsToSpend > points) throw new NotEnoughBalanceException("Não tem saldo suficiente!");
+        points -= pointsToSpend;
+        users.put(userEmail, points);
+
     }
 
-    public void addPoints(String userEmail, Integer pointsToSpend)
+    /**
+     * @param userEmail   email of authenticated user.
+     * @param pointsToAdd amount of points to add
+     */
+    public void addPoints(String userEmail, Integer pointsToAdd)
             throws InvalidEmailException {
 
         Integer points = getPoints(userEmail);
         if (points == null) throw new InvalidEmailException("User não presente!");
 
-        synchronized (points) {
-            users.put(userEmail, points);
-        }
+        points += pointsToAdd;
+        users.put(userEmail, points);
+
     }
 
-    public void resetState(){
+    public void resetState() {
         users.clear();
         setInitialBalance(DEFAULT_INITIAL_BALANCE);
     }
