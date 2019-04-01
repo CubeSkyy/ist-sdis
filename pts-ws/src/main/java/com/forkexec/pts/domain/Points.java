@@ -74,7 +74,7 @@ public class Points {
     }
 
     /**
-     * @param userEmail   email of authenticated user.
+     * @param userEmail     email of authenticated user.
      * @param pointsToAdd amount of points to add
      */
     public void addPoints(String userEmail, Integer pointsToAdd)
