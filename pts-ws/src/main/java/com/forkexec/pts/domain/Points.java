@@ -43,6 +43,14 @@ public class Points {
     }
 
     /**
+    * Returns the map with all the users
+    */
+
+    public Map<String, Integer> getUsers(){
+        return users;
+    }
+
+    /**
      * Sets the initial value of points for created user accounts.
      */
     public void setInitialBalance(final int points) {
@@ -53,7 +61,7 @@ public class Points {
      * @param userEmail email of authenticated user.
      * @return the amounts of points that user has.
      */
-    private Integer getPoints(String userEmail) {
+    public Integer getPoints(String userEmail) {
         return users.get(userEmail);
     }
 
@@ -71,6 +79,14 @@ public class Points {
         points -= pointsToSpend;
         users.put(userEmail, points);
 
+    }
+
+    /**
+    @param userEmail     email of new user.
+    */
+
+    public void addUser(String userEmail){
+        users.put(userEmail, DEFAULT_INITIAL_BALANCE);
     }
 
     /**
