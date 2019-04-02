@@ -3,6 +3,8 @@ package com.forkexec.rst.ws.it;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.forkexec.rst.ws.Menu;
+import com.forkexec.rst.ws.MenuId;
 import com.forkexec.rst.ws.cli.RestaurantClient;
 
 import org.junit.AfterClass;
@@ -17,6 +19,17 @@ public class BaseIT {
 	protected static Properties testProps;
 
 	protected static RestaurantClient client;
+
+	protected static String MENU_ID = "010000100000";
+	protected static String ENTREE = "ovos";
+	protected static String PLATE = "ovos";
+	protected static String DESSERT = "ovos";
+	protected static int PRICE = 1024;
+	protected static int PREPARATION_TIME = 2048;
+
+	protected static int DEFAULT_MENU_QUANTITY = 420;
+
+	protected static String EMPTY_STRING = "";
 
 	@BeforeClass
 	public static void oneTimeSetup() throws Exception {
@@ -45,7 +58,24 @@ public class BaseIT {
 		}
 		client.setVerbose("true".equalsIgnoreCase(verboseEnabled));
 	}
+	protected MenuId createMenuId() {
+		MenuId mi = new MenuId();
+		mi.setId(MENU_ID);
+		return mi;
+	}
 
+	protected Menu createMenu() {
+		Menu m = new Menu();
+
+		m.setId(createMenuId());
+		m.setEntree(ENTREE);
+		m.setPlate(PLATE);
+		m.setDessert(DESSERT);
+		m.setPrice(PRICE);
+		m.setPreparationTime(PREPARATION_TIME);
+
+		return m;
+	}
 	@AfterClass
 	public static void cleanup() {
 	}
