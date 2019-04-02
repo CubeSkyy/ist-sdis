@@ -40,7 +40,7 @@ public class RestaurantPortImpl implements RestaurantPortType {
     @Override
     public Menu getMenu(MenuId menuId) throws BadMenuIdFault_Exception {
 
-        if(menuId == null || menuId.getId().trim.length()==0)
+        if(menuId == null || menuId.getId().trim().length()==0)
             throwBadMenuIdFault("ID de menu invalido!");
 
         Menu m = new Menu();
