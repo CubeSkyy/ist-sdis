@@ -22,8 +22,8 @@ public class BaseIT {
 
 	protected static String MENU_ID = "010000100000";
 	protected static String ENTREE = "ovos";
-	protected static String PLATE = "ovos";
-	protected static String DESSERT = "ovos";
+	protected static String PLATE = "bolognesa";
+	protected static String DESSERT = "gelado";
 	protected static int PRICE = 1024;
 	protected static int PREPARATION_TIME = 2048;
 

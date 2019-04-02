@@ -24,8 +24,15 @@ public class searchMenusIT extends BaseIT {
             lm.add(mi);
             client.ctrlInit(lm);
 
-            //Cancro de codigo -_-
-            Assert.assertEquals(client.searchMenus(DESCRIPTIVE_TEXT).get(0).getId().getId(), m.getId().getId());
+
+            m = client.searchMenus(DESCRIPTIVE_TEXT).get(0);
+
+            Assert.assertEquals(m.getId().getId(), MENU_ID);
+            Assert.assertEquals(m.getEntree(), ENTREE);
+            Assert.assertEquals(m.getPlate(), PLATE);
+            Assert.assertEquals(m.getDessert(), DESSERT);
+            Assert.assertEquals(m.getPrice(), PRICE);
+            Assert.assertEquals(m.getPreparationTime(), PREPARATION_TIME);
 
         } catch (Exception e) {
             Assert.fail(e.getMessage());
