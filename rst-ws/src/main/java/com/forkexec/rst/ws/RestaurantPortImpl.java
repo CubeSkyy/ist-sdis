@@ -8,6 +8,8 @@ import javax.jws.WebService;
 import com.forkexec.rst.domain.Restaurant;
 import com.forkexec.rst.domain.RestaurantMenu;
 import com.forkexec.rst.domain.RestaurantMenuId;
+import com.forkexec.rst.domain.RestaurantMenuOrder;
+import com.forkexec.rst.domain.RestaurantMenuOrderId;
 
 
 /**
@@ -70,8 +72,24 @@ public class RestaurantPortImpl implements RestaurantPortType {
     @Override
     public MenuOrder orderMenu(MenuId arg0, int arg1)
             throws BadMenuIdFault_Exception, BadQuantityFault_Exception, InsufficientQuantityFault_Exception {
-        // TODO Auto-generated method stub
-        return null;
+        
+         if(arg0 == null || arg0.getId().trim().length()==0)
+            throwBadMenuIdFault("ID de menu invalido!");
+
+    	Restaurant r = Restaurant.getInstance();
+    	RestaurantMenu rm = r.getMenu(new RestaurantMenuId(arg0.getId()));
+
+    	if(rm.getQuantity() < arg1) {
+    		throwInsufficientQuantityFault("Nao existe quantidade suficiente destes menus no restaurante!");
+    	}
+
+    	if(rm.getQuantity() <= 0) {
+    		throwBadQuantityFault("As quantidades tem de ser positivas!");
+    	}
+
+        RestaurantMenuOrder result = r.orderMenu(new RestaurantMenuId(arg0.getId()), arg1);
+    	return buildMenuOrder(result);
+        
     }
 
 
@@ -103,6 +121,8 @@ public class RestaurantPortImpl implements RestaurantPortType {
      */
     @Override
     public void ctrlClear() {
+    	Restaurant r = Restaurant.getInstance();
+        r.resetState();
     }
 
     /**
@@ -151,6 +171,24 @@ public class RestaurantPortImpl implements RestaurantPortType {
         return m;
     }
 
+    private MenuOrderId buildMenuOrderId(RestaurantMenuOrderId rmoi){
+        MenuOrderId moi = new MenuOrderId();
+        moi.setId(rmoi.getId());
+        return moi;
+    }
+
+    private MenuOrder buildMenuOrder(RestaurantMenuOrder rmo){
+
+        MenuOrder mo = new MenuOrder();
+
+        mo.setId(buildMenuOrderId(rmo.getId()));
+        mo.setMenuId(buildMenuId(rmo.getRestaurantMenuId()));
+        mo.setMenuQuantity(rmo.getMenuQuantity());
+
+        return mo;
+    }
+
+
     // Exception helpers -----------------------------------------------------
 
     /**
@@ -172,6 +210,18 @@ public class RestaurantPortImpl implements RestaurantPortType {
         BadTextFault faultInfo = new BadTextFault();
         faultInfo.message = message;
         throw new BadTextFault_Exception(message, faultInfo);
+    }
+
+    private void throwInsufficientQuantityFault(final String message) throws InsufficientQuantityFault_Exception {
+    	InsufficientQuantityFault faultInfo = new InsufficientQuantityFault();
+    	faultInfo.message = message;
+    	throw new InsufficientQuantityFault_Exception(message, faultInfo);
+    }
+
+    private void throwBadQuantityFault(final String message) throws BadQuantityFault_Exception {
+    	BadQuantityFault faultInfo = new BadQuantityFault();
+    	faultInfo.message = message;
+    	throw new BadQuantityFault_Exception(message, faultInfo);
     }
 
 }

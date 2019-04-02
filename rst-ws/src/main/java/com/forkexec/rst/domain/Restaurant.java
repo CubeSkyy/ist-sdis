@@ -1,10 +1,16 @@
 package com.forkexec.rst.domain;
 
-
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
+import java.util.Objects;
+ 
+/*
+import com.forkexec.rst.ws.MenuId;
+import com.forkexec.rst.ws.MenuOrder;
+import com.forkexec.rst.ws.MenuOrderId;
+*/
 
 /**
  * Restaurant
@@ -17,6 +23,10 @@ public class Restaurant {
     // Singleton -------------------------------------------------------------
 
     private Map<RestaurantMenuId, RestaurantMenu> menuMap = new ConcurrentHashMap<>();
+
+    private Map<RestaurantMenuOrderId, RestaurantMenuOrder> orderMap = new ConcurrentHashMap<>();
+
+    private int orderNumber = 1;
 
 
     /**
@@ -38,6 +48,10 @@ public class Restaurant {
         return SingletonHolder.INSTANCE;
     }
 
+    public void setOrderNumber(int num){
+    	orderNumber = num;
+    }
+
     public void clearMenus() {
         menuMap.clear();
     }
@@ -50,6 +64,19 @@ public class Restaurant {
         return menuMap.get(mid);
     }
 
+
+    public void clearOrders() {
+        orderMap.clear();
+    }
+
+    public void addOrders(RestaurantMenuOrder o) {
+        orderMap.put(o.getId(), o);
+    }
+
+    public RestaurantMenuOrder getOrder(RestaurantMenuOrderId omid) {
+        return orderMap.get(omid);
+    }
+
     public List<RestaurantMenu> searchMenus(String descriptionText) {
         List<RestaurantMenu> tempList = new ArrayList<>();
         for (RestaurantMenu menu : menuMap.values()) {
@@ -59,6 +86,27 @@ public class Restaurant {
                 tempList.add(menu);
         }
         return tempList;
+    }
+
+    public RestaurantMenuOrder orderMenu(RestaurantMenuId m_id, int quantity){
+
+    	RestaurantMenu rm = getMenu(m_id);
+
+    	int oldQuantity = rm.getQuantity();
+    	rm.setQuantity(oldQuantity - quantity);
+
+    	RestaurantMenuOrderId m_order_id = new RestaurantMenuOrderId("PedidoNr" + String.valueOf(orderNumber));
+    	orderNumber += 1;
+
+    	RestaurantMenuOrder m_order = new RestaurantMenuOrder(m_order_id, m_id, quantity);
+
+    	return m_order;
+    }
+
+    public void resetState(){
+    	clearMenus();
+ 		clearOrders();
+ 		setOrderNumber(1);
     }
 
 }
