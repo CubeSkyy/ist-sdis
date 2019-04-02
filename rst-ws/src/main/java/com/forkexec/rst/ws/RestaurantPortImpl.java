@@ -1,5 +1,6 @@
 package com.forkexec.rst.ws;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jws.WebService;
@@ -40,7 +41,7 @@ public class RestaurantPortImpl implements RestaurantPortType {
     @Override
     public Menu getMenu(MenuId menuId) throws BadMenuIdFault_Exception {
 
-        if(menuId == null || menuId.getId().trim().length()==0)
+        if (menuId == null || menuId.getId().trim().length() == 0)
             throwBadMenuIdFault("ID de menu invalido!");
 
         Restaurant r = Restaurant.getInstance();
@@ -53,8 +54,17 @@ public class RestaurantPortImpl implements RestaurantPortType {
 
     @Override
     public List<Menu> searchMenus(String descriptionText) throws BadTextFault_Exception {
-        // TODO Auto-generated method stub
-        return null;
+        if (descriptionText == null
+                || descriptionText.trim().length() == 0 || descriptionText.contains(" "))
+            throwBadTextFault("O texto de procura é invalido!");
+
+        Restaurant r = Restaurant.getInstance();
+        List<Menu> tempList = new ArrayList<>();
+        for(RestaurantMenu menu: r.searchMenus(descriptionText)){
+            tempList.add(buildMenu(menu));
+        }
+
+        return tempList;
     }
 
     @Override
@@ -156,6 +166,12 @@ public class RestaurantPortImpl implements RestaurantPortType {
         BadMenuIdFault faultInfo = new BadMenuIdFault();
         faultInfo.message = message;
         throw new BadMenuIdFault_Exception(message, faultInfo);
+    }
+
+    private void throwBadTextFault(final String message) throws BadTextFault_Exception {
+        BadTextFault faultInfo = new BadTextFault();
+        faultInfo.message = message;
+        throw new BadTextFault_Exception(message, faultInfo);
     }
 
 }

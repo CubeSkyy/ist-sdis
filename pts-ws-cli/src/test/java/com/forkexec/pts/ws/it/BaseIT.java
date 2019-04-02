@@ -7,6 +7,7 @@ import com.forkexec.pts.ws.cli.PointsClient;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.After;
 
 /**
  * Base class for testing a Park Load properties from test.properties
@@ -51,7 +52,9 @@ public class BaseIT {
 		client.setVerbose("true".equalsIgnoreCase(verboseEnabled));
 	}
 
-	@AfterClass
-	public static void cleanup() {
+	@After
+	public void eachCleanup() {
+		client.ctrlClear();
 	}
+
 }

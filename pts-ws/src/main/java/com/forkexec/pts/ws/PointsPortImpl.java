@@ -27,7 +27,7 @@ public class PointsPortImpl implements PointsPortType {
 	public void activateUser(final String userEmail) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception {
          if (userEmail == null
                 || userEmail.trim().length() == 0
-                || checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
+                || !checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
             throwInvalidEmailFault("Email invalido!");
 
         Points p = Points.getInstance();
@@ -45,7 +45,7 @@ public class PointsPortImpl implements PointsPortType {
     public int pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
         if (userEmail == null
             || userEmail.trim().length() == 0
-            || checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
+            || !checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
         throwInvalidEmailFault("Email invalido!");
     
         Points p = Points.getInstance();
@@ -59,7 +59,7 @@ public class PointsPortImpl implements PointsPortType {
 	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
         if (userEmail == null
                 || userEmail.trim().length() == 0
-                || checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
+                || !checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
             throwInvalidEmailFault("Email invalido!");
 
         if(pointsToAdd <= 0)
@@ -79,7 +79,7 @@ public class PointsPortImpl implements PointsPortType {
 	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceFault_Exception {
         if (userEmail == null
                 || userEmail.trim().length() == 0
-                || checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
+                || !checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
             throwInvalidEmailFault("Email invalido!");
 
         if(pointsToSpend <= 0)
