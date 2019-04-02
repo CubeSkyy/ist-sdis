@@ -25,14 +25,34 @@ public class PointsPortImpl implements PointsPortType {
 
     @Override
 	public void activateUser(final String userEmail) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception {
-        //TODO
+         if (userEmail == null
+                || userEmail.trim().length() == 0
+                || checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
+            throwInvalidEmailFault("Email invalido!");
+
+        Points p = Points.getInstance();
+
+        for(String key: p.getUsers().keySet()){
+            if (userEmail.equals(key)) {
+                throwEmailAlreadyExistsFault("O email ja existe!");
+            }
+        }
+
+        p.addUser(userEmail);
     }
 
     @Override
     public int pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
-        //TODO
-      return -1;
+        if (userEmail == null
+            || userEmail.trim().length() == 0
+            || checkRegexPattern(userEmail, "^([a-zA-Z0-9-.]+)@([a-zA-Z0-9-.]+).([a-zA-Z]{2,5})$"))
+        throwInvalidEmailFault("Email invalido!");
+    
+        Points p = Points.getInstance();
+        return p.getPoints(userEmail);
     }
+
+    // Adicionar verificacoes em baixo para se o user nao estiver registado ainda e se tentar addPoints ou spendPoints
 
     @Override
     public int addPoints(final String userEmail, final int pointsToAdd)
