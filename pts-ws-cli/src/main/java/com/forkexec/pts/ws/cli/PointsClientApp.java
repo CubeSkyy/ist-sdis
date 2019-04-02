@@ -40,6 +40,7 @@ public class PointsClientApp {
 
 		System.out.println("Invoke ping()...");
 		String result = client.ctrlPing("client");
+
 		System.out.print("Result: ");
 		System.out.println(result);
 	}

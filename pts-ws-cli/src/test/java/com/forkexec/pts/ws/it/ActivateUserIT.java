@@ -11,8 +11,6 @@ import static org.junit.Assert.assertEquals;
 
 public class ActivateUserIT extends BaseIT {
 
-    private static final String EMAIL = "test.email@test.com";
-    private static final String INVALID_EMAIL = "test.email.test.com";
 
 
     @Test

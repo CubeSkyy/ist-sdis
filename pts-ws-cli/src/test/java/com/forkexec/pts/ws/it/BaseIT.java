@@ -18,6 +18,10 @@ public class BaseIT {
 
 	protected static PointsClient client;
 	public static final int DEFAULT_INITIAL_BALANCE = 100;
+	protected static final String EMAIL = "test.email@test.com";
+	protected static final String INVALID_EMAIL = "test.email.test.com";
+
+	protected  static final String EMPTY_STRING = "";
 
 	@BeforeClass
 	public static void oneTimeSetup() throws Exception {
