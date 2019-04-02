@@ -43,17 +43,10 @@ public class RestaurantPortImpl implements RestaurantPortType {
         if(menuId == null || menuId.getId().trim().length()==0)
             throwBadMenuIdFault("ID de menu invalido!");
 
-        Menu m = new Menu();
-
         Restaurant r = Restaurant.getInstance();
         RestaurantMenu rm = r.getMenu(new RestaurantMenuId(menuId.getId()));
 
-        m.setId(menuId);
-        m.setEntree(rm.getEntree());
-        m.setPlate(rm.getPlate());
-        m.setDessert(rm.getDessert());
-        m.setPrice(rm.getPrice());
-        m.setPreparationTime(rm.getPreparationTime());
+        Menu m = buildMenu(rm);
 
         return m;
     }
@@ -129,17 +122,24 @@ public class RestaurantPortImpl implements RestaurantPortType {
 
     // View helpers ----------------------------------------------------------
 
-    // /** Helper to convert a domain object to a view. */
-    // private ParkInfo buildParkInfo(Park park) {
-    // ParkInfo info = new ParkInfo();
-    // info.setId(park.getId());
-    // info.setCoords(buildCoordinatesView(park.getCoordinates()));
-    // info.setCapacity(park.getMaxCapacity());
-    // info.setFreeSpaces(park.getFreeDocks());
-    // info.setAvailableCars(park.getAvailableCars());
-    // return info;
-    // }
+    private MenuId buildMenuId(RestaurantMenuId rmi) {
+        MenuId mi = new MenuId();
+        mi.setId(rmi.getId());
+        return mi;
+    }
 
+    private Menu buildMenu(RestaurantMenu rm) {
+        Menu m = new Menu();
+
+        m.setId(buildMenuId(rm.getId()));
+        m.setEntree(rm.getEntree());
+        m.setPlate(rm.getPlate());
+        m.setDessert(rm.getDessert());
+        m.setPrice(rm.getPrice());
+        m.setPreparationTime(rm.getPreparationTime());
+
+        return m;
+    }
 
     // Exception helpers -----------------------------------------------------
 
