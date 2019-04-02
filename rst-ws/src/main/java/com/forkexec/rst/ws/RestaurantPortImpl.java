@@ -46,7 +46,7 @@ public class RestaurantPortImpl implements RestaurantPortType {
         Menu m = new Menu();
 
         Restaurant r = Restaurant.getInstance();
-        RestaurantMenu rm = r.getMenu(RestaurantMenuId(menuId.getId()));
+        RestaurantMenu rm = r.getMenu(new RestaurantMenuId(menuId.getId()));
 
         m.setId(menuId);
         m.setEntree(rm.getEntree());
