@@ -1,8 +1,9 @@
 package com.forkexec.pts.ws.it;
 
 
-import com.forkexec.pts.ws.EmailAlreadyExistsFault_Exception;
 import com.forkexec.pts.ws.InvalidEmailFault_Exception;
+import com.forkexec.pts.ws.InvalidPointsFault_Exception;
+import com.forkexec.pts.ws.EmailAlreadyExistsFault_Exception;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class addPointsIT extends BaseIT {
     public void InvalidEmail_wrongFormat() throws InvalidEmailFault_Exception{
         try {
             client.addPoints(INVALID_EMAIL,NEW_SCORE);
-        }catch (InvalidEmailFault_Exception e){
+        }catch (InvalidPointsFault_Exception e){
             Assert.fail(e.getMessage());
         }
     }
@@ -37,7 +38,7 @@ public class addPointsIT extends BaseIT {
     public void InvalidEmail_emptyString() throws InvalidEmailFault_Exception{
         try {
             client.addPoints(EMPTY_STRING,NEW_SCORE);
-        }catch (InvalidEmailFault_Exception e){
+        }catch (InvalidPointsFault_Exception e) {
             Assert.fail(e.getMessage());
         }
     }
@@ -47,7 +48,7 @@ public class addPointsIT extends BaseIT {
         try {
             client.activateUser(EMAIL);
             client.addPoints(EMAIL,0);
-        }catch (InvalidPointsFault_Exception e){
+        }catch (InvalidEmailFault_Exception| EmailAlreadyExistsFault_Exception e  ) {
             Assert.fail(e.getMessage());
         }
     }
@@ -57,7 +58,7 @@ public class addPointsIT extends BaseIT {
         try {
             client.activateUser(EMAIL);
             client.addPoints(EMAIL,-1);
-        }catch (InvalidPointsFault_Exception e){
+        }catch (InvalidEmailFault_Exception | EmailAlreadyExistsFault_Exception e) {
             Assert.fail(e.getMessage());
         }
     }
