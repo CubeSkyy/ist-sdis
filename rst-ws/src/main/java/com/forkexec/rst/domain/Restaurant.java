@@ -24,7 +24,6 @@ public class Restaurant {
 
     private Map<RestaurantMenuId, RestaurantMenu> menuMap = new ConcurrentHashMap<>();
 
-    private Map<RestaurantMenuOrderId, RestaurantMenuOrder> orderMap = new ConcurrentHashMap<>();
 
     private int orderNumber = 1;
 
@@ -70,17 +69,7 @@ public class Restaurant {
     }
 
 
-    public void clearOrders() {
-        orderMap.clear();
-    }
 
-    public void addOrders(RestaurantMenuOrder o) {
-        orderMap.put(o.getId(), o);
-    }
-
-    public RestaurantMenuOrder getOrder(RestaurantMenuOrderId omid) {
-        return orderMap.get(omid);
-    }
 
     public List<RestaurantMenu> searchMenus(String descriptionText) {
         List<RestaurantMenu> tempList = new ArrayList<>();
@@ -110,7 +99,6 @@ public class Restaurant {
 
     public void resetState() {
         clearMenus();
-        clearOrders();
         setOrderNumber(1);
     }
 

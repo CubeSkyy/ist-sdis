@@ -9,8 +9,8 @@ import java.util.List;
 public class orderMenuIT extends BaseIT {
 
     private final int VALID_QUANTITY = 10;
-    final String EXPECTED_ID = "PedidoNr1";
-    final String EXPECTED_ID2 = "PedidoNr2";
+    private final String EXPECTED_ID = "PedidoNr1";
+    private final String EXPECTED_ID2 = "PedidoNr2";
 
     @Test
     public void success() throws BadMenuIdFault_Exception, BadInitFault_Exception, BadQuantityFault_Exception, InsufficientQuantityFault_Exception {
@@ -46,6 +46,14 @@ public class orderMenuIT extends BaseIT {
     @Test(expected = BadQuantityFault_Exception.class)
     public void wrongQuantity() throws BadMenuIdFault_Exception, BadInitFault_Exception, BadQuantityFault_Exception, InsufficientQuantityFault_Exception {
         final int INVALID_QUANTITY = -10;
+        List<MenuInit> lm = createInitList();
+        client.ctrlInit(lm);
+        client.orderMenu(createMenuId(), INVALID_QUANTITY);
+    }
+
+    @Test(expected = BadQuantityFault_Exception.class)
+    public void zeroQuantity() throws BadMenuIdFault_Exception, BadInitFault_Exception, BadQuantityFault_Exception, InsufficientQuantityFault_Exception {
+        final int INVALID_QUANTITY = 0;
         List<MenuInit> lm = createInitList();
         client.ctrlInit(lm);
         client.orderMenu(createMenuId(), INVALID_QUANTITY);
