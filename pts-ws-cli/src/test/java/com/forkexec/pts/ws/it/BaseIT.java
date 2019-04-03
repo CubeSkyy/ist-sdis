@@ -21,6 +21,8 @@ public class BaseIT {
 	public static final int DEFAULT_INITIAL_BALANCE = 100;
 	protected static final String EMAIL = "test.email@test.com";
 	protected static final String INVALID_EMAIL = "test.email.test.com";
+	protected static final int START_POINTS = 100;
+
 
 	protected  static final String EMPTY_STRING = "";
 
