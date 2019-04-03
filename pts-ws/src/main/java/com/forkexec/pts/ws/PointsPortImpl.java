@@ -26,8 +26,7 @@ public class PointsPortImpl implements PointsPortType {
     @Override
 	public void activateUser(final String userEmail) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception {
          if (userEmail == null
-                || userEmail.trim().length() == 0
-                || !checkRegexPattern(userEmail, Points.getRegex()))
+                 || userEmail.trim().length() == 0)
             throwInvalidEmailFault("Email invalido!");
 
         Points p = Points.getInstance();
@@ -36,14 +35,15 @@ public class PointsPortImpl implements PointsPortType {
             p.addUser(userEmail);
         } catch (EmailAlreadyExistsException eaef) {
             throwEmailAlreadyExistsFault("Email invalido!" + eaef.getMessage());
+        } catch (InvalidEmailException e) {
+            throwInvalidEmailFault("Email invalido!");
         }
     }
 
     @Override
     public int pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
         if (userEmail == null
-            || userEmail.trim().length() == 0
-            || !checkRegexPattern(userEmail, Points.getRegex()))
+                || userEmail.trim().length() == 0)
         throwInvalidEmailFault("Email invalido!");
     
         try{
@@ -61,16 +61,14 @@ public class PointsPortImpl implements PointsPortType {
     public int addPoints(final String userEmail, final int pointsToAdd)
 	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
         if (userEmail == null
-                || userEmail.trim().length() == 0
-                || !checkRegexPattern(userEmail, Points.getRegex()))
+                || userEmail.trim().length() == 0)
             throwInvalidEmailFault("Email invalido!");
 
         if(pointsToAdd <= 0)
             throwInvalidPointsFault("Quantidade de pontos a ser adicionada invalida!");
         Points p = Points.getInstance();
         try {
-            p.addPoints(userEmail,pointsToAdd);
-            return 0;
+            return p.addPoints(userEmail, pointsToAdd);
         } catch (InvalidEmailException ief) {
             throwInvalidEmailFault("Email invalido!" + ief.getMessage());
         }
@@ -81,8 +79,7 @@ public class PointsPortImpl implements PointsPortType {
     public int spendPoints(final String userEmail, final int pointsToSpend)
 	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceFault_Exception {
         if (userEmail == null
-                || userEmail.trim().length() == 0
-                || !checkRegexPattern(userEmail, Points.getRegex()))
+                || userEmail.trim().length() == 0)
             throwInvalidEmailFault("Email invalido!");
 
         if(pointsToSpend <= 0)
@@ -90,8 +87,7 @@ public class PointsPortImpl implements PointsPortType {
         Points p = Points.getInstance();
 
         try {
-            p.subtractPoints(userEmail,pointsToSpend);
-            return 0;
+            return p.subtractPoints(userEmail, pointsToSpend);
         } catch (InvalidEmailException ief) {
             throwInvalidEmailFault("Email invalido!" + ief.getMessage());
         } catch (NotEnoughBalanceException nebf) {
@@ -169,7 +165,5 @@ public class PointsPortImpl implements PointsPortType {
         faultInfo.message = message;
         throw new EmailAlreadyExistsFault_Exception(message, faultInfo);
     }
-    private boolean checkRegexPattern(String text, String regex){
-        return Pattern.compile(regex).matcher(text).matches();
-    }
+
 }

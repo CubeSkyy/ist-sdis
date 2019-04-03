@@ -1,7 +1,9 @@
 package com.forkexec.pts.ws.it;
 
 
+import com.forkexec.pts.ws.EmailAlreadyExistsFault_Exception;
 import com.forkexec.pts.ws.InvalidEmailFault_Exception;
+import com.forkexec.pts.ws.InvalidPointsFault_Exception;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,13 +14,9 @@ public class ctrlClearIT extends BaseIT {
     private static final int NEW_SCORE = 420;
 
     @Test
-    public void success() {
-        try {
+    public void success() throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception {
             client.ctrlClear();
             client.activateUser(EMAIL);
             assertEquals(client.pointsBalance(EMAIL), DEFAULT_INITIAL_BALANCE);
-        }catch (Exception e){
-            Assert.fail(e.getMessage());
-        }
     }
 }

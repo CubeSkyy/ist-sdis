@@ -72,7 +72,7 @@ public class RestaurantMenu {
      *     {@link String }
      *     
      */
-    public void setEntree(String value) {
+    private void setEntree(String value) {
         this._entree = value;
     }
 
@@ -96,7 +96,7 @@ public class RestaurantMenu {
      *     {@link String }
      *     
      */
-    public void setPlate(String value) {
+    private void setPlate(String value) {
         this._plate = value;
     }
 
@@ -120,7 +120,7 @@ public class RestaurantMenu {
      *     {@link String }
      *     
      */
-    public void setDessert(String value) {
+    private void setDessert(String value) {
         this._dessert = value;
     }
 
@@ -136,7 +136,7 @@ public class RestaurantMenu {
      * Sets the value of the price property.
      * 
      */
-    public void setPrice(int value) {
+    private void setPrice(int value) {
         this._price = value;
     }
 
@@ -152,7 +152,7 @@ public class RestaurantMenu {
      * Sets the value of the preparationTime property.
      * 
      */
-    public void setPreparationTime(int value) {
+    private void setPreparationTime(int value) {
         this._preparationTime = value;
     }
 

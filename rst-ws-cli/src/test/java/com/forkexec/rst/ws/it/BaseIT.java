@@ -1,13 +1,16 @@
 package com.forkexec.rst.ws.it;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import com.forkexec.rst.ws.Menu;
 import com.forkexec.rst.ws.MenuId;
+import com.forkexec.rst.ws.MenuInit;
 import com.forkexec.rst.ws.cli.RestaurantClient;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.BeforeClass;
 
 /**
@@ -58,6 +61,11 @@ public class BaseIT {
 		}
 		client.setVerbose("true".equalsIgnoreCase(verboseEnabled));
 	}
+	protected MenuId createMenuId(String id) {
+		MenuId mi = new MenuId();
+		mi.setId(id);
+		return mi;
+	}
 	protected MenuId createMenuId() {
 		MenuId mi = new MenuId();
 		mi.setId(MENU_ID);
@@ -77,8 +85,20 @@ public class BaseIT {
 		return m;
 	}
 
-	@AfterClass
-	public static void cleanup() {
+	protected List<MenuInit> createInitList(){
+
+		MenuInit mi = new MenuInit();
+		Menu m = createMenu();
+		mi.setMenu(m);
+		mi.setQuantity(DEFAULT_MENU_QUANTITY);
+		List<MenuInit> lm = new ArrayList<>();
+		lm.add(mi);
+
+		return lm;
+	}
+
+	@After
+	public void cleanupEach() {
 		client.ctrlClear();
 	}
 

@@ -15,51 +15,33 @@ public class addPointsIT extends BaseIT {
     private static final int NEW_SCORE = 420;
 
     @Test
-    public void success() {
-        try {
-            client.activateUser(EMAIL);
-            client.addPoints(EMAIL,NEW_SCORE);
-            assertEquals(client.pointsBalance(EMAIL), DEFAULT_INITIAL_BALANCE + NEW_SCORE);
-        }catch (Exception e){
-            Assert.fail(e.getMessage());
-        }
+    public void success() throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception, InvalidPointsFault_Exception {
+
+        client.activateUser(EMAIL);
+        client.addPoints(EMAIL, NEW_SCORE);
+        assertEquals(client.pointsBalance(EMAIL), DEFAULT_INITIAL_BALANCE + NEW_SCORE);
+
     }
 
     @Test(expected = InvalidEmailFault_Exception.class)
-    public void InvalidEmail_wrongFormat() throws InvalidEmailFault_Exception{
-        try {
-            client.addPoints(INVALID_EMAIL,NEW_SCORE);
-        }catch (InvalidPointsFault_Exception e){
-            Assert.fail(e.getMessage());
-        }
+    public void InvalidEmail_wrongFormat() throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
+        client.addPoints(INVALID_EMAIL, NEW_SCORE);
     }
 
     @Test(expected = InvalidEmailFault_Exception.class)
-    public void InvalidEmail_emptyString() throws InvalidEmailFault_Exception{
-        try {
-            client.addPoints(EMPTY_STRING,NEW_SCORE);
-        }catch (InvalidPointsFault_Exception e) {
-            Assert.fail(e.getMessage());
-        }
+    public void InvalidEmail_emptyString() throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
+        client.addPoints(EMPTY_STRING, NEW_SCORE);
     }
 
     @Test(expected = InvalidPointsFault_Exception.class)
-    public void InvalidPoints_zero() throws InvalidPointsFault_Exception{
-        try {
-            client.activateUser(EMAIL);
-            client.addPoints(EMAIL,0);
-        }catch (InvalidEmailFault_Exception| EmailAlreadyExistsFault_Exception e  ) {
-            Assert.fail(e.getMessage());
-        }
+    public void InvalidPoints_zero() throws InvalidPointsFault_Exception, InvalidEmailFault_Exception, EmailAlreadyExistsFault_Exception {
+        client.activateUser(EMAIL);
+        client.addPoints(EMAIL, 0);
     }
 
     @Test(expected = InvalidPointsFault_Exception.class)
-    public void InvalidPoints_negative() throws InvalidPointsFault_Exception{
-        try {
-            client.activateUser(EMAIL);
-            client.addPoints(EMAIL,-1);
-        }catch (InvalidEmailFault_Exception | EmailAlreadyExistsFault_Exception e) {
-            Assert.fail(e.getMessage());
-        }
+    public void InvalidPoints_negative() throws InvalidPointsFault_Exception, InvalidEmailFault_Exception, EmailAlreadyExistsFault_Exception {
+        client.activateUser(EMAIL);
+        client.addPoints(EMAIL, -1);
     }
 }

@@ -20,22 +20,16 @@ public class ActivateUserIT extends BaseIT {
     }
 
     @Test(expected = EmailAlreadyExistsFault_Exception.class)
-    public void emailAlreadyExists() throws EmailAlreadyExistsFault_Exception {
-        try {
-            client.activateUser(EMAIL);
-            client.activateUser(EMAIL);
-        } catch (InvalidEmailFault_Exception e) {
-            Assert.fail(e.getMessage());
-        }
+    public void emailAlreadyExists() throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception {
+
+        client.activateUser(EMAIL);
+        client.activateUser(EMAIL);
+
     }
 
     @Test(expected = InvalidEmailFault_Exception.class)
-    public void invalidEmail() throws InvalidEmailFault_Exception {
-        try {
-            client.activateUser(INVALID_EMAIL);
-        } catch (EmailAlreadyExistsFault_Exception e) {
-            Assert.fail(e.getMessage());
-        }
+    public void invalidEmail() throws InvalidEmailFault_Exception, EmailAlreadyExistsFault_Exception {
+        client.activateUser(INVALID_EMAIL);
     }
 
 }
