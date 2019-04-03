@@ -91,7 +91,7 @@ public class RestaurantPortImpl implements RestaurantPortType {
     		throwInsufficientQuantityFault("Nao existe quantidade suficiente destes menus no restaurante!");
     	}
 
-    	if(rm.getQuantity() <= 0) {
+    	if(arg1 <= 0) {
     		throwBadQuantityFault("As quantidades tem de ser positivas!");
     	}
         RestaurantMenuOrder result = null;

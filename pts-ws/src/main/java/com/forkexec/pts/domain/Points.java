@@ -63,8 +63,12 @@ public class Points {
      * @param userEmail email of authenticated user.
      * @return the amounts of points that user has.
      */
-    public Integer getPoints(String userEmail) {
-        return users.get(userEmail);
+    public Integer getPoints(String userEmail) throws InvalidEmailException {
+
+        Integer points = users.get(userEmail);
+        if (points == null) throw new InvalidEmailException("User não presente!");
+
+        return points;
     }
 
     /**
@@ -87,7 +91,14 @@ public class Points {
     @param userEmail     email of new user.
     */
 
-    public void addUser(String userEmail){
+    public void addUser(String userEmail) throws EmailAlreadyExistsException {
+
+        for(String key: getUsers().keySet()){
+            if (userEmail.equals(key)) {
+                throw new EmailAlreadyExistsException("O email ja existe!");
+            }
+        }
+
         users.put(userEmail, DEFAULT_INITIAL_BALANCE);
     }
 

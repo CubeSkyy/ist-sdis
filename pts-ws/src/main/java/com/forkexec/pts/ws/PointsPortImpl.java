@@ -32,13 +32,11 @@ public class PointsPortImpl implements PointsPortType {
 
         Points p = Points.getInstance();
 
-        for(String key: p.getUsers().keySet()){
-            if (userEmail.equals(key)) {
-                throwEmailAlreadyExistsFault("O email ja existe!");
-            }
+        try {
+            p.addUser(userEmail);
+        } catch (EmailAlreadyExistsException eaef) {
+            throwEmailAlreadyExistsFault("Email invalido!" + eaef.getMessage());
         }
-
-        p.addUser(userEmail);
     }
 
     @Override
@@ -48,8 +46,13 @@ public class PointsPortImpl implements PointsPortType {
             || !checkRegexPattern(userEmail, Points.getRegex()))
         throwInvalidEmailFault("Email invalido!");
     
-        Points p = Points.getInstance();
-        return p.getPoints(userEmail);
+        try{
+            Points p = Points.getInstance();
+            return p.getPoints(userEmail);
+        } catch (InvalidEmailException iee) {
+            throwInvalidEmailFault("Email invalido!" + iee.getMessage());
+        }
+        return -1;
     }
 
     // Adicionar verificacoes em baixo para se o user nao estiver registado ainda e se tentar addPoints ou spendPoints
