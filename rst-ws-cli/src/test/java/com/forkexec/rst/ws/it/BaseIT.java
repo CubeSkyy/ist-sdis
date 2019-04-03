@@ -30,7 +30,8 @@ public class BaseIT {
 	protected static int PRICE = 1024;
 	protected static int PREPARATION_TIME = 2048;
 
-	protected static int DEFAULT_MENU_QUANTITY = 420;
+	protected static int
+			DEFAULT_MENU_QUANTITY = 420;
 
 	protected static String EMPTY_STRING = "";
 
