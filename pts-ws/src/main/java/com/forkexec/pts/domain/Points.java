@@ -20,6 +20,8 @@ public class Points {
      */
     private final AtomicInteger initialBalance = new AtomicInteger(DEFAULT_INITIAL_BALANCE);
 
+    private static final String VALID_EMAIL_REGEX = "[a-zA-Z0-9]+(.[a-zA-Z0-9][a-zA-Z0-9])+@[a-zA-Z0-9]+(.[a-zA-Z0-9][a-zA-Z0-9])+";
+
     private Map<String, Integer> users = new ConcurrentHashMap<String, Integer>();
 
     // Singleton -------------------------------------------------------------
@@ -107,5 +109,9 @@ public class Points {
     public void resetState() {
         users.clear();
         setInitialBalance(DEFAULT_INITIAL_BALANCE);
+    }
+
+    public static String getRegex() {
+        return VALID_EMAIL_REGEX;
     }
 }

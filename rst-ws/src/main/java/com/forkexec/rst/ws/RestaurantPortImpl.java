@@ -43,8 +43,9 @@ public class RestaurantPortImpl implements RestaurantPortType {
             throwBadMenuIdFault("ID de menu invalido!");
 
         Restaurant r = Restaurant.getInstance();
+        RestaurantMenu rm = null;
         try {
-            RestaurantMenu rm = r.getMenu(new RestaurantMenuId(menuId.getId()));
+             rm = r.getMenu(new RestaurantMenuId(menuId.getId()));
         } catch(NoSuchMenuFaultException nsfe){
             throwBadMenuIdFault(nsfe.getMessage());
         }

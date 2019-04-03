@@ -93,7 +93,7 @@ public class Restaurant {
         return tempList;
     }
 
-    public RestaurantMenuOrder orderMenu(RestaurantMenuId m_id, int quantity){
+    public RestaurantMenuOrder orderMenu(RestaurantMenuId m_id, int quantity) throws NoSuchMenuFaultException {
 
     	RestaurantMenu rm = getMenu(m_id);
 
