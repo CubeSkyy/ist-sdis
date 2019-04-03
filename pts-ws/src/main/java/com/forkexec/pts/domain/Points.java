@@ -20,7 +20,7 @@ public class Points {
      */
     private final AtomicInteger initialBalance = new AtomicInteger(DEFAULT_INITIAL_BALANCE);
 
-    private static final String VALID_EMAIL_REGEX = "[a-zA-Z0-9]+(.[a-zA-Z0-9][a-zA-Z0-9])+@[a-zA-Z0-9]+(.[a-zA-Z0-9][a-zA-Z0-9])+";
+    private static final String VALID_EMAIL_REGEX = "[a-zA-Z0-9]+(.[a-zA-Z0-9]+)+@[a-zA-Z0-9]+(.[a-zA-Z0-9]+)+";
 
     private Map<String, Integer> users = new ConcurrentHashMap<String, Integer>();
 

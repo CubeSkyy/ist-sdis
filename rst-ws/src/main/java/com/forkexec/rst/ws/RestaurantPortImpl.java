@@ -78,7 +78,13 @@ public class RestaurantPortImpl implements RestaurantPortType {
             throwBadMenuIdFault("ID de menu invalido!");
 
     	Restaurant r = Restaurant.getInstance();
-    	RestaurantMenu rm = r.getMenu(new RestaurantMenuId(arg0.getId()));
+        RestaurantMenu rm = null;
+
+        try {
+            rm = r.getMenu(new RestaurantMenuId(arg0.getId()));
+        } catch(NoSuchMenuFaultException nsfe){
+            throwBadMenuIdFault(nsfe.getMessage());
+        }
 
     	if(rm.getQuantity() < arg1) {
     		throwInsufficientQuantityFault("Nao existe quantidade suficiente destes menus no restaurante!");
@@ -87,8 +93,14 @@ public class RestaurantPortImpl implements RestaurantPortType {
     	if(rm.getQuantity() <= 0) {
     		throwBadQuantityFault("As quantidades tem de ser positivas!");
     	}
+        RestaurantMenuOrder result = null;
+        try {
+            result = r.orderMenu(new RestaurantMenuId(arg0.getId()), arg1);
+        } catch(NoSuchMenuFaultException nsfe){
+            throwBadMenuIdFault(nsfe.getMessage());
+        }
 
-        RestaurantMenuOrder result = r.orderMenu(new RestaurantMenuId(arg0.getId()), arg1);
+
     	return buildMenuOrder(result);
         
     }
