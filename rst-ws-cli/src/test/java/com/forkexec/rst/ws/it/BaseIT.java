@@ -76,8 +76,10 @@ public class BaseIT {
 
 		return m;
 	}
+
 	@AfterClass
 	public static void cleanup() {
+		client.ctrlClear();
 	}
 
 }

@@ -5,11 +5,7 @@ import java.util.List;
 
 import javax.jws.WebService;
 
-import com.forkexec.rst.domain.Restaurant;
-import com.forkexec.rst.domain.RestaurantMenu;
-import com.forkexec.rst.domain.RestaurantMenuId;
-import com.forkexec.rst.domain.RestaurantMenuOrder;
-import com.forkexec.rst.domain.RestaurantMenuOrderId;
+import com.forkexec.rst.domain.*;
 
 
 /**
@@ -47,7 +43,11 @@ public class RestaurantPortImpl implements RestaurantPortType {
             throwBadMenuIdFault("ID de menu invalido!");
 
         Restaurant r = Restaurant.getInstance();
-        RestaurantMenu rm = r.getMenu(new RestaurantMenuId(menuId.getId()));
+        try {
+            RestaurantMenu rm = r.getMenu(new RestaurantMenuId(menuId.getId()));
+        } catch(NoSuchMenuFaultException nsfe){
+            throwBadMenuIdFault(nsfe.getMessage());
+        }
 
         Menu m = buildMenu(rm);
 

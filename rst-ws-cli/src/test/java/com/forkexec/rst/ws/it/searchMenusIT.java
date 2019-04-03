@@ -25,7 +25,7 @@ public class searchMenusIT extends BaseIT {
             client.ctrlInit(lm);
 
 
-            m = client.searchMenus(DESCRIPTIVE_TEXT).get(0);
+            m = client.searchMenus(DESSERT).get(0);
 
             Assert.assertEquals(m.getId().getId(), MENU_ID);
             Assert.assertEquals(m.getEntree(), ENTREE);

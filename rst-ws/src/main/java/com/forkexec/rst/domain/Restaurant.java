@@ -60,8 +60,13 @@ public class Restaurant {
         menuMap.put(m.getId(), m);
     }
 
-    public RestaurantMenu getMenu(RestaurantMenuId mid) {
-        return menuMap.get(mid);
+    public RestaurantMenu getMenu(RestaurantMenuId mid) throws NoSuchMenuFaultException {
+       RestaurantMenu m = menuMap.get(mid);
+
+       if(m == null)
+           throw new NoSuchMenuFaultException("Não existe menu com ID " + mid.getId() + "!");
+
+       return m;
     }
 
 
