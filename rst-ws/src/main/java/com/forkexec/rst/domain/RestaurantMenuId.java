@@ -31,4 +31,18 @@ public class RestaurantMenuId {
         this._id = value;
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(! (o instanceof RestaurantMenuId)) return false;
+
+        RestaurantMenuId rmi = (RestaurantMenuId) o;
+        return rmi.getId().equals(getId());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return getId().hashCode();
+    }
+
 }

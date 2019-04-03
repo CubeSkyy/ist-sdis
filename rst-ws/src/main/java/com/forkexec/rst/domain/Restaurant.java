@@ -48,8 +48,8 @@ public class Restaurant {
         return SingletonHolder.INSTANCE;
     }
 
-    public void setOrderNumber(int num){
-    	orderNumber = num;
+    private void setOrderNumber(int num) {
+        orderNumber = num;
     }
 
     public void clearMenus() {
@@ -61,12 +61,11 @@ public class Restaurant {
     }
 
     public RestaurantMenu getMenu(RestaurantMenuId mid) throws NoSuchMenuFaultException {
-       RestaurantMenu m = menuMap.get(mid);
+        RestaurantMenu m = menuMap.get(mid);
+        if (m == null)
+            throw new NoSuchMenuFaultException("Não existe menu com ID " + mid.getId() + "!");
 
-       if(m == null)
-           throw new NoSuchMenuFaultException("Não existe menu com ID " + mid.getId() + "!");
-
-       return m;
+        return m;
     }
 
 
@@ -95,23 +94,23 @@ public class Restaurant {
 
     public RestaurantMenuOrder orderMenu(RestaurantMenuId m_id, int quantity) throws NoSuchMenuFaultException {
 
-    	RestaurantMenu rm = getMenu(m_id);
+        RestaurantMenu rm = getMenu(m_id);
 
-    	int oldQuantity = rm.getQuantity();
-    	rm.setQuantity(oldQuantity - quantity);
+        int oldQuantity = rm.getQuantity();
+        rm.setQuantity(oldQuantity - quantity);
 
-    	RestaurantMenuOrderId m_order_id = new RestaurantMenuOrderId("PedidoNr" + String.valueOf(orderNumber));
-    	orderNumber += 1;
+        RestaurantMenuOrderId m_order_id = new RestaurantMenuOrderId("PedidoNr" + orderNumber);
+        orderNumber += 1;
 
-    	RestaurantMenuOrder m_order = new RestaurantMenuOrder(m_order_id, m_id, quantity);
+        RestaurantMenuOrder m_order = new RestaurantMenuOrder(m_order_id, m_id, quantity);
 
-    	return m_order;
+        return m_order;
     }
 
-    public void resetState(){
-    	clearMenus();
- 		clearOrders();
- 		setOrderNumber(1);
+    public void resetState() {
+        clearMenus();
+        clearOrders();
+        setOrderNumber(1);
     }
 
 }

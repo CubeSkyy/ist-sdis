@@ -36,6 +36,7 @@ public class RestaurantPortImpl implements RestaurantPortType {
 
     // Main operations -------------------------------------------------------
 
+    @SuppressWarnings("Duplicates")
     @Override
     public Menu getMenu(MenuId menuId) throws BadMenuIdFault_Exception {
 
@@ -45,7 +46,7 @@ public class RestaurantPortImpl implements RestaurantPortType {
         Restaurant r = Restaurant.getInstance();
         RestaurantMenu rm = null;
         try {
-             rm = r.getMenu(new RestaurantMenuId(menuId.getId()));
+             rm = r.getMenu(buildRestaurantMenuId(menuId));
         } catch(NoSuchMenuFaultException nsfe){
             throwBadMenuIdFault(nsfe.getMessage());
         }
@@ -81,7 +82,7 @@ public class RestaurantPortImpl implements RestaurantPortType {
         RestaurantMenu rm = null;
 
         try {
-            rm = r.getMenu(new RestaurantMenuId(arg0.getId()));
+            rm = r.getMenu(buildRestaurantMenuId(arg0));
         } catch(NoSuchMenuFaultException nsfe){
             throwBadMenuIdFault(nsfe.getMessage());
         }
@@ -95,7 +96,7 @@ public class RestaurantPortImpl implements RestaurantPortType {
     	}
         RestaurantMenuOrder result = null;
         try {
-            result = r.orderMenu(new RestaurantMenuId(arg0.getId()), arg1);
+            result = r.orderMenu(buildRestaurantMenuId(arg0), arg1);
         } catch(NoSuchMenuFaultException nsfe){
             throwBadMenuIdFault(nsfe.getMessage());
         }
@@ -169,6 +170,12 @@ public class RestaurantPortImpl implements RestaurantPortType {
         MenuId mi = new MenuId();
         mi.setId(rmi.getId());
         return mi;
+    }
+
+    private RestaurantMenuId buildRestaurantMenuId(MenuId mi) {
+        RestaurantMenuId rmi = new RestaurantMenuId();
+        rmi.setId(mi.getId());
+        return rmi;
     }
 
     private Menu buildMenu(RestaurantMenu rm) {

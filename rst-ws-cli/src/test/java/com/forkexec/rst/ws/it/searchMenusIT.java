@@ -16,16 +16,10 @@ public class searchMenusIT extends BaseIT {
     @Test
     public void success() {
         try {
-            MenuInit mi = new MenuInit();
-            Menu m = createMenu();
-            mi.setMenu(m);
-            mi.setQuantity(DEFAULT_MENU_QUANTITY);
-            List<MenuInit> lm = new ArrayList<>();
-            lm.add(mi);
+            List<MenuInit> lm = createInitList();
             client.ctrlInit(lm);
 
-
-            m = client.searchMenus(DESSERT).get(0);
+            Menu m = client.searchMenus(DESSERT).get(0);
 
             Assert.assertEquals(m.getId().getId(), MENU_ID);
             Assert.assertEquals(m.getEntree(), ENTREE);

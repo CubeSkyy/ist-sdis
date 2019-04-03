@@ -30,4 +30,19 @@ public class RestaurantMenuOrderId{
     public void setId(String value) {
         this._id = value;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(! (o instanceof RestaurantMenuOrderId)) return false;
+
+        RestaurantMenuOrderId rmoi = (RestaurantMenuOrderId) o;
+        return rmoi.getId().equals(getId());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return getId().hashCode();
+    }
+
 }
