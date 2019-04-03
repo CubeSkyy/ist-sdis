@@ -3,6 +3,7 @@ package com.forkexec.pts.domain;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 /**
  * Points
@@ -65,6 +66,9 @@ public class Points {
      */
     public Integer getPoints(String userEmail) throws InvalidEmailException {
 
+        if (!checkRegexPattern(userEmail, VALID_EMAIL_REGEX))
+            throw new InvalidEmailException("Email é definido por user@dominio!");
+
         Integer points = users.get(userEmail);
         if (points == null) throw new InvalidEmailException("User não presente!");
 
@@ -75,15 +79,16 @@ public class Points {
      * @param userEmail     email of authenticated user.
      * @param pointsToSpend amount of points to spend
      */
-    public void subtractPoints(String userEmail, Integer pointsToSpend)
+    public int subtractPoints(String userEmail, Integer pointsToSpend)
             throws InvalidEmailException, NotEnoughBalanceException {
 
         Integer points = getPoints(userEmail);
-        if (points == null) throw new InvalidEmailException("User não presente!");
 
         if (pointsToSpend > points) throw new NotEnoughBalanceException("Não tem saldo suficiente!");
         points -= pointsToSpend;
         users.put(userEmail, points);
+
+        return points;
 
     }
 
@@ -91,7 +96,9 @@ public class Points {
     @param userEmail     email of new user.
     */
 
-    public void addUser(String userEmail) throws EmailAlreadyExistsException {
+    public void addUser(String userEmail) throws EmailAlreadyExistsException, InvalidEmailException {
+
+        if (!checkRegexPattern(userEmail, VALID_EMAIL_REGEX)) throw new InvalidEmailException("Email invalido!");
 
         for(String key: getUsers().keySet()){
             if (userEmail.equals(key)) {
@@ -106,14 +113,14 @@ public class Points {
      * @param userEmail     email of authenticated user.
      * @param pointsToAdd amount of points to add
      */
-    public void addPoints(String userEmail, Integer pointsToAdd)
+    public int addPoints(String userEmail, Integer pointsToAdd)
             throws InvalidEmailException {
 
         Integer points = getPoints(userEmail);
-        if (points == null) throw new InvalidEmailException("User não presente!");
 
         points += pointsToAdd;
         users.put(userEmail, points);
+        return points;
 
     }
 
@@ -122,7 +129,9 @@ public class Points {
         setInitialBalance(DEFAULT_INITIAL_BALANCE);
     }
 
-    public static String getRegex() {
-        return VALID_EMAIL_REGEX;
+    private boolean checkRegexPattern(String text, String regex) {
+        return Pattern.compile(regex).matcher(text).matches();
     }
+
+
 }
