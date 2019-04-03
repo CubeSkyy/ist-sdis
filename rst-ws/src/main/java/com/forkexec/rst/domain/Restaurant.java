@@ -100,7 +100,7 @@ public class Restaurant {
     	int oldQuantity = rm.getQuantity();
     	rm.setQuantity(oldQuantity - quantity);
 
-    	RestaurantMenuOrderId m_order_id = new RestaurantMenuOrderId("PedidoNr" + String.valueOf(orderNumber));
+    	RestaurantMenuOrderId m_order_id = new RestaurantMenuOrderId("PedidoNr" + orderNumber);
     	orderNumber += 1;
 
     	RestaurantMenuOrder m_order = new RestaurantMenuOrder(m_order_id, m_id, quantity);
