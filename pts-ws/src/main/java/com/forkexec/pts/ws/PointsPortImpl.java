@@ -165,5 +165,4 @@ public class PointsPortImpl implements PointsPortType {
         faultInfo.message = message;
         throw new EmailAlreadyExistsFault_Exception(message, faultInfo);
     }
-
 }

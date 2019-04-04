@@ -4,12 +4,19 @@ import javax.jws.WebService;
 
 import com.forkexec.pts.ws.cli.PointsClient;
 import com.forkexec.pts.ws.cli.PointsClientException;
+import com.forkexec.rst.ws.cli.RestaurantClient;
+import com.forkexec.rst.ws.cli.RestaurantClientException;
+
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINamingException;
 import com.forkexec.pts.ws.EmailAlreadyExistsFault_Exception;
 import com.forkexec.pts.ws.InvalidEmailFault_Exception;
 import java.util.Collection;
 
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Hub
@@ -22,6 +29,8 @@ public class Hub {
 
 	// Singleton -------------------------------------------------------------
 
+	private Map<String, List<Food>> cartMap = new ConcurrentHashMap<>();
+
 	/** Private constructor prevents instantiation from other classes. */
 	private Hub() {
 		// Initialization of default values
@@ -32,6 +41,7 @@ public class Hub {
 	 * or the first access to SingletonHolder.INSTANCE, not before.
 	 */
 	private static class SingletonHolder {
+
 		private static final Hub INSTANCE = new Hub();
 	}
 
@@ -54,13 +64,28 @@ public class Hub {
 	}
 
     public PointsClient getPointsClient() throws PointsClientException {
-
 	    PointsClient client = null;
 	    client = new PointsClient("http://t02:noRpzUdr@uddi.sd.rnl.tecnico.ulisboa.pt:9090","T02_Points1");
 	    return client;
- 	}
+	}
+
+	public RestaurantClient getRestaurantClient() throws RestaurantClientException {
+		RestaurantClient client = null;
+		client = new PointsClient("http://t02:noRpzUdr@uddi.sd.rnl.tecnico.ulisboa.pt:9090","T02_Points1");
+		return client;
+	}
 
 
-	// TODO 
+	public List<Food> getListFoods (String userId) throws NoCartForUser {
+		List<Food> listFood;
+
+		listFood = cartMap.get(userId);
+
+		if (listFood == null) {
+			throw new NoCartForUser("Cart para esse user não existe!");
+		}
+
+		return listFood;
+	}
 	
 }
