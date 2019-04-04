@@ -159,7 +159,7 @@ public class Hub {
 	}
 
 	public HubFoodOrder getFood(String userId, HubFoodId id) throws NoCartForUser, NoSuchHubFoodId {
-		List<HubFoodOrder > listFood = getListFoods(userId);
+		List<HubFoodOrder> listFood = getListFoods(userId);
 		HubFoodOrder hid =  listFood.stream().filter(i-> i.equals(id)).findAny().orElse(null);
 		if(hid == null) throw new NoSuchHubFoodId("Food ID invalido!");
 		return hid;

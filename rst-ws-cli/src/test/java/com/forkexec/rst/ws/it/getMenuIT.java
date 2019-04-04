@@ -1,3 +1,5 @@
+
+
 package com.forkexec.rst.ws.it;
 
 import com.forkexec.rst.ws.*;
@@ -20,9 +22,14 @@ public class getMenuIT extends BaseIT {
                 List<MenuInit> lmi = new ArrayList<>();
                 lmi.add(menu_init);
                 client.ctrlInit(lmi);
+                m = client.getMenu(createMenuId());
 
-                Assert.assertEquals(m.getId().getId(), client.getMenu(m.getId()).getId().getId());
-
+                Assert.assertEquals(m.getId().getId(), MENU_ID);
+                Assert.assertEquals(m.getEntree(), ENTREE);
+                Assert.assertEquals(m.getPlate(), PLATE);
+                Assert.assertEquals(m.getDessert(), DESSERT);
+                Assert.assertEquals(m.getPrice(), PRICE);
+                Assert.assertEquals(m.getPreparationTime(), PREPARATION_TIME);
 	}
 
 }
