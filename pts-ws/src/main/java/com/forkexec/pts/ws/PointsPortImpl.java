@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 @WebService(endpointInterface = "com.forkexec.pts.ws.PointsPortType", wsdlLocation = "PointsService.wsdl", name = "PointsWebService", portName = "PointsPort", targetNamespace = "http://ws.pts.forkexec.com/", serviceName = "PointsService")
 public class PointsPortImpl implements PointsPortType {
 
+
     /**
      * The Endpoint manager controls the Web Service instance during its whole
      * lifecycle.
