@@ -72,9 +72,9 @@ public class HubPortImpl implements HubPortType {
             throwInvalidPoints(e.getMessage()); //Esta excepcao nunca vai acontecer, porque os Pontos sao so aqueles que estao no mapa, mas tenho de dar catch na mesma, right?
         } catch (InvalidChargeException e) {
             throwInvalidMoney(e.getMessage());
-        } //catch (InvalidCCException e){
-          //  throwInvalidCC(e.getMessage());
-        //}
+        } catch (InvalidCCException e){
+            throwInvalidCC(e.getMessage());
+        }
 
     }
 
