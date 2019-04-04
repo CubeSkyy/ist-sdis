@@ -44,6 +44,7 @@ public class HubPortImpl implements HubPortType {
     @Override
     public void activateAccount(String userId) throws InvalidUserIdFault_Exception {
         // TODO Auto-generated method stub
+        //Encaminhar para o Points
 
     }
 
@@ -51,6 +52,7 @@ public class HubPortImpl implements HubPortType {
     public void loadAccount(String userId, int moneyToAdd, String creditCardNumber)
             throws InvalidCreditCardFault_Exception, InvalidMoneyFault_Exception, InvalidUserIdFault_Exception {
         // TODO Auto-generated method stub
+        // Encaminhar para o Points
 
     }
 
