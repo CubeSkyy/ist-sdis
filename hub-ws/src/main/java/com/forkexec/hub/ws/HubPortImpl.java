@@ -16,6 +16,9 @@ import pt.ulisboa.tecnico.sdis.ws.uddi.UDDIRecord;
 import com.forkexec.pts.ws.cli.PointsClient;
 import com.forkexec.pts.ws.cli.PointsClientException;
 
+import com.sun.xml.ws.fault.ServerSOAPFaultException;
+import javax.xml.soap.SOAPFault;
+
 /**
  * This class implements the Web Service port type (interface). The annotations
  * below "map" the Java class to the WSDL definitions.
@@ -46,8 +49,12 @@ public class HubPortImpl implements HubPortType {
 
     @Override
     public void activateAccount(String userId) throws InvalidUserIdFault_Exception {
-        // TODO Auto-generated method stub
-
+        Hub h = Hub.getInstance();
+        try{
+            h.activateAccount(userId);
+        } catch (InvalidEmailException e){
+            throwInvalidUserIdInit("O email e invalido!");
+        }
     }
 
     @Override
@@ -186,16 +193,11 @@ public class HubPortImpl implements HubPortType {
     // Exception helpers -----------------------------------------------------
 
     /** Helper to throw a new BadInit exception. */
-/*	private void throwBadInit(final String message) throws BadInitFault_Exception {
-		BadInitFault faultInfo = new BadInitFault();
-		faultInfo.message = message;
-		throw new BadInitFault_Exception(message, faultInfo);
-	}
 
-    private void throwInvalidInit(final String message) throws InvalidInitFault_Exception {
-        InvalidInitFault faultInfo = new InvalidInitFault();
-        faultInfo.message = message;
-        throw new InvalidInitFault_Exception(message, faultInfo);
+    private void throwInvalidUserIdInit(final String message) throws InvalidUserIdFault_Exception {
+    InvalidUserIdFault faultInfo = new InvalidUserIdFault();
+    faultInfo.message = message;
+    throw new InvalidUserIdFault_Exception(message, faultInfo);
     }
-*/
+
 }
