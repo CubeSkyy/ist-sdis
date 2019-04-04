@@ -2,6 +2,7 @@ package com.forkexec.hub.domain;
 
 import javax.jws.WebService;
 
+import com.forkexec.hub.ws.HubEndpointManager;
 import com.forkexec.pts.ws.cli.PointsClient;
 import com.forkexec.pts.ws.cli.PointsClientException;
 import com.forkexec.rst.ws.cli.RestaurantClient;
@@ -11,6 +12,7 @@ import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINamingException;
 import com.forkexec.pts.ws.EmailAlreadyExistsFault_Exception;
 import com.forkexec.pts.ws.InvalidEmailFault_Exception;
+
 import java.util.Collection;
 
 
@@ -20,14 +22,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Hub
- *
+ * <p>
  * A restaurants hub server.
- *
  */
 public class Hub {
+    private final String uddiURL = "http://t02:noRpzUdr@uddi.sd.rnl.tecnico.ulisboa.pt:9090";
 
-
-	// Singleton -------------------------------------------------------------
+    // Singleton -------------------------------------------------------------
 
 	private Map<String, List<HubFoodId>> cartMap = new ConcurrentHashMap<>();
 
@@ -45,23 +46,23 @@ public class Hub {
 		private static final Hub INSTANCE = new Hub();
 	}
 
-	public static synchronized Hub getInstance() {
-		return SingletonHolder.INSTANCE;
-	}
+    public static synchronized Hub getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
 
-	public void activateAccount(String userId) throws InvalidEmailException {
-		try{
-			PointsClient client = getPointsClient();
-			client.activateUser(userId);
-		} catch (EmailAlreadyExistsFault_Exception e) {
-			throw new InvalidEmailException("O email e invalido!");
-		} catch (InvalidEmailFault_Exception e) {
-			throw new InvalidEmailException("O email e invalido!");
-		} catch (PointsClientException e) {
-	        System.out.println(e.getMessage());
-	        throw new RuntimeException();
-	    }
-	}
+    public void activateAccount(String userId) throws InvalidEmailException {
+        try {
+            PointsClient client = getPointsClient();
+            client.activateUser(userId);
+        } catch (EmailAlreadyExistsFault_Exception e) {
+            throw new InvalidEmailException("O email e invalido!");
+        } catch (InvalidEmailFault_Exception e) {
+            throw new InvalidEmailException("O email e invalido!");
+        } catch (PointsClientException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException();
+        }
+    }
 
     public PointsClient getPointsClient() throws PointsClientException {
 	    PointsClient client = null;
@@ -93,18 +94,18 @@ public class Hub {
 	}
 
 	public void addFoodId(String userId,HubFoodId id)  {
-		HubFoodId hib = getFood(userId,hid);
-		if(hib==null)
-			try {
-				getListFoods(userId).add(id);
-			} catch	(NoCartForUser ncfu){
+		//HubFoodId hib = getFood(userId,id);
+		//if(hib==null) {
+		//	try {
+		//		getListFoods(userId).add(id);
+	//	} catch (NoCartForUser ncfu) {
 				// TODO: Verificacao se o user tem AccountBalance, se tiver é porque pode se criar um cart para ele
-			}
-
-
+	//		}
+	//	}
 	}
 
 	public void addCartToUser(String userId){
 
 	}
 }
+

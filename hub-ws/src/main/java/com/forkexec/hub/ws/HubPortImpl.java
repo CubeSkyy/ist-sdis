@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.jws.WebService;
+import javax.xml.soap.SOAPFault;
 
 import com.forkexec.hub.domain.*;
 
+import com.forkexec.rst.ws.BadInitFault;
 import com.forkexec.rst.ws.cli.RestaurantClient;
 import com.forkexec.rst.ws.cli.RestaurantClientException;
+import com.sun.xml.ws.fault.ServerSOAPFaultException;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINamingException;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDIRecord;
@@ -153,7 +156,8 @@ public class HubPortImpl implements HubPortType {
             }
         } catch (UDDINamingException e) {
 			return e.getMessage();
-		}catch (RestaurantClientException e){
+
+        } catch (RestaurantClientException e) {
             return e.getMessage();
         }
 
@@ -199,7 +203,6 @@ public class HubPortImpl implements HubPortType {
      info.setAvailableCars(park.getAvailableCars());
      return info;
      }*/
-
 
     // Exception helpers -----------------------------------------------------
 
