@@ -95,7 +95,11 @@ public class HubPortImpl implements HubPortType {
     @Override
     public void addFoodToCart(String userId, FoodId foodId, int foodQuantity)
             throws InvalidFoodIdFault_Exception, InvalidFoodQuantityFault_Exception, InvalidUserIdFault_Exception {
-        // TODO
+
+        if(foodId == null || foodId.getMenuId().trim().length()==0)
+            throwInvalidFoodIdFault("FoodId invalido!");
+        if(foodQuantity <= 0)
+            throwInvalidFoodQuantityFault("Quantidade invalida!");
 
     }
 
@@ -213,9 +217,21 @@ public class HubPortImpl implements HubPortType {
     /** Helper to throw a new BadInit exception. */
 
     private void throwInvalidUserIdInit(final String message) throws InvalidUserIdFault_Exception {
-    InvalidUserIdFault faultInfo = new InvalidUserIdFault();
-    faultInfo.message = message;
-    throw new InvalidUserIdFault_Exception(message, faultInfo);
+        InvalidUserIdFault faultInfo = new InvalidUserIdFault();
+        faultInfo.message = message;
+        throw new InvalidUserIdFault_Exception(message, faultInfo);
+    }
+    //InvalidFoodIdFault_Exception, InvalidFoodQuantityFault_Exception
+    private void throwInvalidFoodIdFault(final String message) throws InvalidFoodIdFault_Exception {
+        InvalidFoodIdFault faultInfo = new InvalidFoodIdFault();
+        faultInfo.message = message;
+        throw new InvalidFoodIdFault_Exception(message, faultInfo);
+    }
+
+    private void throwInvalidFoodQuantityFault(final String message) throws InvalidFoodQuantityFault_Exception {
+        InvalidFoodQuantityFault faultInfo = new InvalidFoodQuantityFault();
+        faultInfo.message = message;
+        throw new InvalidFoodQuantityFault_Exception(message, faultInfo);
     }
 
     private void throwInvalidPoints(final String message) throws InvalidUserIdFault_Exception {

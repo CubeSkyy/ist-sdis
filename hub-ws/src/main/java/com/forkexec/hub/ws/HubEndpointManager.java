@@ -71,10 +71,11 @@ public class HubEndpointManager {
 		try {
 			// publish end point
 			endpoint = Endpoint.create(this.portImpl);
-			if (verbose) {
-				System.out.printf("Starting %s%n", wsURL);
-			}
+
+			if (verbose) { System.out.printf("Starting %s%n", wsURL); }
+
 			endpoint.publish(wsURL);
+
 		} catch (Exception e) {
 			endpoint = null;
 			if (verbose) {
