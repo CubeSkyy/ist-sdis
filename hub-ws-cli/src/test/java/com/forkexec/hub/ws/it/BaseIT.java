@@ -18,6 +18,8 @@ public class BaseIT {
 
 	protected static HubClient client;
 
+	public static final int DEFAULT_INITIAL_BALANCE = 100;
+
 	@BeforeClass
 	public static void oneTimeSetup() throws Exception {
 		testProps = new Properties();
