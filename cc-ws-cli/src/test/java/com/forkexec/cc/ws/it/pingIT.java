@@ -6,14 +6,12 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class pingIT extends BaseIT {
+    private String name = "Cliente";
     @Test
     public void success() {
-        try {
-            String a = client.ping("Ola");
-            String b = "ola";
 
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
+
+        Assert.assertEquals(client.ping(name), "Hello " + name + "!");
+
     }
 }
