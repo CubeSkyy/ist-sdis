@@ -29,7 +29,7 @@ public class Hub {
 
 	// Singleton -------------------------------------------------------------
 
-	private Map<String, List<Food>> cartMap = new ConcurrentHashMap<>();
+	private Map<String, List<HubFoodId>> cartMap = new ConcurrentHashMap<>();
 
 	/** Private constructor prevents instantiation from other classes. */
 	private Hub() {
@@ -71,21 +71,40 @@ public class Hub {
 
 	public RestaurantClient getRestaurantClient() throws RestaurantClientException {
 		RestaurantClient client = null;
-		client = new PointsClient("http://t02:noRpzUdr@uddi.sd.rnl.tecnico.ulisboa.pt:9090","T02_Points1");
+		client = new RestaurantClient("http://t02:noRpzUdr@uddi.sd.rnl.tecnico.ulisboa.pt:9090","T02_Points1");
 		return client;
 	}
 
 
-	public List<Food> getListFoods (String userId) throws NoCartForUser {
-		List<Food> listFood;
-
+	public List<HubFoodId > getListFoods (String userId) throws NoCartForUser {
+		List<HubFoodId > listFood;
 		listFood = cartMap.get(userId);
-
 		if (listFood == null) {
 			throw new NoCartForUser("Cart para esse user não existe!");
 		}
-
 		return listFood;
 	}
-	
+
+	public HubFoodId getFood(String userId, HubFoodId id) throws NoCartForUser, NoSuchHubFoodId {
+		List<HubFoodId > listFood = getListFoods(userId);
+		HubFoodId hid =  listFood.stream().filter(i-> i.equals(id)).findAny().orElse(null);
+		if(hid == null) throw new NoSuchHubFoodId("Food ID invalido!");
+		return hid;
+	}
+
+	public void addFoodId(String userId,HubFoodId id)  {
+		HubFoodId hib = getFood(userId,hid);
+		if(hib==null)
+			try {
+				getListFoods(userId).add(id);
+			} catch	(NoCartForUser ncfu){
+				// TODO: Verificacao se o user tem AccountBalance, se tiver é porque pode se criar um cart para ele
+			}
+
+
+	}
+
+	public void addCartToUser(String userId){
+
+	}
 }

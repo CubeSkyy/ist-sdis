@@ -1,10 +1,11 @@
 
 package com.forkexec.hub.domain;
 
-public class FoodId {
+public class HubFoodId {
 
-    protected String restaurantId;
-    protected String menuId;
+    private String _restaurantId;
+    private String _menuId;
+    private int _quantity;
 
     /**
      * Gets the value of the restaurantId property.
@@ -15,7 +16,7 @@ public class FoodId {
      *     
      */
     public String getRestaurantId() {
-        return restaurantId;
+        return _restaurantId;
     }
 
     /**
@@ -27,7 +28,7 @@ public class FoodId {
      *     
      */
     public void setRestaurantId(String value) {
-        this.restaurantId = value;
+        this._restaurantId = value;
     }
 
     /**
@@ -39,7 +40,7 @@ public class FoodId {
      *     
      */
     public String getMenuId() {
-        return menuId;
+        return _menuId;
     }
 
     /**
@@ -51,7 +52,20 @@ public class FoodId {
      *     
      */
     public void setMenuId(String value) {
-        this.menuId = value;
+        this._menuId = value;
+    }
+
+    public int getQuantity() {return _quantity;}
+
+    public void setQuantity(int quantity) {
+        _quantity = quantity;
+    }
+
+    public boolean equals(Object o) {
+        HubFoodId h = (HubFoodId) o;
+        if (h.getMenuId().equals(this.getMenuId())) {
+            return true;
+        }
     }
 
 }
