@@ -1,10 +1,12 @@
-package com.forkexec.cc.ws.cli;
+package com.forkexec.cc.ws.it;
 
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import com.forkexec.cc.ws.cli.CCClient;
 
 
 import org.junit.After;

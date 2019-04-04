@@ -2,6 +2,7 @@ package com.forkexec.cc.ws.cli;
 
 import static javax.xml.ws.BindingProvider.ENDPOINT_ADDRESS_PROPERTY;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import javax.xml.ws.BindingProvider;
 import pt.ulisboa.tecnico.sdis.ws.CreditCard;
 import pt.ulisboa.tecnico.sdis.ws.CreditCardImplService;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
+import pt.ulisboa.tecnico.sdis.ws.uddi.UDDIRecord;
 
 /**
  * CC port wrapper.
@@ -87,7 +89,6 @@ public class CCClient implements CreditCard {
             if (verbose)
                 System.out.printf("Contacting UDDI at %s%n", uddiURL);
             UDDINaming uddiNaming = new UDDINaming(uddiURL);
-
             if (verbose)
                 System.out.printf("Looking for '%s'%n", wsName);
             wsURL = uddiNaming.lookup(wsName);
