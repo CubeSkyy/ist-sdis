@@ -13,12 +13,14 @@ import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINamingException;
 import com.forkexec.pts.ws.EmailAlreadyExistsFault_Exception;
 import com.forkexec.pts.ws.InvalidEmailFault_Exception;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 /**
  * Hub
@@ -94,12 +96,15 @@ public class Hub {
 	}
 
 	public void addFoodId(String userId,HubFoodId id)  {
-		//HubFoodId hib = getFood(userId,id);
-		//if(hib==null) {
+		List<HubFoodId> lhid = cartMap.get(userId);
+		if(lhid == null){
+			// TODO: Verificacao se o user tem AccountBalance, se tiver é porque pode se criar um cart para ele
+			cartMap.put(userId, Stream.concat(Stream.of(id),new ArrayList<HubFoodId>().stream()).toArray());
+		}
 		//	try {
 		//		getListFoods(userId).add(id);
 	//	} catch (NoCartForUser ncfu) {
-				// TODO: Verificacao se o user tem AccountBalance, se tiver é porque pode se criar um cart para ele
+
 	//		}
 	//	}
 	}

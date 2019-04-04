@@ -5,7 +5,6 @@ public class HubFoodId {
 
     private String _restaurantId;
     private String _menuId;
-    private int _quantity;
 
     /**
      * Gets the value of the restaurantId property.
@@ -63,9 +62,7 @@ public class HubFoodId {
 
     public boolean equals(Object o) {
         HubFoodId h = (HubFoodId) o;
-        if (h.getMenuId().equals(this.getMenuId())) {
-            return true;
-        }
+        return h.getMenuId().equals(this.getMenuId());
     }
 
 }
