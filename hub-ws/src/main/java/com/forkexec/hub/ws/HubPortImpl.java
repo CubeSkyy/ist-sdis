@@ -60,8 +60,11 @@ public class HubPortImpl implements HubPortType {
     @Override
     public void loadAccount(String userId, int moneyToAdd, String creditCardNumber)
             throws InvalidCreditCardFault_Exception, InvalidMoneyFault_Exception, InvalidUserIdFault_Exception {
-        // TODO Auto-generated method stub
-        // Encaminhar para o Points
+        
+        Hub h = Hub.getInstance();
+        try {
+            h.loadAccount(userId, moneyToAdd, creditCardNumber);
+        } catch ()
 
     }
 

@@ -9,6 +9,9 @@ import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINamingException;
 import com.forkexec.pts.ws.EmailAlreadyExistsFault_Exception;
 import com.forkexec.pts.ws.InvalidEmailFault_Exception;
 import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+
 
 
 /**
@@ -19,12 +22,18 @@ import java.util.Collection;
  */
 public class Hub {
 
-
+	private static final Map<Integer, Integer> traductionT = new ConcurrentHashMap<Integer, Integer>();
+    static {
+        traductionT.put(10, 1000);
+        traductionT.put(20, 2100);
+        traductionT.put(30, 3300);
+        traductionT.put(50, 5500);
+    }
 	// Singleton -------------------------------------------------------------
 
 	/** Private constructor prevents instantiation from other classes. */
 	private Hub() {
-		// Initialization of default values
+	
 	}
 
 	/**
@@ -60,7 +69,26 @@ public class Hub {
 	    return client;
  	}
 
+ 	public Map<Integer, Integer> getTraductionTable(){
+ 		return traductionT;
+ 	}
 
-	// TODO 
+
+	public Integer getCorrespondingPoints(Integer euros){
+		return traductionT.get(euros);
+	}
+
+	public void loadAccount(String uId, int euros, String ccnumber){
+		try{
+			PointsClient client = getPointsClient();
+			//client.validateNumber(ccnumber);
+			for(Integer i: traductionT.values())
+
+
+		} catch (PointsClientException e) {
+	        System.out.println(e.getMessage());
+	        throw new RuntimeException();
+	    }
+	}
 	
 }
