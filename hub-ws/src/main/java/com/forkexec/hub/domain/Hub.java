@@ -1,5 +1,13 @@
 package com.forkexec.hub.domain;
 
+import javax.jws.WebService;
+
+import com.forkexec.pts.ws.cli.PointsClient;
+import com.forkexec.pts.ws.cli.PointsClientException;
+import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
+import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINamingException;
+import java.util.Collection;
+
 
 /**
  * Hub
@@ -28,6 +36,29 @@ public class Hub {
 	public static synchronized Hub getInstance() {
 		return SingletonHolder.INSTANCE;
 	}
+
+	public void activateAccount(String userId) {
+
+	}
+
+    public PointsClient getPointsClient(){
+
+	    PointsClient client = null;
+
+	    try{
+	        client = new PointsClient("http://t02:noRpzUdr@uddi.sd.rnl.tecnico.ulisboa.pt:9090","T02_Points1");
+	     
+	    } catch (PointsClientException e) {
+	        System.out.println(e.getMessage());
+	    } 
+
+	    return client;
+ 	}
+
+	public static void main(String[] args) throws Exception {
+		PointsClient p = getPointsClient();
+		System.out.println(p.ctrlPing());
+	} 
 
 
 	// TODO 

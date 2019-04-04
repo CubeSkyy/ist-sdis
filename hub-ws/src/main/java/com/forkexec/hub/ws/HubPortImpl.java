@@ -6,12 +6,15 @@ import java.util.concurrent.ExecutionException;
 
 import javax.jws.WebService;
 
-import com.forkexec.hub.domain.Hub;
+import com.forkexec.hub.domain.*;
+
 import com.forkexec.rst.ws.cli.RestaurantClient;
 import com.forkexec.rst.ws.cli.RestaurantClientException;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINamingException;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDIRecord;
+import com.forkexec.pts.ws.cli.PointsClient;
+import com.forkexec.pts.ws.cli.PointsClientException;
 
 /**
  * This class implements the Web Service port type (interface). The annotations
@@ -44,7 +47,6 @@ public class HubPortImpl implements HubPortType {
     @Override
     public void activateAccount(String userId) throws InvalidUserIdFault_Exception {
         // TODO Auto-generated method stub
-        //Encaminhar para o Points
 
     }
 
@@ -76,6 +78,7 @@ public class HubPortImpl implements HubPortType {
         // TODO
 
     }
+
 
     @Override
     public void clearCart(String userId) throws InvalidUserIdFault_Exception {
@@ -156,32 +159,43 @@ public class HubPortImpl implements HubPortType {
 
     @Override
     public void ctrlInitUserPoints(int startPoints) throws InvalidInitFault_Exception {
-        // TODO Auto-generated method stub
+        /*if(startPoints < 0){
+            throwInvalidInit("O numero de pontos nao pode ser negativo!");
+        }*/
+
+        //Aqui basta aceder ao points e fazer ctrlInit
+
 
     }
 
 
     // View helpers ----------------------------------------------------------
 
-    // /** Helper to convert a domain object to a view. */
-    // private ParkInfo buildParkInfo(Park park) {
-    // ParkInfo info = new ParkInfo();
-    // info.setId(park.getId());
-    // info.setCoords(buildCoordinatesView(park.getCoordinates()));
-    // info.setCapacity(park.getMaxCapacity());
-    // info.setFreeSpaces(park.getFreeDocks());
-    // info.setAvailableCars(park.getAvailableCars());
-    // return info;
-    // }
+     /** Helper to convert a domain object to a view. */
+    /* private ParkInfo buildParkInfo(Park park) {
+     ParkInfo info = new ParkInfo();
+     info.setId(park.getId());
+     info.setCoords(buildCoordinatesView(park.getCoordinates()));
+     info.setCapacity(park.getMaxCapacity());
+     info.setFreeSpaces(park.getFreeDocks());
+     info.setAvailableCars(park.getAvailableCars());
+     return info;
+     }*/
 
 
     // Exception helpers -----------------------------------------------------
 
     /** Helper to throw a new BadInit exception. */
-//	private void throwBadInit(final String message) throws BadInitFault_Exception {
-//		BadInitFault faultInfo = new BadInitFault();
-//		faultInfo.message = message;
-//		throw new BadInitFault_Exception(message, faultInfo);
-//	}
+/*	private void throwBadInit(final String message) throws BadInitFault_Exception {
+		BadInitFault faultInfo = new BadInitFault();
+		faultInfo.message = message;
+		throw new BadInitFault_Exception(message, faultInfo);
+	}
 
+    private void throwInvalidInit(final String message) throws InvalidInitFault_Exception {
+        InvalidInitFault faultInfo = new InvalidInitFault();
+        faultInfo.message = message;
+        throw new InvalidInitFault_Exception(message, faultInfo);
+    }
+*/
 }
