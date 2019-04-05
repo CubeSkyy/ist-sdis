@@ -11,16 +11,19 @@ import org.junit.Test;
 public class clearCartIT extends BaseIT {
 
     @Test
-    public void success() throws InvalidUserIdFault_Exception, InvalidFoodIdFault_Exception, InvalidFoodQuantityFault_Exception {
-        client.activateAccount(VALID_EMAIL);
-        Food f = createFood();
-        client.addFoodToCart(VALID_EMAIL,f.getId(),1);
+    public void success() throws InvalidUserIdFault_Exception {
+        try {
+            client.ctrlInitFood(createFoodInitList());
+            client.activateAccount(VALID_EMAIL);
+            Food f = createFood();
+            client.addFoodToCart(VALID_EMAIL,f.getId(),1);
+        } catch (Exception e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(client.cartContents(VALID_EMAIL).size(),1);
         client.clearCart(VALID_EMAIL);
         Assert.assertEquals(client.cartContents(VALID_EMAIL).size(),0);
     }
-
-
 
     @Test(expected = InvalidUserIdFault_Exception.class)
     public void invalidUserIdFault() throws InvalidUserIdFault_Exception {
