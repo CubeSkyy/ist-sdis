@@ -8,17 +8,15 @@ Group T02
 
 | Nome              | Número   | Github ID          |
 | ----------------- | -------- | ------------------ | 
-|                   |          |                    |
-
+| Miguel Coelho     |  87687   |   Cubeskyy         |
 
 
 ### Contributors
 
 | Nome              | Número   | Github ID          |
 | ----------------- | -------- | ------------------ | 
-|                   |          |                    |
-|                   |          |                    |
-
+| Ricardo Silva     | 87700    | genlike            |
+| Catarina Pedreira | 87524    | CatarinaPedreira   
 
 
 ## About
@@ -35,7 +33,8 @@ either using HTTP or using the local file system.
 
 ## Instructions for using Maven
 
-You must start jUDDI and server first.
+You must first start the server.
+If using jUDDI, change the <uddi.url> attribute in base pom.
 
 The default WSDL file location is ${basedir}/src/wsdl .
 The WSDL URL location can be specified in pom.xml

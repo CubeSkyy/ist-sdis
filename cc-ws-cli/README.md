@@ -1,4 +1,4 @@
-# Restaurant Web Service client
+# Credit Card Web Service client
 
 ## Authors
 
@@ -8,7 +8,7 @@ Group T02
 
 | Nome              | Número   | Github ID          |
 | ----------------- | -------- | ------------------ | 
-|                   |          |                    |
+| Miguel Coelho     |  87687   |   Cubeskyy         |
 
 
 
@@ -16,8 +16,8 @@ Group T02
 
 | Nome              | Número   | Github ID          |
 | ----------------- | -------- | ------------------ | 
-|                   |          |                    |
-|                   |          |                    |
+| Catarina Pedreira | 87524    | CatarinaPedreira   |
+| Ricardo Silva     | 87700    | genlike            |
 
 
 
@@ -35,7 +35,7 @@ either using HTTP or using the local file system.
 
 ## Instructions for using Maven
 
-You must start jUDDI and server first.
+The server runs in RNL's UDDI. The tests will fail in a local UDDI.
 
 The default WSDL file location is ${basedir}/src/wsdl .
 The WSDL URL location can be specified in pom.xml

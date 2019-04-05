@@ -12,7 +12,7 @@ Group T02
 | ----------------- | -------- | ------------------ | 
 | Miguel Coelho     | 87687    | CubeSkyy           |
 | Catarina Pedreira | 87524    | CatarinaPedreira   |
-| Ricardo Silva     | 87700    | genline            |
+| Ricardo Silva     | 87700    | genlike            |
 
 
 For each module, the README file must identify the lead developer and the contributors.
@@ -61,6 +61,27 @@ mvn clean install -DskipTests
 
 The tests are skipped because they require each server to be running.
 
+### Tests
+
+Before testing, make sure to open the servers by running the  command:
+
+```
+mvn exec:java
+```
+
+in all server modules (hub-ws, pts-ws and rst-ws).
+
+To run the tests, run the following command in the base folder:
+
+```
+mvn verify
+```
+
+## Changing UDDI server
+
+Base project runs on RNL's UDDI server.
+
+To change the uddi server, set the <uddi.url> atribute in base folder pom and in uddi-naming/pom to the desired url
 
 ## Built With
 

@@ -8,7 +8,7 @@ Group T02
 
 | Nome              | Número   | Github ID          |
 | ----------------- | -------- | ------------------ | 
-|                   |          |                    |
+| Catarina Pedreira | 87524    | CatarinaPedreira   |
 
 
 
@@ -16,8 +16,8 @@ Group T02
 
 | Nome              | Número   | Github ID          |
 | ----------------- | -------- | ------------------ | 
-|                   |          |                    |
-|                   |          |                    |
+| Ricardo Silva     | 87700    | genlike            |
+| Miguel Coelho     | 87687    | CubeSkyy           |
 
 
 ## About

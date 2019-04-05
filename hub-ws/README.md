@@ -4,19 +4,21 @@
 
 Group T02
 
+
 ### Lead developer 
 
 | Nome              | Número   | Github ID          |
 | ----------------- | -------- | ------------------ | 
-|                   |          |                    |
+| Miguel Coelho     |  87687   |   Cubeskyy         |
+
 
 
 ### Contributors
 
 | Nome              | Número   | Github ID          |
 | ----------------- | -------- | ------------------ | 
-|                   |          |                    |
-|                   |          |                    |
+| Ricardo Silva     | 87700    | genlike            |
+| Catarina Pedreira | 87524    | CatarinaPedreira   
 
 
 ## About
