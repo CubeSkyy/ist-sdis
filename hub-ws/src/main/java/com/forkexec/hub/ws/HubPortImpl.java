@@ -187,8 +187,8 @@ public class HubPortImpl implements HubPortType {
             throwEmptyCartFault("Carrinho vazio!");
 
         int totalPoints = listItem.stream().mapToInt(h::getPoints).sum();
-
-        if(totalPoints < accountBalance(userId)) {
+        System.out.println("Sum:" + totalPoints + " saldo: " + accountBalance(userId));
+        if(totalPoints > accountBalance(userId)) {
             throwNotEnoughPointsFault("Não tem saldo suficiente!");
         }
 
@@ -267,8 +267,7 @@ public class HubPortImpl implements HubPortType {
         } catch (InvalidEmailException iee) {
             throwInvalidUserIdFault(iee.getMessage());
         }
-
-       List<HubFoodOrderItem> listItem = hubOrder.getItems();
+        System.out.println(hubOrder);        List<HubFoodOrderItem> listItem = hubOrder.getItems();
         List<FoodOrderItem> listFoodOrderItems = new ArrayList<>();
 
         listItem.forEach(hubFoodItem -> listFoodOrderItems.add(buildFoodOrderItem(hubFoodItem)));
