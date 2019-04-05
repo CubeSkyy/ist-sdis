@@ -167,15 +167,6 @@ public class Hub {
         }
     }
 
-
-    public List<HubFoodOrder> getListFoods(String userId) throws NoCartForUser {
-        List<HubFoodOrder> listFood;
-        listFood = cartMap.get(userId);
-        if (listFood == null) {
-            throw new NoCartForUser("Cart para esse user não existe!");
-        }
-        return listFood;
-    }
 	public HubFoodOrder getFoodCart(String userId) /*throws InvalidEmailException*/{
 		/*
 		* TODO: Verificar a eligibilidade do user!
@@ -192,32 +183,12 @@ public class Hub {
 	public void clearFoodCart(String userId){
 		cartMap.remove(userId);
 	}
-    public HubFoodOrder getUserFood(String userId, HubFoodId id) throws NoCartForUser, NoSuchHubFoodId {
-        List<HubFoodOrder> listFood = getListFoods(userId);
-        HubFoodOrder hid = listFood.stream().filter(i -> i.equals(id)).findAny().orElse(null);
-        if (hid == null) throw new NoSuchHubFoodId("Food ID invalido!");
-        return hid;
-    }
-
-    public void addFoodId(String userId, HubFoodOrder id) {
-        List<HubFoodOrder> lhid = cartMap.get(userId);
-        if (lhid == null) {
-            // TODO: Verificacao se o user tem AccountBalance, se tiver é porque pode se criar um cart para ele
-            //cartMap.put(userId, Stream.concat(Stream.of(id),new ArrayList<HubFoodId>().stream()).toArray());
-        }
-    }
-        //	try {
-        //		getListFoods(userId).add(id);
-        //	} catch (NoCartForUser ncfu) {
 
 	public int getPoints(HubFoodOrderItem hfoi){
 
 		return 0;
 	}
 
-    public void addCartToUser(String userId) {
-
-    }
 
     public List<HubFood> searchHungry(Collection<UDDIRecord> restaurants, String description) throws BadTextException {
         List<HubFood> foodList = searchMenus(restaurants, description);
@@ -297,9 +268,7 @@ public class Hub {
     //Builds HubFood fom a menu and a given restaurant
     private HubFood buildHubFood(Menu menu, String restaurantId) {
         HubFood hubFood = new HubFood();
-        HubFoodId hubFoodId = new HubFoodId();
-        hubFoodId.setMenuId(menu.getId().getId());
-        hubFoodId.setRestaurantId(restaurantId);
+        HubFoodId hubFoodId = new HubFoodId(menu.getId().getId(),restaurantId);
         hubFood.setId(hubFoodId);
         hubFood.setEntree(menu.getEntree());
         hubFood.setPlate(menu.getPlate());

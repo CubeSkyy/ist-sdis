@@ -1,8 +1,6 @@
 package com.forkexec.hub.ws;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 import javax.jws.WebService;
@@ -180,7 +178,7 @@ public class HubPortImpl implements HubPortType {
         listItem.forEach(hubFoodItem -> listFoodOrderItems.add(buildFoodOrderItem(hubFoodItem)));
 
         /* Funcao que vai retirar o saldo ao utilizador e abater o stock dos restaurantes */
-        h.confirmOrder(userId, totalPoints);
+//        h.confirmOrder(userId, totalPoints);
 
         return fo;
     }
@@ -333,11 +331,7 @@ public class HubPortImpl implements HubPortType {
     }
 
     // View helpers ----------------------------------------------------------
-    private FoodId buildFoodId(HubFoodId id){
-        FoodId foi = new FoodId();
-        foi.setId(id.getId());
-        return foi;
-    }
+
     private FoodOrderItem buildFoodOrderItem(HubFoodOrderItem hfoi){
         FoodOrderItem foi = new FoodOrderItem();
         foi.setFoodId(buildFoodId(hfoi.getFoodId()));
@@ -377,9 +371,7 @@ public class HubPortImpl implements HubPortType {
     }
 
     private HubFoodId buildHubFoodId(FoodId fi){
-        HubFoodId hfi = new HubFoodId();
-        hfi.setMenuId(fi.getMenuId());
-        hfi.setRestaurantId(fi.getRestaurantId());
+        HubFoodId hfi = new HubFoodId(fi.getMenuId(), fi.getRestaurantId());
         return hfi;
     }
     private HubFoodInit buildHubFoodInit(FoodInit fi){
