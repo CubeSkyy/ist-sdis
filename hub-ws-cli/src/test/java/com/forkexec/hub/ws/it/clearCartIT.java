@@ -11,7 +11,7 @@ import org.junit.Test;
 public class clearCartIT extends BaseIT {
 
     @Test
-    public void success() throws InvalidUserIdFault_Exception, InvalidFoodIdFault_Exception, InvalidFoodQuantityFault_Exception {
+    public void success() throws InvalidUserIdFault_Exception {
         try {
             client.ctrlInitFood(createFoodInitList());
             client.activateAccount(VALID_EMAIL);
