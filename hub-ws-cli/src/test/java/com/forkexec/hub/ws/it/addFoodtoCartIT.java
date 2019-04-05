@@ -1,6 +1,6 @@
 package com.forkexec.hub.ws.it;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import com.forkexec.hub.ws.*;
 
 import org.junit.Test;
@@ -14,6 +14,7 @@ public class addFoodtoCartIT extends BaseIT {
 		client.ctrlInitFood(createFoodInitList());
 		client.activateAccount(VALID_EMAIL);
 		client.addFoodToCart(VALID_EMAIL, createFoodId(), 3);
+		Assert.assertNotNull(client.cartContents(VALID_EMAIL));
 	}
 
 	@Test(expected=InvalidFoodIdFault_Exception.class)
