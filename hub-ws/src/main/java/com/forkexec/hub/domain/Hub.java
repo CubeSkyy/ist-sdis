@@ -80,7 +80,7 @@ public class Hub {
             PointsClient client = getPointsClient();
             client.activateUser(userId);
         } catch (EmailAlreadyExistsFault_Exception e) {
-            throw new InvalidEmailException("O email e invalido!");
+            throw new InvalidEmailException("O email já está registado!");
         } catch (InvalidEmailFault_Exception e) {
             throw new InvalidEmailException("O email e invalido!");
         } catch (PointsClientException e) {
