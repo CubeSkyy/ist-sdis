@@ -20,7 +20,7 @@ public class orderCartIT extends BaseIT {
         }
         client.orderCart(VALID_EMAIL);
 
-        Assert.assertEquals(client.accountBalance(VALID_EMAIL), 0);
+        Assert.assertEquals(client.accountBalance(VALID_EMAIL), 100);
     }
 
 

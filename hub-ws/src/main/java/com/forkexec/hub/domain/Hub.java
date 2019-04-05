@@ -212,7 +212,7 @@ public class Hub {
             String wsUrl = entry.getKey();
             List<HubFoodOrderItem> hubFoodInitList = entry.getValue();
             try {
-                RestaurantClient client = new RestaurantClient(wsUrl);
+                RestaurantClient client = new RestaurantClient(uddiURL, wsUrl);
                 for (HubFoodOrderItem hfoi : hubFoodInitList) {
                     MenuId mi = new MenuId();
                     mi.setId(hfoi.getFoodId().getMenuId());
