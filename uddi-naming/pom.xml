@@ -21,11 +21,11 @@
 
         <!-- these default values can be overridden by a profile defined 
             in ${user.home}/.m2/settings.xml -->
-        <!-- <uddi.url>http://localhost:9090</uddi.url> -->
+         <uddi.url>http://localhost:9090</uddi.url>
 
-        <uddi.url>http://t02:noRpzUdr@uddi.sd.rnl.tecnico.ulisboa.pt:9090</uddi.url>
-        <uddi.user>t02</uddi.user>
-        <uddi.pass>noRpzUdr</uddi.pass>
+        <uddi.url>http://t02:noRpzUdr@uddi.sd.rnl.tecnico.ulisboa.pt:9090</uddi.url> 
+        <!--<uddi.user>t02</uddi.user> -->
+        <!-- <uddi.pass>noRpzUdr</uddi.pass> -->
     </properties>
 
     <dependencies>
