@@ -162,8 +162,7 @@ public class Hub {
      * @throws InvalidEmailException
      */
 	public HubFoodOrder getFoodCart(String userId) throws InvalidEmailException {
-
-		if (accountBalance(userId)>=0) {
+        if (accountBalance(userId)>=0) {
             return cartMap.get(userId);
         }
 		return null;

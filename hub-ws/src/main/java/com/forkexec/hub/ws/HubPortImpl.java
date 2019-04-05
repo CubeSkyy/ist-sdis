@@ -323,6 +323,8 @@ public class HubPortImpl implements HubPortType {
      */
     @Override
     public void ctrlInitFood(List<FoodInit> initialFoods) throws InvalidInitFault_Exception {
+        if (initialFoods == null || initialFoods.size() == 0) throwBadInit("Lista de Comidas Invalida!");
+
         Map<String, LinkedList<HubFoodInit>> restaurant_init = new HashMap<>();
 
         Hub h = Hub.getInstance();
