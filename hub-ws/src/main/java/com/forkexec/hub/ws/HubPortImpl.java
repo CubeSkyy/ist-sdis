@@ -41,7 +41,7 @@ public class HubPortImpl implements HubPortType {
      * lifecycle.
      */
     private HubEndpointManager endpointManager;
-
+    private Hub h = Hub.getInstance();
     /**
      * Constructor receives a reference to the endpoint manager.
      */
@@ -147,8 +147,16 @@ public class HubPortImpl implements HubPortType {
 
     @Override
     public Food getFood(FoodId foodId) throws InvalidFoodIdFault_Exception {
-        // TODO
-        return null;
+        Food food = null;
+        try{
+            HubFoodId hubFoodId = buildHubFoodId(foodId);
+            HubFood hubFood = h.getFood(hubFoodId);
+            food = buildFood(hubFood);
+        }catch (InvalidFoodIdException e){
+            throwInvalidFoodIdFault(e.getMessage());
+        }
+
+        return food;
     }
 
     @Override
@@ -214,6 +222,20 @@ public class HubPortImpl implements HubPortType {
 
     }
 
+    // Helpers ----------------------------------------------------------
+
+    private String getRestaurant(String restaurantName){
+        UDDINaming uddiNaming = endpointManager.getUddiNaming();
+        String restaurant;
+        try{
+            restaurant = uddiNaming.lookup(restaurantName);
+        }catch (UDDINamingException e){
+            throw new RuntimeException();
+        }
+
+        return restaurant;
+    }
+
 
     private Collection<UDDIRecord> getRestaurants(){
         UDDINaming uddiNaming = endpointManager.getUddiNaming();
@@ -259,6 +281,12 @@ public class HubPortImpl implements HubPortType {
         return fi;
     }
 
+    private HubFoodId buildHubFoodId(FoodId fi){
+        HubFoodId hfi = new HubFoodId();
+        hfi.setMenuId(fi.getMenuId());
+        hfi.setRestaurantId(fi.getRestaurantId());
+        return hfi;
+    }
     // Exception helpers -----------------------------------------------------
 
     /** Helper to throw a new BadInit exception. */
