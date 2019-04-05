@@ -167,15 +167,6 @@ public class Hub {
         }
     }
 
-
-    public List<HubFoodOrder> getListFoods(String userId) throws NoCartForUser {
-        List<HubFoodOrder> listFood;
-        listFood = cartMap.get(userId);
-        if (listFood == null) {
-            throw new NoCartForUser("Cart para esse user não existe!");
-        }
-        return listFood;
-    }
 	public HubFoodOrder getFoodCart(String userId) /*throws InvalidEmailException*/{
 		/*
 		* TODO: Verificar a eligibilidade do user!
@@ -192,32 +183,50 @@ public class Hub {
 	public void clearFoodCart(String userId){
 		cartMap.remove(userId);
 	}
-    public HubFoodOrder getUserFood(String userId, HubFoodId id) throws NoCartForUser, NoSuchHubFoodId {
-        List<HubFoodOrder> listFood = getListFoods(userId);
-        HubFoodOrder hid = listFood.stream().filter(i -> i.equals(id)).findAny().orElse(null);
-        if (hid == null) throw new NoSuchHubFoodId("Food ID invalido!");
-        return hid;
-    }
 
-    public void addFoodId(String userId, HubFoodOrder id) {
-        List<HubFoodOrder> lhid = cartMap.get(userId);
-        if (lhid == null) {
-            // TODO: Verificacao se o user tem AccountBalance, se tiver é porque pode se criar um cart para ele
-            //cartMap.put(userId, Stream.concat(Stream.of(id),new ArrayList<HubFoodId>().stream()).toArray());
-        }
-    }
-        //	try {
-        //		getListFoods(userId).add(id);
-        //	} catch (NoCartForUser ncfu) {
-
-	public int getPoints(HubFoodOrderItem hfoi){
-
-		return 0;
+	public int getPoints(HubFoodOrderItem hfoi)  {
+		return traductionT.get(hfoi.getPriceOfFood());
 	}
 
-    public void addCartToUser(String userId) {
+    /**
+     * Percorre a lista de restaurantList e faz orderMenu para cada uma das entradas
+     * E faz spendPoints do total de pontos do menu ao user.
+     * @param userId
+     * @param restaurantList
+     * @param totalPoints
+     * @throws BadOrderException
+     */
+	public void confirmOrder(String userId,Map<String, List<HubFoodOrderItem>> restaurantList,int totalPoints) throws BadOrderException, PointsClientException {
+        for (Map.Entry<String, List<HubFoodOrderItem>> entry : restaurantList.entrySet()) {
+            String wsUrl = entry.getKey();
+            List<HubFoodOrderItem> hubFoodInitList = entry.getValue();
+            try {
+                RestaurantClient client = new RestaurantClient(wsUrl);
+                for (HubFoodOrderItem hfoi : hubFoodInitList) {
+                    MenuId mi = new MenuId();
+                    mi.setId(hfoi.getFoodId().getMenuId());
+                    client.orderMenu(mi, hfoi.getFoodQuantity());
+                }
+            } catch (RestaurantClientException e) {
+                throw new RuntimeException();
+            } catch (com.forkexec.rst.ws.BadQuantityFault_Exception
+                    | com.forkexec.rst.ws.BadMenuIdFault_Exception
+                    | com.forkexec.rst.ws.InsufficientQuantityFault_Exception e) {
+                throw new BadOrderException(e.getMessage());
+            }
+        }
 
+        PointsClient client = getPointsClient();
+
+        try {
+            client.spendPoints(userId, totalPoints);
+        } catch (com.forkexec.pts.ws.InvalidEmailFault_Exception
+                | com.forkexec.pts.ws.InvalidPointsFault_Exception
+                | com.forkexec.pts.ws.NotEnoughBalanceFault_Exception e) {
+            throw new PointsClientException(e.getMessage());
+        }
     }
+
 
     public List<HubFood> searchHungry(Collection<UDDIRecord> restaurants, String description) throws BadTextException {
         List<HubFood> foodList = searchMenus(restaurants, description);
