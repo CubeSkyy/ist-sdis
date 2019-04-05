@@ -41,6 +41,8 @@ public class BaseIT {
 	protected String VALID_FAKE_CC_NUMBER = "5105105105105100";
 	protected String INVALID_FAKE_CC_NUMBER = "510510A105105100";
 
+	protected FoodId foodTestId = new FoodId();
+
 	protected int MONEY_TO_ADD = 10;
 	protected int POINTS_TO_ADD = 1000;
 	@BeforeClass
@@ -107,6 +109,8 @@ public class BaseIT {
 		FoodId foodId = new FoodId();
 		foodId.setRestaurantId("T02_Restaurant1");
 		foodId.setMenuId("Menu2");
+
+		foodTestId = foodId;
 		return foodId;
 		}
 
