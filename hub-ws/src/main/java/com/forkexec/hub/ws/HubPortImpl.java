@@ -157,7 +157,11 @@ public class HubPortImpl implements HubPortType {
     public void clearCart(String userId) throws InvalidUserIdFault_Exception {
         if(userId == null || userId.trim().length()==0)
             throwInvalidUserIdInit("User ID invalido!");
-        Hub.getInstance().clearFoodCart(userId);
+        try {
+            Hub.getInstance().clearFoodCart(userId);
+        } catch (InvalidEmailException iee) {
+            throwInvalidUserIdFault(iee.getMessage());
+        }
     }
 
     @SuppressWarnings("Duplicates")
@@ -183,8 +187,10 @@ public class HubPortImpl implements HubPortType {
             throwEmptyCartFault("Carrinho vazio!");
 
         int totalPoints = listItem.stream().mapToInt(h::getPoints).sum();
-        if(totalPoints < accountBalance(userId))
+
+        if(totalPoints < accountBalance(userId)) {
             throwNotEnoughPointsFault("Não tem saldo suficiente!");
+        }
 
         Map<String, List<HubFoodOrderItem>> restaurantList = new HashMap<>();
 
@@ -256,7 +262,6 @@ public class HubPortImpl implements HubPortType {
         Hub h = Hub.getInstance();
 
         HubFoodOrder hubOrder = null;
-
         try{
             hubOrder= h.getFoodCart(userId);
         } catch (InvalidEmailException iee) {

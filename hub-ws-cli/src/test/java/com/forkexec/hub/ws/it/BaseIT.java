@@ -28,7 +28,7 @@ public class BaseIT {
 	protected static String ENTREE = "ovos";
 	protected static String PLATE = "bolognesa";
 	protected static String DESSERT = "gelado";
-	protected static int PRICE = 1024;
+	protected static int PRICE = 10;
 	protected static int PREPARATION_TIME = 2048;
 	protected static String DESCRIPTION_TEXT = "ovos";
 	protected static int DEFAULT_MENU_QUANTITY = 420;
@@ -106,12 +106,12 @@ public class BaseIT {
 	}
 	
 		protected FoodId createFoodId(){
-		FoodId foodId = new FoodId();
-		foodId.setRestaurantId("T02_Restaurant1");
-		foodId.setMenuId("Menu2");
+			FoodId foodId = new FoodId();
+			foodId.setRestaurantId("T02_Restaurant1");
+			foodId.setMenuId("Menu2");
 
-		foodTestId = foodId;
-		return foodId;
+			foodTestId = foodId;
+			return foodId;
 		}
 
 		protected Food createFood(){

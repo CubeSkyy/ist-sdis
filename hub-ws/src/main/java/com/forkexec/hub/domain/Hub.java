@@ -177,13 +177,17 @@ public class Hub {
 	public HubFoodOrder createFoodCart(String userId) throws InvalidEmailException {
 
         if (accountBalance(userId)>=0) {
-            return cartMap.put(userId, new HubFoodOrder());
+            HubFoodOrder hfo = new HubFoodOrder();
+            cartMap.put(userId, hfo);
+            return hfo;
         }
 
         return null;
 	}
-	public void clearFoodCart(String userId){
-		cartMap.remove(userId);
+	public void clearFoodCart(String userId) throws InvalidEmailException {
+        if (accountBalance(userId)>=0) {
+            cartMap.remove(userId);
+        }
 	}
 
 
