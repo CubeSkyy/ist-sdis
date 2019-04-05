@@ -1,8 +1,6 @@
 package com.forkexec.hub.domain;
 
-import javax.jws.WebService;
 
-import com.forkexec.hub.ws.HubEndpointManager;
 import com.forkexec.pts.ws.cli.PointsClient;
 import com.forkexec.pts.ws.cli.PointsClientException;
 import com.forkexec.rst.ws.cli.RestaurantClient;
@@ -32,7 +30,7 @@ public class Hub {
 
     // Singleton -------------------------------------------------------------
 
-	private Map<String, List<HubFoodId>> cartMap = new ConcurrentHashMap<>();
+	private Map<String, HubFoodOrder> cartMap = new ConcurrentHashMap<>();
 
 	/** Private constructor prevents instantiation from other classes. */
 	private Hub() {
@@ -78,39 +76,26 @@ public class Hub {
 		return client;
 	}
 
-
-	public List<HubFoodId > getListFoods (String userId) throws NoCartForUser {
-		List<HubFoodId > listFood;
-		listFood = cartMap.get(userId);
-		if (listFood == null) {
-			throw new NoCartForUser("Cart para esse user não existe!");
-		}
-		return listFood;
+	public HubFoodOrder getFoodCart(String userId) /*throws InvalidEmailException*/{
+		/*
+		* TODO: Verificar a eligibilidade do user!
+		 */
+		return cartMap.get(userId);
 	}
 
-	public HubFoodId getFood(String userId, HubFoodId id) throws NoCartForUser, NoSuchHubFoodId {
-		List<HubFoodId > listFood = getListFoods(userId);
-		HubFoodId hid =  listFood.stream().filter(i-> i.equals(id)).findAny().orElse(null);
-		if(hid == null) throw new NoSuchHubFoodId("Food ID invalido!");
-		return hid;
+	public HubFoodOrder createFoodCart(String userId){
+		/*
+		 * TODO: Verificar a eligibilidade do user!
+		 */
+		return cartMap.put(userId,new HubFoodOrder());
+	}
+	public void clearFoodCart(String userId){
+		cartMap.remove(userId);
 	}
 
-	public void addFoodId(String userId,HubFoodId id)  {
-		List<HubFoodId> lhid = cartMap.get(userId);
-		if(lhid == null){
-			// TODO: Verificacao se o user tem AccountBalance, se tiver é porque pode se criar um cart para ele
-			cartMap.put(userId, Stream.concat(Stream.of(id),new ArrayList<HubFoodId>().stream()).toArray());
-		}
-		//	try {
-		//		getListFoods(userId).add(id);
-	//	} catch (NoCartForUser ncfu) {
-
-	//		}
-	//	}
-	}
-
-	public void addCartToUser(String userId){
-
+	public int getPoints(HubFoodOrderItem hfoi){
+		
+		return 0;
 	}
 }
 

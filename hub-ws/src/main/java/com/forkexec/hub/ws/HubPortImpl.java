@@ -99,7 +99,6 @@ public class HubPortImpl implements HubPortType {
         Hub h = Hub.getInstance();
         HubFoodId hib = new HubFoodId(foodId.getRestaurantId(), foodId.getMenuId());
 
-        //try {
         HubFoodOrder hfo = h.getFoodCart(userId);
 
         if(hfo == null)
@@ -114,11 +113,6 @@ public class HubPortImpl implements HubPortType {
         else
             hfoi.setFoodQuantity(hfoi.getFoodQuantity()+foodQuantity);
 
-        //} catch (NoCartForUser ncfu) {
-        //    throwInvalidUserIdInit("User invalido!" + ncfu.getMessage());
-        //}
-
-
     }
 
 
@@ -126,8 +120,7 @@ public class HubPortImpl implements HubPortType {
     public void clearCart(String userId) throws InvalidUserIdFault_Exception {
         if(userId == null || userId.trim().length()==0)
             throwInvalidUserIdInit("User ID invalido!");
-
-        h.clearFoodCart(userId);
+        Hub.getInstance().clearFoodCart(userId);
     }
 
     @SuppressWarnings("Duplicates")
