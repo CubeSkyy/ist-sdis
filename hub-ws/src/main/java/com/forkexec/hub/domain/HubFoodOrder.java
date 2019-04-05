@@ -7,7 +7,7 @@ import java.util.List;
 public class HubFoodOrder {
 
     protected HubFoodOrderId foodOrderId;
-    protected List<HubFoodOrderItem> items;
+    protected List<HubFoodOrderItem> items = null;
 
     public HubFoodOrderId getFoodOrderId() {
         return foodOrderId;
@@ -19,7 +19,7 @@ public class HubFoodOrder {
 
     public List<HubFoodOrderItem> getItems() {
         if (items == null) {
-            items = new ArrayList<HubFoodOrderItem>();
+            items = new ArrayList<>();
         }
         return this.items;
     }

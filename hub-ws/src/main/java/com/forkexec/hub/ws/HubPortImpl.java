@@ -188,8 +188,10 @@ public class HubPortImpl implements HubPortType {
             throwEmptyCartFault("Carrinho vazio!");
 
         int totalPoints = listItem.stream().mapToInt(h::getPoints).sum();
-        if(totalPoints < accountBalance(userId))
+
+        if(totalPoints < accountBalance(userId)) {
             throwNotEnoughPointsFault("Não tem saldo suficiente!");
+        }
 
         Map<String, List<HubFoodOrderItem>> restaurantList = new HashMap<>();
 
