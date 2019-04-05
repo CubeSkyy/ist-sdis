@@ -6,6 +6,10 @@ public class HubFoodId {
     private String _restaurantId;
     private String _menuId;
 
+    public HubFoodId(String restaurant, String menuId){
+        setRestaurantId(restaurant);
+        setMenuId(menuId);
+    }
     /**
      * Gets the value of the restaurantId property.
      * 
