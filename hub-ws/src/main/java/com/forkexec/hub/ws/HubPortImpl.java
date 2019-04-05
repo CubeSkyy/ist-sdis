@@ -1,5 +1,6 @@
 package com.forkexec.hub.ws;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -272,7 +273,25 @@ public class HubPortImpl implements HubPortType {
      */
     @Override
     public void ctrlInitFood(List<FoodInit> initialFoods) throws InvalidInitFault_Exception {
-        // TODO Auto-generated method stub
+        Map<String, LinkedList<HubFoodInit>> restaurant_init = new HashMap<>();
+
+        Hub h = Hub.getInstance();
+        for(FoodInit fi: initialFoods){
+            String restaurantName = fi.getFood().getId().getRestaurantId();
+            String wsName = getRestaurant(restaurantName);
+            LinkedList<HubFoodInit> initList = restaurant_init.get(wsName);
+            if (initList == null) {
+                initList = new LinkedList<> ();
+                restaurant_init.put(restaurantName, initList);
+            }
+            initList.add(buildHubFoodInit(fi));
+        }
+        try{
+            h.ctrlInitFood(restaurant_init);
+        }catch (BadInitException e){
+            throwBadInit(e.getMessage());
+        }
+
     }
 
     @Override
@@ -363,6 +382,27 @@ public class HubPortImpl implements HubPortType {
         hfi.setRestaurantId(fi.getRestaurantId());
         return hfi;
     }
+    private HubFoodInit buildHubFoodInit(FoodInit fi){
+        HubFoodInit hfi = new HubFoodInit();
+        HubFood hf = buildHubFood(fi.getFood());
+        hfi.setHubFood(hf);
+        hfi.setQuantity(fi.getQuantity());
+
+        return hfi;
+    }
+
+    private HubFood buildHubFood(Food f){
+        HubFood hubFood = new HubFood();
+        FoodId foodId = f.getId();
+        hubFood.setId(buildHubFoodId(foodId));
+        hubFood.setEntree(f.getEntree());
+        hubFood.setPlate(f.getPlate());
+        hubFood.setDessert(f.getDessert());
+        hubFood.setPrice(f.getPrice());
+        hubFood.setPreparationTime(f.getPreparationTime());
+        return hubFood;
+    }
+
     // Exception helpers -----------------------------------------------------
 
     /** Helper to throw a new BadInit exception. */
