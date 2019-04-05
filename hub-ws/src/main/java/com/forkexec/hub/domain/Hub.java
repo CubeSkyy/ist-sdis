@@ -175,9 +175,11 @@ public class Hub {
      * @throws InvalidEmailException
      */
 	public HubFoodOrder createFoodCart(String userId) throws InvalidEmailException {
+
         if (accountBalance(userId)>=0) {
             return cartMap.put(userId, new HubFoodOrder());
         }
+
         return null;
 	}
 	public void clearFoodCart(String userId){
@@ -259,14 +261,14 @@ public class Hub {
 
     }
 
-    public HubFood getFood(HubFoodId hubFoodId) throws InvalidFoodIdException {
+    public HubFood getFood(HubFoodId hubFoodId, String wsUrl) throws InvalidFoodIdException {
         String restaurantId = hubFoodId.getRestaurantId();
         String menuId = hubFoodId.getMenuId();
         if (menuId == null)
             throw new InvalidFoodIdException("Id de menu inválido!");
         Menu menu;
         try {
-            RestaurantClient client = new RestaurantClient(restaurantId);
+            RestaurantClient client = new RestaurantClient(wsUrl);
             MenuId mid = new MenuId();
             mid.setId(menuId);
             menu = client.getMenu(mid);

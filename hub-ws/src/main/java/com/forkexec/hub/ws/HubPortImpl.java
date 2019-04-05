@@ -141,7 +141,6 @@ public class HubPortImpl implements HubPortType {
                 throwInvalidUserIdFault(iee.getMessage());
             }
         }
-
         List<HubFoodOrderItem> listItem = hfo.getItems();
 
         HubFoodOrderItem hfoi = listItem.stream().filter(i -> i.getFoodId().getMenuId().equals(f.getId().getMenuId())).findAny().orElse(null);
@@ -237,7 +236,8 @@ public class HubPortImpl implements HubPortType {
         Food food = null;
         try {
             HubFoodId hubFoodId = buildHubFoodId(foodId);
-            HubFood hubFood = h.getFood(hubFoodId);
+            String wsURL = getRestaurant(foodId.getRestaurantId());
+            HubFood hubFood = h.getFood(hubFoodId, wsURL);
             food = buildFood(hubFood);
         } catch (InvalidFoodIdException e) {
             throwInvalidFoodIdFault(e.getMessage());

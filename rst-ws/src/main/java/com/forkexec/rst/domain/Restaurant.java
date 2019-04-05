@@ -61,7 +61,6 @@ public class Restaurant {
 
     public RestaurantMenu getMenu(RestaurantMenuId mid) throws NoSuchMenuFaultException {
        RestaurantMenu m = menuMap.get(mid);
-
        if (m == null)
            throw new NoSuchMenuFaultException("Não existe menu com ID " + mid.getId() + "!");
 

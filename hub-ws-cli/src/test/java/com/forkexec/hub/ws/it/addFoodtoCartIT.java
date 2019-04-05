@@ -13,7 +13,7 @@ public class addFoodtoCartIT extends BaseIT {
 		client.ctrlInitUserPoints(100);
 		client.ctrlInitFood(createFoodInitList());
 		client.activateAccount(VALID_EMAIL);
-		client.addFoodToCart(VALID_EMAIL, foodTestId, 3);
+		client.addFoodToCart(VALID_EMAIL, createFoodId(), 3);
 	}
 
 	@Test(expected=InvalidFoodIdFault_Exception.class)
