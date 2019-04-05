@@ -127,11 +127,20 @@ public class HubPortImpl implements HubPortType {
 
         Hub h = Hub.getInstance();
         Food f = getFood(foodId);
+        HubFoodOrder hfo = null;
+        try {
+             hfo = h.getFoodCart(userId);
+        } catch (InvalidEmailException iee) {
+            throwInvalidUserIdFault(iee.getMessage());
+        }
 
-        HubFoodOrder hfo = h.getFoodCart(userId);
-
-        if(hfo == null)
-            hfo = h.createFoodCart(userId);
+        if(hfo == null){
+            try {
+                hfo = h.createFoodCart(userId);
+            } catch(InvalidEmailException iee) {
+                throwInvalidUserIdFault(iee.getMessage());
+            }
+        }
 
         List<HubFoodOrderItem> listItem = hfo.getItems();
 
@@ -161,7 +170,13 @@ public class HubPortImpl implements HubPortType {
             throwInvalidUserIdInit("User ID invalido!");
 
         Hub h = Hub.getInstance();
-        HubFoodOrder hubOrder = h.getFoodCart(userId);
+
+        HubFoodOrder hubOrder = null;
+        try {
+            hubOrder = h.getFoodCart(userId);
+        } catch (InvalidEmailException iee) {
+            throwInvalidUserIdFault(iee.getMessage());
+        }
 
         List<HubFoodOrderItem> listItem = hubOrder.getItems();
 
@@ -217,6 +232,8 @@ public class HubPortImpl implements HubPortType {
 
     @Override
     public Food getFood(FoodId foodId) throws InvalidFoodIdFault_Exception {
+        if (foodId == null) throwInvalidFoodIdFault("Id de menu inválido!");
+
         Food food = null;
         try {
             HubFoodId hubFoodId = buildHubFoodId(foodId);
@@ -238,7 +255,13 @@ public class HubPortImpl implements HubPortType {
 
         Hub h = Hub.getInstance();
 
-        HubFoodOrder hubOrder = h.getFoodCart(userId);
+        HubFoodOrder hubOrder = null;
+
+        try{
+            hubOrder= h.getFoodCart(userId);
+        } catch (InvalidEmailException iee) {
+            throwInvalidUserIdFault(iee.getMessage());
+        }
 
        List<HubFoodOrderItem> listItem = hubOrder.getItems();
         List<FoodOrderItem> listFoodOrderItems = new ArrayList<>();
@@ -489,5 +512,9 @@ public class HubPortImpl implements HubPortType {
         throw new NotEnoughPointsFault_Exception(message, faultInfo);
     }
 
-
+    private void throwInvalidUserIdFault(final String message) throws InvalidUserIdFault_Exception {
+        InvalidUserIdFault faultInfo = new InvalidUserIdFault();
+        faultInfo.message = message;
+        throw new InvalidUserIdFault_Exception(message, faultInfo);
+    }
 }
