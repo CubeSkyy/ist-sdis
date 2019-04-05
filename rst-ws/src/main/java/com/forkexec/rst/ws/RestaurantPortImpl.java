@@ -3,6 +3,7 @@ package com.forkexec.rst.ws;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.jws.WebService;
 
 import com.forkexec.rst.domain.*;
@@ -145,7 +146,7 @@ public class RestaurantPortImpl implements RestaurantPortType {
     @Override
     public void ctrlInit(List<MenuInit> initialMenus) throws BadInitFault_Exception {
         // TODO Auto-generated method stub
-        System.out.println(initialMenus);
+
         if (initialMenus == null || initialMenus.isEmpty()) throwBadInit("Lista de Menus Invalida!");
 
         Restaurant r = Restaurant.getInstance();

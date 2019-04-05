@@ -220,14 +220,15 @@ public class Hub {
     public List<HubFood> searchHungry(Collection<UDDIRecord> restaurants, String description) throws BadTextException{
         List<HubFood> foodList = searchMenus(restaurants, description);
 
-        foodList.sort(HubFood.priceComparator);
+        foodList.sort(HubFood.preparationTimeComparator);
         return foodList;
     }
 
     public List<HubFood> searchDeal(Collection<UDDIRecord> restaurants, String description) throws BadTextException{
         List<HubFood> foodList = searchMenus(restaurants, description);
 
-        foodList.sort(HubFood.preparationTimeComparator);
+
+        foodList.sort(HubFood.priceComparator);
         return foodList;
     }
 
@@ -271,16 +272,14 @@ public class Hub {
     public void ctrlInitFood(Map<String, LinkedList<HubFoodInit>> restaurant_init) throws BadInitException {
 
         for (Map.Entry<String, LinkedList<HubFoodInit>> entry : restaurant_init.entrySet()) {
-            String wsName = entry.getKey();
+            String wsUrl = entry.getKey();
             LinkedList<HubFoodInit> hubFoodInitList = entry.getValue();
             try {
-                RestaurantClient client = new RestaurantClient(uddiURL, wsName);
+                RestaurantClient client = new RestaurantClient(wsUrl);
                 List<MenuInit> menuInitList = new LinkedList<>();
-
                 for(HubFoodInit hfi: hubFoodInitList){
                     menuInitList.add(buildMenuInit(hfi));
                 }
-
 
                 client.ctrlInit(menuInitList);
             } catch (RestaurantClientException e) {
@@ -312,7 +311,7 @@ public class Hub {
     //Builds HubFood fom a menu and a given restaurant
     private HubFood buildHubFood(Menu menu, String restaurantId) {
         HubFood hubFood = new HubFood();
-        HubFoodId hubFoodId = new HubFoodId(menu.getId().getId(), restaurantId);
+        HubFoodId hubFoodId = new HubFoodId(restaurantId, menu.getId().getId());
         hubFood.setId(hubFoodId);
         hubFood.setEntree(menu.getEntree());
         hubFood.setPlate(menu.getPlate());

@@ -133,7 +133,7 @@ public class BaseIT {
 			food.setPlate("ovos");
 			food.setDessert("cheesecake");
 			food.setPrice(300);
-			food.setPreparationTime(400);
+			food.setPreparationTime(3000);
 
 			return food;
 		}

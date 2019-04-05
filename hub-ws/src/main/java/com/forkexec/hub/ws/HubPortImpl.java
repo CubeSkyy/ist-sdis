@@ -98,13 +98,16 @@ public class HubPortImpl implements HubPortType {
 
     @Override
     public List<Food> searchHungry(String description) throws InvalidTextFault_Exception {
+        List<HubFood> hubFoodList = new ArrayList<>();
+
         try {
             Hub h = Hub.getInstance();
-            h.searchHungry(getRestaurants(), description);
+            hubFoodList =h.searchHungry(getRestaurants(), description);
         } catch (BadTextException e) {
             throwBadText(e.getMessage());
         }
-        return null;
+        List<Food> foodList = buildFoodList(hubFoodList);
+        return foodList;
     }
 
 
@@ -296,11 +299,11 @@ public class HubPortImpl implements HubPortType {
         Hub h = Hub.getInstance();
         for (FoodInit fi : initialFoods) {
             String restaurantName = fi.getFood().getId().getRestaurantId();
-            String wsName = getRestaurant(restaurantName);
-            LinkedList<HubFoodInit> initList = restaurant_init.get(wsName);
+            String wsUrl = getRestaurant(restaurantName);
+            LinkedList<HubFoodInit> initList = restaurant_init.get(wsUrl);
             if (initList == null) {
                 initList = new LinkedList<>();
-                restaurant_init.put(restaurantName, initList);
+                restaurant_init.put(wsUrl, initList);
             }
             initList.add(buildHubFoodInit(fi));
         }
@@ -393,7 +396,7 @@ public class HubPortImpl implements HubPortType {
     }
 
     private HubFoodId buildHubFoodId(FoodId fi) {
-        HubFoodId hfi = new HubFoodId(fi.getMenuId(), fi.getRestaurantId());
+        HubFoodId hfi = new HubFoodId(fi.getRestaurantId(), fi.getMenuId() );
         return hfi;
     }
 

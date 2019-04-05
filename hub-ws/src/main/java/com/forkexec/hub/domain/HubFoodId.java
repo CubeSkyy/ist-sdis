@@ -63,4 +63,8 @@ public class HubFoodId {
         return h.getMenuId().equals(this.getMenuId());
     }
 
+    @Override
+    public int hashCode() {
+        return getMenuId().hashCode();
+    }
 }

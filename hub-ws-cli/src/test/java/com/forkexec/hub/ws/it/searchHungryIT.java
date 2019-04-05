@@ -18,9 +18,7 @@ public class searchHungryIT extends BaseIT {
     public void success() throws InvalidTextFault_Exception, InvalidInitFault_Exception{
 
     	client.ctrlInitFood(createFoodInitList());
-    	List<Food> list = new ArrayList<>();
-        list = client.searchHungry(DESCRIPTION_TEXT);
-        Food first = list.get(0);
+        List<Food> list = client.searchHungry(DESCRIPTION_TEXT);
 
         List<Food> list_comp = new ArrayList<>();
         list_comp.add(createFood());
@@ -39,8 +37,8 @@ public class searchHungryIT extends BaseIT {
             }
 		});
 
-		Assert.assertEquals(list.get(0), list_comp.get(0));
-		Assert.assertEquals(list.get(1), list_comp.get(1));		
+		Assert.assertEquals(list.get(0).getId().getMenuId(), list_comp.get(0).getId().getMenuId());
+		Assert.assertEquals(list.get(1).getId().getMenuId(), list_comp.get(1).getId().getMenuId());
     }
 
     @Test(expected=InvalidTextFault_Exception.class)

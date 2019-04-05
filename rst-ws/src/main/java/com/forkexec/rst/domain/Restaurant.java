@@ -73,10 +73,11 @@ public class Restaurant {
 
     public List<RestaurantMenu> searchMenus(String descriptionText) {
         List<RestaurantMenu> tempList = new ArrayList<>();
+
         for (RestaurantMenu menu : menuMap.values()) {
-            if (menu._dessert.contains(descriptionText)
-                    || menu._entree.contains(descriptionText)
-                    || menu._plate.contains(descriptionText))
+            if (menu.getDessert().contains(descriptionText)
+                    || menu.getEntree().contains(descriptionText)
+                    || menu.getPlate().contains(descriptionText))
                 tempList.add(menu);
         }
         return tempList;
