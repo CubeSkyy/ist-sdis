@@ -17,6 +17,7 @@ import pt.ulisboa.tecnico.sdis.ws.uddi.UDDIRecord;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -29,7 +30,7 @@ public class Hub {
     protected static Properties properties;
     private static final String PROP_FILE = "/pom.properties";
 
-
+    private final AtomicInteger orderNumber = new AtomicInteger(0);
     private final String uddiURL;
     private final String pointsWsName;
     private final String ccWsName = "CC";
@@ -178,6 +179,9 @@ public class Hub {
 
         if (accountBalance(userId)>=0) {
             HubFoodOrder hfo = new HubFoodOrder();
+            HubFoodOrderId hofi = new HubFoodOrderId();
+            hofi.setId("HUBORDER"+ orderNumber.getAndIncrement());
+            hfo.setFoodOrderId(hofi);
             cartMap.put(userId, hfo);
             return hfo;
         }

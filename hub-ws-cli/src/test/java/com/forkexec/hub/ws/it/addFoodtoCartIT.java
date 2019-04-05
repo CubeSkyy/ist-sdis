@@ -3,6 +3,7 @@ package com.forkexec.hub.ws.it;
 import static org.junit.Assert.*;
 import com.forkexec.hub.ws.*;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 
