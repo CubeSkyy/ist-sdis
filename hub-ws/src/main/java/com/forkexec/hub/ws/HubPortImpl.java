@@ -264,6 +264,8 @@ public class HubPortImpl implements HubPortType {
      */
     @Override
     public void ctrlClear() {
+        Hub h = Hub.getInstance();
+        h.ctrlClear( getRestaurants());
     }
 
     /**

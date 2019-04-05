@@ -94,11 +94,6 @@ public class Hub {
         return client;
     }
 
-    public RestaurantClient getRestaurantClient() throws RestaurantClientException {
-        RestaurantClient client = null;
-        client = new RestaurantClient(uddiURL, "T02_Points1");
-        return client;
-    }
 
     public Map<Integer, Integer> getTraductionTable() {
         return traductionT;
@@ -246,6 +241,22 @@ public class Hub {
             }
 
         }
+    }
+
+
+    public void ctrlClear(Collection<UDDIRecord>  restaurant_list) {
+	    cartMap.clear();
+        try {
+            PointsClient ptsClient = getPointsClient();
+            ptsClient.ctrlClear();
+            for(UDDIRecord uddiRecord : restaurant_list){
+                RestaurantClient restaurantClient = new RestaurantClient(uddiRecord.getUrl());
+                restaurantClient.ctrlClear();
+            }
+        } catch (PointsClientException | RestaurantClientException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
 
 
