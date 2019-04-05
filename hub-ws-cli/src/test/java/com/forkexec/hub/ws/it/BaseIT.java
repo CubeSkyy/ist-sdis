@@ -31,13 +31,18 @@ public class BaseIT {
 	protected static int PRICE = 1024;
 	protected static int PREPARATION_TIME = 2048;
 	protected static String DESCRIPTION_TEXT = "ovos";
-	protected static int
-			DEFAULT_MENU_QUANTITY = 420;
+	protected static int DEFAULT_MENU_QUANTITY = 420;
 
 	protected static String EMPTY_STRING = "";
 	public static final int DEFAULT_INITIAL_BALANCE = 100;
 
+	protected String VALID_EMAIL = "testtest@test.com";
+	protected String INVALID_EMAIL = "test_test@t";
+	protected String VALID_FAKE_CC_NUMBER = "5105105105105100";
+	protected String INVALID_FAKE_CC_NUMBER = "510510A105105100";
 
+	protected int MONEY_TO_ADD = 10;
+	protected int POINTS_TO_ADD = 1000;
 	@BeforeClass
 	public static void oneTimeSetup() throws Exception {
 		testProps = new Properties();
