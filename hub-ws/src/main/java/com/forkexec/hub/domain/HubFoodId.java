@@ -6,6 +6,10 @@ public class HubFoodId {
     private String _restaurantId;
     private String _menuId;
 
+    public HubFoodId(String restaurant, String menuId){
+        setRestaurantId(restaurant);
+        setMenuId(menuId);
+    }
     /**
      * Gets the value of the restaurantId property.
      * 
@@ -52,12 +56,6 @@ public class HubFoodId {
      */
     public void setMenuId(String value) {
         this._menuId = value;
-    }
-
-    public int getQuantity() {return _quantity;}
-
-    public void setQuantity(int quantity) {
-        _quantity = quantity;
     }
 
     public boolean equals(Object o) {

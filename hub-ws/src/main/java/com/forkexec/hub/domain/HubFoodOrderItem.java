@@ -6,6 +6,10 @@ public class HubFoodOrderItem {
     protected HubFoodId foodId;
     protected int foodQuantity;
 
+    public HubFoodOrderItem(HubFoodId hfi, int quantity){
+        setFoodId(hfi);
+        setFoodQuantity(quantity);
+    }
     public HubFoodId getFoodId() {
         return foodId;
     }
