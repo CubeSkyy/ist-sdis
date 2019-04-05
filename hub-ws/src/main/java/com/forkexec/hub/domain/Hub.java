@@ -155,18 +155,30 @@ public class Hub {
         }
     }
 
-	public HubFoodOrder getFoodCart(String userId) /*throws InvalidEmailException*/{
-		/*
-		* TODO: Verificar a eligibilidade do user!
-		 */
-		return cartMap.get(userId);
+    /**
+     * Verifica a eligibilidade do user por ir buscar o saldo dele ao points e deveolve o carrinho dele
+     * @param userId
+     * @return HubFoodOrder
+     * @throws InvalidEmailException
+     */
+	public HubFoodOrder getFoodCart(String userId) throws InvalidEmailException {
+		if (accountBalance(userId)>=0) {
+            return cartMap.get(userId);
+        }
+		return null;
 	}
 
-	public HubFoodOrder createFoodCart(String userId){
-		/*
-		 * TODO: Verificar a eligibilidade do user!
-		 */
-		return cartMap.put(userId,new HubFoodOrder());
+    /**
+     * Verifica a eligibilidade do user ao ir buscar o saldo desse e devolve a HubOrder dessa pessoa
+     * @param userId
+     * @return
+     * @throws InvalidEmailException
+     */
+	public HubFoodOrder createFoodCart(String userId) throws InvalidEmailException {
+        if (accountBalance(userId)>=0) {
+            return cartMap.put(userId, new HubFoodOrder());
+        }
+        return null;
 	}
 	public void clearFoodCart(String userId){
 		cartMap.remove(userId);
@@ -174,7 +186,7 @@ public class Hub {
 
 
 	public int getPoints(HubFoodOrderItem hfoi)  {
-		return traductionT.get(hfoi.getFoodPrice());
+		return getCorrespondingPoints(hfoi.getFoodPrice());
 	}
 
     /**
