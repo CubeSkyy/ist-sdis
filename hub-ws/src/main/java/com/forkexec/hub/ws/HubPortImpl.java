@@ -180,6 +180,9 @@ public class HubPortImpl implements HubPortType {
         } catch (InvalidEmailException iee) {
             throwInvalidUserIdFault(iee.getMessage());
         }
+        if(hubOrder == null)
+            throwEmptyCartFault("Carrinho vazio!");
+
 
         List<HubFoodOrderItem> listItem = hubOrder.getItems();
 
