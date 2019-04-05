@@ -10,8 +10,11 @@ public class ctrlInitFoodIT extends BaseIT {
 	@Test
 	public void success() throws InvalidInitFault_Exception {
 		client.ctrlInitFood(createFoodInitList());
+	}
 
-		//todo, waiting for ricardo's function
+	@Test(expected=InvalidInitFault_Exception.class)
+	public void ctrlInitFood_Invalid() throws InvalidInitFault_Exception {
+		client.ctrlInitFood(null);
 	}
 
 }
