@@ -217,6 +217,8 @@ public class HubPortImpl implements HubPortType {
 
     @Override
     public Food getFood(FoodId foodId) throws InvalidFoodIdFault_Exception {
+        if (foodId == null) throwInvalidFoodIdFault("Id de menu inválido!");
+
         Food food = null;
         try {
             HubFoodId hubFoodId = buildHubFoodId(foodId);

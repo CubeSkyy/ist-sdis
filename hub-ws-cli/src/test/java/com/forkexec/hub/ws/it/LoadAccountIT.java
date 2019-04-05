@@ -35,7 +35,7 @@ public class LoadAccountIT extends BaseIT {
 
     @Test(expected = InvalidUserIdFault_Exception.class)
     public void  InvalidUserId() throws InvalidCreditCardFault_Exception, InvalidMoneyFault_Exception, InvalidUserIdFault_Exception {
-        final int  MONEY_TO_ADD = -10;
+        final int  MONEY_TO_ADD = 50;
         client.loadAccount(INVALID_EMAIL,MONEY_TO_ADD, VALID_FAKE_CC_NUMBER);
     }
 
