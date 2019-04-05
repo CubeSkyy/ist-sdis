@@ -158,7 +158,11 @@ public class HubPortImpl implements HubPortType {
     public void clearCart(String userId) throws InvalidUserIdFault_Exception {
         if(userId == null || userId.trim().length()==0)
             throwInvalidUserIdInit("User ID invalido!");
-        Hub.getInstance().clearFoodCart(userId);
+        try {
+            Hub.getInstance().clearFoodCart(userId);
+        } catch (InvalidEmailException iee) {
+            throwInvalidUserIdFault(iee.getMessage());
+        }
     }
 
     @SuppressWarnings("Duplicates")
@@ -256,7 +260,6 @@ public class HubPortImpl implements HubPortType {
         Hub h = Hub.getInstance();
 
         HubFoodOrder hubOrder = null;
-
         try{
             hubOrder= h.getFoodCart(userId);
         } catch (InvalidEmailException iee) {

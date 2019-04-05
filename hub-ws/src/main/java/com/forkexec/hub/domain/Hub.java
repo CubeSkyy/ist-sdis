@@ -180,8 +180,10 @@ public class Hub {
         }
         return null;
 	}
-	public void clearFoodCart(String userId){
-		cartMap.remove(userId);
+	public void clearFoodCart(String userId) throws InvalidEmailException {
+        if (accountBalance(userId)>=0) {
+            cartMap.remove(userId);
+        }
 	}
 
 
