@@ -8,24 +8,35 @@ import org.junit.Assert;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 
 public class searchHungryIT extends BaseIT {
 
     @Test
-    public void success() throws InvalidTextFault_Exception{
+    public void success() throws InvalidTextFault_Exception, InvalidInitFault_Exception{
 
-    	client.ctrlInitFoods(createFoodInitList());
+    	client.ctrlInitFood(createFoodInitList());
     	List<Food> list = new ArrayList<>();
         list = client.searchHungry(DESCRIPTION_TEXT);
         Food first = list.get(0);
 
         List<Food> list_comp = new ArrayList<>();
-        list_comp.add(createFoodInit());
-        list_comp.add(createFoodInit2());
+        list_comp.add(createFood());
+        list_comp.add(createFood2());
 
         Collections.sort(list_comp, new Comparator<Food>() {
     	public int compare(Food f1, Food f2) {
-        return f1.getPreparationTime().compareTo(s2.getPreparationTime());}
+            if(f1.getPreparationTime() > f2.getPreparationTime()){
+                return 1;
+            }
+            else if(f1.getPreparationTime() == f2.getPreparationTime()){
+                return 0;
+            }
+            else 
+                return -1;
+            }
 		});
 
 		Assert.assertEquals(list.get(0), list_comp.get(0));

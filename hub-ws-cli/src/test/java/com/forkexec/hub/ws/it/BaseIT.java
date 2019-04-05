@@ -97,10 +97,10 @@ public class BaseIT {
 		}*/
 
 	}
-
+	
 		protected FoodId createFoodId(){
 		FoodId foodId = new FoodId();
-		foodId.setRestaurantId("Restaurant1");
+		foodId.setRestaurantId("T02_Restaurant1");
 		foodId.setMenuId("Menu2");
 		return foodId;
 		}
@@ -120,7 +120,7 @@ public class BaseIT {
 
 		protected FoodId createFoodId2(){
 		FoodId foodId = new FoodId();
-		foodId.setRestaurantId("Restaurant2");
+		foodId.setRestaurantId("T02_Restaurant2");
 		foodId.setMenuId("Menu3");
 		return foodId;
 		}

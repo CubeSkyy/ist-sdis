@@ -1,14 +1,15 @@
 package com.forkexec.hub.ws.it;
 
 import static org.junit.Assert.assertNotNull;
+import com.forkexec.hub.ws.*;
 
 import org.junit.Test;
 
 public class ctrlInitFoodIT extends BaseIT {
 
 	@Test
-	public void success() {
-		client.ctrlInitFoodIT(createFoodInitList());
+	public void success() throws InvalidInitFault_Exception {
+		client.ctrlInitFood(createFoodInitList());
 
 		//todo, waiting for ricardo's function
 	}

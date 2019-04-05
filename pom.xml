@@ -45,7 +45,7 @@
 
         <uddi.url>http://localhost:9090</uddi.url> 
         <!--<uddi.url>http://t02:noRpzUdr@uddi.sd.rnl.tecnico.ulisboa.pt:9090</uddi.url> -->
-		<!-- <group.id>T02</group.id> -->
+		<group.id>T02</group.id> 
 		
 		<pts.ws.name>${group.id}_Points</pts.ws.name>
 		<rst.ws.name>${group.id}_Restaurant</rst.ws.name>
