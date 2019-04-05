@@ -268,10 +268,12 @@ public class HubPortImpl implements HubPortType {
             throwInvalidUserIdFault(iee.getMessage());
         }
 
-       List<HubFoodOrderItem> listItem = hubOrder.getItems();
-        List<FoodOrderItem> listFoodOrderItems = new ArrayList<>();
 
-        listItem.forEach(hubFoodItem -> listFoodOrderItems.add(buildFoodOrderItem(hubFoodItem)));
+        List<FoodOrderItem> listFoodOrderItems = new ArrayList<>();
+        if (hubOrder != null) {
+            List<HubFoodOrderItem> listItem = hubOrder.getItems();
+            listItem.forEach(hubFoodItem -> listFoodOrderItems.add(buildFoodOrderItem(hubFoodItem)));
+        }
 
         return listFoodOrderItems;
 
