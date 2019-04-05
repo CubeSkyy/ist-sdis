@@ -1,4 +1,4 @@
-//O teste falha porque a ctrlInitFood ainda nao esta implementada
+//cant test without Ricardo's ctrlInitFoods
 
 package com.forkexec.hub.ws.it;
 

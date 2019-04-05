@@ -1,5 +1,7 @@
 package com.forkexec.hub.ws.it;
 
+//cant test without Ricardo's ctrlInitFoods
+
 import com.forkexec.hub.ws.*;
 import org.junit.Test;
 import org.junit.Assert;
