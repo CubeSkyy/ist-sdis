@@ -5,12 +5,10 @@ import javax.jws.WebService;
 import com.forkexec.cc.ws.cli.CCClient;
 import com.forkexec.cc.ws.cli.CCClientException;
 import com.forkexec.hub.ws.FoodId;
+import com.forkexec.pts.ws.BadInitFault_Exception;
 import com.forkexec.pts.ws.cli.PointsClient;
 import com.forkexec.pts.ws.cli.PointsClientException;
-import com.forkexec.rst.ws.BadMenuIdFault_Exception;
-import com.forkexec.rst.ws.BadTextFault_Exception;
-import com.forkexec.rst.ws.Menu;
-import com.forkexec.rst.ws.MenuId;
+import com.forkexec.rst.ws.*;
 import com.forkexec.rst.ws.cli.RestaurantClient;
 import com.forkexec.rst.ws.cli.RestaurantClientException;
 
@@ -211,7 +209,7 @@ public class Hub {
     public HubFood getFood(HubFoodId hubFoodId) throws InvalidFoodIdException {
         String restaurantId = hubFoodId.getRestaurantId();
         String menuId = hubFoodId.getMenuId();
-        if(menuId == null)
+        if (menuId == null)
             throw new InvalidFoodIdException("Id de menu inválido!");
         Menu menu;
         try {
@@ -227,6 +225,29 @@ public class Hub {
 
 
         return buildHubFood(menu, restaurantId);
+    }
+
+
+    public void ctrlInitFood(Map<String, LinkedList<HubFoodInit>> restaurant_init) throws BadInitException {
+
+        for (Map.Entry<String, LinkedList<HubFoodInit>> entry : restaurant_init.entrySet()) {
+            String wsUrl = entry.getKey();
+            LinkedList<HubFoodInit> hubFoodInitList = entry.getValue();
+            try {
+                RestaurantClient client = new RestaurantClient(wsUrl);
+                LinkedList<MenuInit> menuInitList = new LinkedList<>();
+
+                for(HubFoodInit hfi: hubFoodInitList){
+                    menuInitList.add(buildMenuInit(hfi));
+                }
+                client.ctrlInit(menuInitList);
+            } catch (RestaurantClientException e) {
+                throw new RuntimeException();
+            }catch (com.forkexec.rst.ws.BadInitFault_Exception e){
+                throw new BadInitException(e.getMessage());
+            }
+
+        }
     }
 
 
@@ -272,6 +293,33 @@ public class Hub {
 
         return hubFoodList;
     }
+
+    private MenuId buildMenuId(HubFoodId hfi){
+        MenuId menuId = new MenuId();
+        menuId.setId(hfi.getMenuId());
+        return menuId;
+    }
+
+    private Menu buildMenu(HubFood hf){
+        Menu m = new Menu();
+        m.setId(buildMenuId(hf.getId()));
+        m.setEntree(hf.getEntree());
+        m.setPlate(hf.getPlate());
+        m.setDessert(hf.getDessert());
+        m.setPrice(hf.getPrice());
+        m.setPreparationTime(hf.getPreparationTime());
+
+        return m;
+    }
+
+    private MenuInit buildMenuInit(HubFoodInit hfi){
+        MenuInit mi = new MenuInit();
+        mi.setMenu(buildMenu(hfi.getFood()));
+        mi.setQuantity(hfi.getQuantity());
+
+        return mi;
+    }
+
 
 }
 
