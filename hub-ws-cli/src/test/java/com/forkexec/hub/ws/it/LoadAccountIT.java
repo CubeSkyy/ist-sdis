@@ -7,8 +7,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class LoadAccountIT extends BaseIT {
-    private String VALID_EMAIL = "test.test@test.com";
+    private String VALID_EMAIL = "testtest@test.com";
     private String VALID_FAKE_CC_NUMBER = "5105105105105100";
+
     @Test
     public void success() throws InvalidCreditCardFault_Exception, InvalidMoneyFault_Exception, InvalidUserIdFault_Exception {
         final Integer  MONEY_TO_ADD = 10;

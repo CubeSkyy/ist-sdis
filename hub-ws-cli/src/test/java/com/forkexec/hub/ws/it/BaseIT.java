@@ -2,10 +2,16 @@ package com.forkexec.hub.ws.it;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.List;
+import java.util.ArrayList;
+
+import com.forkexec.hub.ws.FoodInit;
+import com.forkexec.hub.ws.Food;
+import com.forkexec.hub.ws.FoodId;
 
 import com.forkexec.hub.ws.cli.HubClient;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.BeforeClass;
 
 /**
@@ -18,7 +24,19 @@ public class BaseIT {
 
 	protected static HubClient client;
 
+	protected static String MENU_ID = "010000100000";
+	protected static String ENTREE = "ovos";
+	protected static String PLATE = "bolognesa";
+	protected static String DESSERT = "gelado";
+	protected static int PRICE = 1024;
+	protected static int PREPARATION_TIME = 2048;
+	protected static String DESCRIPTION_TEXT = "ovos";
+	protected static int
+			DEFAULT_MENU_QUANTITY = 420;
+
+	protected static String EMPTY_STRING = "";
 	public static final int DEFAULT_INITIAL_BALANCE = 100;
+
 
 	@BeforeClass
 	public static void oneTimeSetup() throws Exception {
@@ -46,10 +64,107 @@ public class BaseIT {
 			client = new HubClient(wsURL);
 		}
 		client.setVerbose("true".equalsIgnoreCase(verboseEnabled));
-	}
 
-	@AfterClass
-	public static void cleanup() {
+		/*protected MenuId createMenuId() {
+			MenuId mi = new MenuId();
+			mi.setId(MENU_ID);
+			return mi;
+		}
+
+		protected Menu createMenu() {
+			Menu m = new Menu();
+
+			m.setId(createMenuId());
+			m.setEntree(ENTREE);
+			m.setPlate(PLATE);
+			m.setDessert(DESSERT);
+			m.setPrice(PRICE);
+			m.setPreparationTime(PREPARATION_TIME);
+
+			return m;
+		}
+
+		protected List<MenuInit> createInitList(){
+
+			MenuInit mi = new MenuInit();
+			Menu m = createMenu();
+			mi.setMenu(m);
+			mi.setQuantity(DEFAULT_MENU_QUANTITY);
+			List<MenuInit> lm = new ArrayList<>();
+			lm.add(mi);
+
+			return lm;
+		}*/
+
+	}
+	
+		protected FoodId createFoodId(){
+		FoodId foodId = new FoodId();
+		foodId.setRestaurantId("T02_Restaurant1");
+		foodId.setMenuId("Menu2");
+		return foodId;
+		}
+
+		protected Food createFood(){
+			Food food = new Food();
+
+			food.setId(createFoodId());
+			food.setEntree(ENTREE);
+			food.setPlate(PLATE);
+			food.setDessert(DESSERT);
+			food.setPrice(PRICE);
+			food.setPreparationTime(PREPARATION_TIME);
+
+			return food;
+		}
+
+		protected FoodId createFoodId2(){
+		FoodId foodId = new FoodId();
+		foodId.setRestaurantId("T02_Restaurant1");
+		foodId.setMenuId("Menu3");
+		return foodId;
+		}
+
+		protected Food createFood2(){
+			Food food = new Food();
+
+			food.setId(createFoodId2());
+			food.setEntree("salad");
+			food.setPlate("ovos");
+			food.setDessert("cheesecake");
+			food.setPrice(300);
+			food.setPreparationTime(400);
+
+			return food;
+		}
+
+		protected FoodInit createFoodInit(){
+			FoodInit f = new FoodInit();
+			f.setFood(createFood());
+			f.setQuantity(30);
+
+			return f;
+		}
+
+		protected FoodInit createFoodInit2(){
+			FoodInit f = new FoodInit();
+			f.setFood(createFood2());
+			f.setQuantity(30);
+
+			return f;
+		}
+
+		protected List<FoodInit> createFoodInitList(){
+			List<FoodInit> l = new ArrayList<>();
+			l.add(createFoodInit());
+			l.add(createFoodInit2());
+			
+			return l;
+		}
+
+	@After
+	public void cleanup() {
+		client.ctrlClear();
 	}
 
 }

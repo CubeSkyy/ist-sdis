@@ -5,10 +5,12 @@ public class HubFoodOrderItem {
 
     protected HubFoodId foodId;
     protected int foodQuantity;
-
-    public HubFoodOrderItem(HubFoodId hfi, int quantity){
+    protected int foodPrice;
+    public HubFoodOrderItem(HubFoodId hfi, int quantity, int price){
         setFoodId(hfi);
         setFoodQuantity(quantity);
+        setFoodPrice(price);
+
     }
     public HubFoodId getFoodId() {
         return foodId;
@@ -41,5 +43,10 @@ public class HubFoodOrderItem {
     public void setFoodQuantity(int value) {
         this.foodQuantity = value;
     }
+
+    public int getFoodPrice(){ return this.foodPrice; }
+
+    public void setFoodPrice(int price) { foodPrice = price;}
+
 
 }

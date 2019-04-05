@@ -1,8 +1,6 @@
 package com.forkexec.hub.ws;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 import javax.jws.WebService;
@@ -21,6 +19,7 @@ import com.forkexec.pts.ws.cli.PointsClient;
 import com.forkexec.pts.ws.cli.PointsClientException;
 
 import com.sun.xml.ws.fault.ServerSOAPFaultException;
+
 import javax.xml.soap.SOAPFault;
 
 /**
@@ -42,6 +41,7 @@ public class HubPortImpl implements HubPortType {
      */
     private HubEndpointManager endpointManager;
     private Hub h = Hub.getInstance();
+
     /**
      * Constructor receives a reference to the endpoint manager.
      */
@@ -54,9 +54,9 @@ public class HubPortImpl implements HubPortType {
     @Override
     public void activateAccount(String userId) throws InvalidUserIdFault_Exception {
         Hub h = Hub.getInstance();
-        try{
+        try {
             h.activateAccount(userId);
-        } catch (InvalidEmailException e){
+        } catch (InvalidEmailException e) {
             throwInvalidUserIdInit("O email e invalido!");
         }
     }
@@ -68,13 +68,13 @@ public class HubPortImpl implements HubPortType {
         Hub h = Hub.getInstance();
         try {
             h.loadAccount(userId, moneyToAdd, creditCardNumber);
-        } catch (InvalidEmailException e){
+        } catch (InvalidEmailException e) {
             throwInvalidUserIdInit(e.getMessage());
-        } catch (InvalidPointsException e){
+        } catch (InvalidPointsException e) {
             throwInvalidPoints(e.getMessage()); //Esta excepcao nunca vai acontecer, porque os Pontos sao so aqueles que estao no mapa, mas tenho de dar catch na mesma, right?
         } catch (InvalidChargeException e) {
             throwInvalidMoney(e.getMessage());
-        } catch (InvalidCCException e){
+        } catch (InvalidCCException e) {
             throwInvalidCC(e.getMessage());
         }
 
@@ -88,7 +88,7 @@ public class HubPortImpl implements HubPortType {
         try {
             Hub h = Hub.getInstance();
             hubFoodList = h.searchDeal(getRestaurants(), description);
-        }catch (BadTextException e){
+        } catch (BadTextException e) {
             throwBadText(e.getMessage());
         }
 
@@ -101,11 +101,12 @@ public class HubPortImpl implements HubPortType {
         try {
             Hub h = Hub.getInstance();
             h.searchHungry(getRestaurants(), description);
-        }catch (BadTextException e){
+        } catch (BadTextException e) {
             throwBadText(e.getMessage());
         }
         return null;
     }
+
 
 
     @Override
@@ -115,14 +116,14 @@ public class HubPortImpl implements HubPortType {
         if(userId == null || userId.trim().length()==0)
             throwInvalidUserIdInit("User ID invalido!");
 
-        if(foodId == null || foodId.getMenuId().trim().length()==0)
+       if(foodId == null || foodId.getMenuId().trim().length()==0)
             throwInvalidFoodIdFault("Food ID invalido!");
 
         if(foodQuantity <= 0)
             throwInvalidFoodQuantityFault("Quantidade invalida!");
 
         Hub h = Hub.getInstance();
-        HubFoodId hib = new HubFoodId(foodId.getRestaurantId(), foodId.getMenuId());
+        Food f = getFood(foodId);
 
         HubFoodOrder hfo = h.getFoodCart(userId);
 
@@ -131,10 +132,10 @@ public class HubPortImpl implements HubPortType {
 
         List<HubFoodOrderItem> listItem = hfo.getItems();
 
-        HubFoodOrderItem hfoi = listItem.stream().filter(i -> i.getFoodId().equals(hib)).findAny().orElse(null);
+        HubFoodOrderItem hfoi = listItem.stream().filter(i -> i.getFoodId().getMenuId().equals(f.getId().getMenuId())).findAny().orElse(null);
 
         if(hfoi == null)
-            listItem.add(new HubFoodOrderItem(hib,foodQuantity));
+            listItem.add(new HubFoodOrderItem(buildHubFoodId(f.getId()),foodQuantity,f.getPrice()));
         else
             hfoi.setFoodQuantity(hfoi.getFoodQuantity()+foodQuantity);
 
@@ -165,12 +166,22 @@ public class HubPortImpl implements HubPortType {
             throwEmptyCartFault("Carrinho vazio!");
 
         int totalPoints = listItem.stream().mapToInt(h::getPoints).sum();
-        /* USO da função ACCOUNT BALANCE
-         *  TODO: Trocar para função interna
-         */
         if(totalPoints < accountBalance(userId))
             throwNotEnoughPointsFault("Não tem saldo suficiente!");
 
+        Map<String, List<HubFoodOrderItem>> restaurantList = new HashMap<>();
+
+        for(HubFoodOrderItem hfoi : listItem){
+            String restaurantName = hfoi.getFoodId().getRestaurantId();
+            String wsName = getRestaurant(restaurantName);
+            List<HubFoodOrderItem> initList = restaurantList.get(wsName);
+            if (initList == null) {
+                initList = new LinkedList<>();
+                restaurantList.put(restaurantName, initList);
+            }
+            initList.add(hfoi);
+
+        }
         FoodOrderId foi = new FoodOrderId();
         foi.setId(hubOrder.getFoodOrderId().getId());
         FoodOrder fo = new FoodOrder();
@@ -179,16 +190,20 @@ public class HubPortImpl implements HubPortType {
         List<FoodOrderItem> listFoodOrderItems = fo.getItems();
         listItem.forEach(hubFoodItem -> listFoodOrderItems.add(buildFoodOrderItem(hubFoodItem)));
 
-        /* Funcao que vai retirar o saldo ao utilizador e abater o stock dos restaurantes */
-        h.confirmOrder(userId, totalPoints);
-
+        try {
+            h.confirmOrder(userId, restaurantList, totalPoints);
+        } catch (BadOrderException be){
+            throwInvalidUserIdInit(be.getMessage());
+        } catch (PointsClientException pc) {
+            throwNotEnoughPointsFault(pc.getMessage());
+        }
         return fo;
     }
 
     @Override
     public int accountBalance(String userId) throws InvalidUserIdFault_Exception {
         Hub h = Hub.getInstance();
-        try{
+        try {
             return h.accountBalance(userId);
         } catch (InvalidEmailException e) {
             throwInvalidUserIdInit("O email nao e valido!");
@@ -200,28 +215,29 @@ public class HubPortImpl implements HubPortType {
     @Override
     public Food getFood(FoodId foodId) throws InvalidFoodIdFault_Exception {
         Food food = null;
-        try{
+        try {
             HubFoodId hubFoodId = buildHubFoodId(foodId);
             HubFood hubFood = h.getFood(hubFoodId);
             food = buildFood(hubFood);
-        }catch (InvalidFoodIdException e){
+        } catch (InvalidFoodIdException e) {
             throwInvalidFoodIdFault(e.getMessage());
         }
 
         return food;
     }
 
+
     @SuppressWarnings("Duplicates")
     @Override
     public List<FoodOrderItem> cartContents(String userId) throws InvalidUserIdFault_Exception {
-        if(userId == null || userId.trim().length()==0)
+       if(userId == null || userId.trim().length()==0)
             throwInvalidUserIdInit("User ID invalido!");
 
         Hub h = Hub.getInstance();
 
         HubFoodOrder hubOrder = h.getFoodCart(userId);
 
-        List<HubFoodOrderItem> listItem = hubOrder.getItems();
+       List<HubFoodOrderItem> listItem = hubOrder.getItems();
         List<FoodOrderItem> listFoodOrderItems = new ArrayList<>();
 
         listItem.forEach(hubFoodItem -> listFoodOrderItems.add(buildFoodOrderItem(hubFoodItem)));
@@ -241,19 +257,19 @@ public class HubPortImpl implements HubPortType {
         Collection<UDDIRecord> restaurants;
         StringBuilder builder = new StringBuilder();
 
-        try{
+        try {
             UDDINaming uddiNaming = endpointManager.getUddiNaming();
             restaurants = uddiNaming.listRecords("T02_Restaurant%");
-            for(UDDIRecord ws : restaurants){
+            for (UDDIRecord ws : restaurants) {
                 RestaurantClient client = new RestaurantClient(ws.getUrl());
 
                 builder.append(client.ctrlPing("Cliente")).append("\n");
             }
-            if (restaurants.size() == 0){
+            if (restaurants.size() == 0) {
                 return String.format("No restaurants found at %s!", uddiNaming.getUDDIUrl());
             }
         } catch (UDDINamingException e) {
-			return e.getMessage();
+            return e.getMessage();
 
         } catch (RestaurantClientException e) {
             return e.getMessage();
@@ -266,6 +282,8 @@ public class HubPortImpl implements HubPortType {
      */
     @Override
     public void ctrlClear() {
+        Hub h = Hub.getInstance();
+        h.ctrlClear(getRestaurants());
     }
 
     /**
@@ -276,19 +294,19 @@ public class HubPortImpl implements HubPortType {
         Map<String, LinkedList<HubFoodInit>> restaurant_init = new HashMap<>();
 
         Hub h = Hub.getInstance();
-        for(FoodInit fi: initialFoods){
+        for (FoodInit fi : initialFoods) {
             String restaurantName = fi.getFood().getId().getRestaurantId();
             String wsName = getRestaurant(restaurantName);
             LinkedList<HubFoodInit> initList = restaurant_init.get(wsName);
             if (initList == null) {
-                initList = new LinkedList<> ();
+                initList = new LinkedList<>();
                 restaurant_init.put(restaurantName, initList);
             }
             initList.add(buildHubFoodInit(fi));
         }
-        try{
+        try {
             h.ctrlInitFood(restaurant_init);
-        }catch (BadInitException e){
+        } catch (BadInitException e) {
             throwBadInit(e.getMessage());
         }
 
@@ -296,7 +314,7 @@ public class HubPortImpl implements HubPortType {
 
     @Override
     public void ctrlInitUserPoints(int startPoints) throws InvalidInitFault_Exception {
-        try{
+        try {
             Hub h = Hub.getInstance();
             h.ctrlInitUserPoints(startPoints);
         } catch (BadInitException e) {
@@ -307,12 +325,12 @@ public class HubPortImpl implements HubPortType {
 
     // Helpers ----------------------------------------------------------
 
-    private String getRestaurant(String restaurantName){
+    private String getRestaurant(String restaurantName) {
         UDDINaming uddiNaming = endpointManager.getUddiNaming();
         String restaurant;
-        try{
+        try {
             restaurant = uddiNaming.lookup(restaurantName);
-        }catch (UDDINamingException e){
+        } catch (UDDINamingException e) {
             throw new RuntimeException();
         }
 
@@ -320,12 +338,12 @@ public class HubPortImpl implements HubPortType {
     }
 
 
-    private Collection<UDDIRecord> getRestaurants(){
+    private Collection<UDDIRecord> getRestaurants() {
         UDDINaming uddiNaming = endpointManager.getUddiNaming();
         Collection<UDDIRecord> restaurants;
-        try{
+        try {
             restaurants = uddiNaming.listRecords("T02_Restaurant%");
-        }catch (UDDINamingException e){
+        } catch (UDDINamingException e) {
             throw new RuntimeException();
         }
 
@@ -333,12 +351,8 @@ public class HubPortImpl implements HubPortType {
     }
 
     // View helpers ----------------------------------------------------------
-    private FoodId buildFoodId(HubFoodId id){
-        FoodId foi = new FoodId();
-        foi.setId(id.getId());
-        return foi;
-    }
-    private FoodOrderItem buildFoodOrderItem(HubFoodOrderItem hfoi){
+
+    private FoodOrderItem buildFoodOrderItem(HubFoodOrderItem hfoi) {
         FoodOrderItem foi = new FoodOrderItem();
         foi.setFoodId(buildFoodId(hfoi.getFoodId()));
         foi.setFoodQuantity(hfoi.getFoodQuantity());
@@ -346,43 +360,44 @@ public class HubPortImpl implements HubPortType {
     }
 
 
-     /** Helper to convert a domain object to a view. */
+    /**
+     * Helper to convert a domain object to a view.
+     */
 
-     private List<Food> buildFoodList(List<HubFood> hubFoodList){
-         List<Food> foodList = new ArrayList<>();
+    private List<Food> buildFoodList(List<HubFood> hubFoodList) {
+        List<Food> foodList = new ArrayList<>();
 
-         for(HubFood hf : hubFoodList){
-             foodList.add(buildFood(hf));
-         }
+        for (HubFood hf : hubFoodList) {
+            foodList.add(buildFood(hf));
+        }
 
-         return foodList;
-     }
+        return foodList;
+    }
 
-     private Food buildFood(HubFood hf){
-         Food f = new Food();
-         f.setId(buildFoodId(hf.getId()));
-         f.setEntree(hf.getEntree());
-         f.setPlate(hf.getPlate());
-         f.setDessert(hf.getDessert());
-         f.setPrice(hf.getPrice());
-         f.setPreparationTime(hf.getPreparationTime());
-         return f;
-     }
+    private Food buildFood(HubFood hf) {
+        Food f = new Food();
+        f.setId(buildFoodId(hf.getId()));
+        f.setEntree(hf.getEntree());
+        f.setPlate(hf.getPlate());
+        f.setDessert(hf.getDessert());
+        f.setPrice(hf.getPrice());
+        f.setPreparationTime(hf.getPreparationTime());
+        return f;
+    }
 
-    private FoodId buildFoodId(HubFoodId hfi){
+    private FoodId buildFoodId(HubFoodId hfi) {
         FoodId fi = new FoodId();
         fi.setMenuId(hfi.getMenuId());
         fi.setRestaurantId(hfi.getRestaurantId());
         return fi;
     }
 
-    private HubFoodId buildHubFoodId(FoodId fi){
-        HubFoodId hfi = new HubFoodId();
-        hfi.setMenuId(fi.getMenuId());
-        hfi.setRestaurantId(fi.getRestaurantId());
+    private HubFoodId buildHubFoodId(FoodId fi) {
+        HubFoodId hfi = new HubFoodId(fi.getMenuId(), fi.getRestaurantId());
         return hfi;
     }
-    private HubFoodInit buildHubFoodInit(FoodInit fi){
+
+    private HubFoodInit buildHubFoodInit(FoodInit fi) {
         HubFoodInit hfi = new HubFoodInit();
         HubFood hf = buildHubFood(fi.getFood());
         hfi.setHubFood(hf);
@@ -391,7 +406,7 @@ public class HubPortImpl implements HubPortType {
         return hfi;
     }
 
-    private HubFood buildHubFood(Food f){
+    private HubFood buildHubFood(Food f) {
         HubFood hubFood = new HubFood();
         FoodId foodId = f.getId();
         hubFood.setId(buildHubFoodId(foodId));
@@ -405,7 +420,9 @@ public class HubPortImpl implements HubPortType {
 
     // Exception helpers -----------------------------------------------------
 
-    /** Helper to throw a new BadInit exception. */
+    /**
+     * Helper to throw a new BadInit exception.
+     */
 
     private void throwEmptyCartFault(final String message) throws EmptyCartFault_Exception {
         EmptyCartFault faultInfo = new EmptyCartFault();
@@ -419,6 +436,7 @@ public class HubPortImpl implements HubPortType {
         faultInfo.message = message;
         throw new InvalidUserIdFault_Exception(message, faultInfo);
     }
+
     //InvalidFoodIdFault_Exception, InvalidFoodQuantityFault_Exception
     private void throwInvalidFoodIdFault(final String message) throws InvalidFoodIdFault_Exception {
         InvalidFoodIdFault faultInfo = new InvalidFoodIdFault();
@@ -433,30 +451,30 @@ public class HubPortImpl implements HubPortType {
     }
 
     private void throwInvalidPoints(final String message) throws InvalidUserIdFault_Exception {
-    InvalidUserIdFault faultInfo = new InvalidUserIdFault();
-    faultInfo.message = message;
-    throw new InvalidUserIdFault_Exception(message, faultInfo);
+        InvalidUserIdFault faultInfo = new InvalidUserIdFault();
+        faultInfo.message = message;
+        throw new InvalidUserIdFault_Exception(message, faultInfo);
     }
 
     private void throwInvalidCC(final String message) throws InvalidCreditCardFault_Exception {
-    InvalidCreditCardFault faultInfo = new InvalidCreditCardFault();
-    faultInfo.message = message;
-    throw new InvalidCreditCardFault_Exception(message, faultInfo);
+        InvalidCreditCardFault faultInfo = new InvalidCreditCardFault();
+        faultInfo.message = message;
+        throw new InvalidCreditCardFault_Exception(message, faultInfo);
     }
 
     private void throwInvalidMoney(final String message) throws InvalidMoneyFault_Exception {
-    InvalidMoneyFault faultInfo = new InvalidMoneyFault();
-    faultInfo.message = message;
-    throw new InvalidMoneyFault_Exception(message, faultInfo);
+        InvalidMoneyFault faultInfo = new InvalidMoneyFault();
+        faultInfo.message = message;
+        throw new InvalidMoneyFault_Exception(message, faultInfo);
     }
 
-    private void throwBadInit(final String message) throws InvalidInitFault_Exception{
-    InvalidInitFault faultInfo = new InvalidInitFault();
-    faultInfo.message = message;
-    throw new InvalidInitFault_Exception(message, faultInfo);
+    private void throwBadInit(final String message) throws InvalidInitFault_Exception {
+        InvalidInitFault faultInfo = new InvalidInitFault();
+        faultInfo.message = message;
+        throw new InvalidInitFault_Exception(message, faultInfo);
     }
 
-    private void throwBadText(final String message) throws InvalidTextFault_Exception{
+    private void throwBadText(final String message) throws InvalidTextFault_Exception {
         InvalidTextFault faultInfo = new InvalidTextFault();
         faultInfo.message = message;
         throw new InvalidTextFault_Exception(message, faultInfo);

@@ -4,7 +4,6 @@ import javax.jws.WebService;
 
 import com.forkexec.cc.ws.cli.CCClient;
 import com.forkexec.cc.ws.cli.CCClientException;
-import com.forkexec.hub.ws.FoodId;
 import com.forkexec.pts.ws.BadInitFault_Exception;
 import com.forkexec.pts.ws.cli.PointsClient;
 import com.forkexec.pts.ws.cli.PointsClientException;
@@ -111,18 +110,11 @@ public class Hub {
 
     public void loadAccount(String uId, int euros, String ccnumber) throws InvalidEmailException, InvalidPointsException, InvalidChargeException, InvalidCCException {
         try {
-//            Integer test = 0;
             CCClient ccClient = new CCClient(uddiURL, ccWsName);
             if (!ccClient.validateNumber(ccnumber)) {
                 throw new InvalidCCException("Numero de CC invalido!");
             }
             PointsClient client = getPointsClient();
-//            for (Integer i : traductionT.values()) {
-//                if (euros == i) {
-//                    client.addPoints(uId, i);
-//                    test = 1;
-//                }
-//            }
 
             Integer points = traductionT.get(euros);
 
@@ -130,10 +122,6 @@ public class Hub {
                 client.addPoints(uId, points);
             else
                 throw new InvalidChargeException("Por favor carregue com 10, 20, 30 ou 50 euros!");
-
-//            if (test == 0) {
-//                throw new InvalidChargeException("Por favor carregue com 10, 20, 30 ou 50 euros!");
-//            }
 
         } catch (PointsClientException | CCClientException e) {
             throw new RuntimeException();
@@ -184,8 +172,9 @@ public class Hub {
 		cartMap.remove(userId);
 	}
 
+
 	public int getPoints(HubFoodOrderItem hfoi)  {
-		return traductionT.get(hfoi.getPriceOfFood());
+		return traductionT.get(hfoi.getFoodPrice());
 	}
 
     /**
@@ -228,18 +217,33 @@ public class Hub {
     }
 
 
-    public List<HubFood> searchHungry(Collection<UDDIRecord> restaurants, String description) throws BadTextException {
+    public List<HubFood> searchHungry(Collection<UDDIRecord> restaurants, String description) throws BadTextException{
         List<HubFood> foodList = searchMenus(restaurants, description);
 
         foodList.sort(HubFood.priceComparator);
         return foodList;
     }
 
-    public List<HubFood> searchDeal(Collection<UDDIRecord> restaurants, String description) throws BadTextException {
+    public List<HubFood> searchDeal(Collection<UDDIRecord> restaurants, String description) throws BadTextException{
         List<HubFood> foodList = searchMenus(restaurants, description);
 
         foodList.sort(HubFood.preparationTimeComparator);
         return foodList;
+    }
+
+    public void ctrlClear(Collection<UDDIRecord>  restaurant_list) {
+        cartMap.clear();
+        try {
+            PointsClient ptsClient = getPointsClient();
+            ptsClient.ctrlClear();
+            for(UDDIRecord uddiRecord : restaurant_list){
+                RestaurantClient restaurantClient = new RestaurantClient(uddiRecord.getUrl());
+                restaurantClient.ctrlClear();
+            }
+        } catch (PointsClientException | RestaurantClientException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
 
     public HubFood getFood(HubFoodId hubFoodId) throws InvalidFoodIdException {
@@ -267,15 +271,17 @@ public class Hub {
     public void ctrlInitFood(Map<String, LinkedList<HubFoodInit>> restaurant_init) throws BadInitException {
 
         for (Map.Entry<String, LinkedList<HubFoodInit>> entry : restaurant_init.entrySet()) {
-            String wsUrl = entry.getKey();
+            String wsName = entry.getKey();
             LinkedList<HubFoodInit> hubFoodInitList = entry.getValue();
             try {
-                RestaurantClient client = new RestaurantClient(wsUrl);
-                LinkedList<MenuInit> menuInitList = new LinkedList<>();
+                RestaurantClient client = new RestaurantClient(uddiURL, wsName);
+                List<MenuInit> menuInitList = new LinkedList<>();
 
                 for(HubFoodInit hfi: hubFoodInitList){
                     menuInitList.add(buildMenuInit(hfi));
                 }
+
+
                 client.ctrlInit(menuInitList);
             } catch (RestaurantClientException e) {
                 throw new RuntimeException();
@@ -286,18 +292,18 @@ public class Hub {
         }
     }
 
-
     //Given a description and a list of Restaurant WS url's searches their menus and builds a unsorted HubFoodList with results from search
     private List<HubFood> searchMenus(Collection<UDDIRecord> restaurants, String description) throws BadTextException {
         List<HubFood> foodList = new ArrayList<>();
         try {
             for (UDDIRecord ws : restaurants) {
+
                 RestaurantClient client = new RestaurantClient(ws.getUrl());
                 foodList.addAll(buildHubList(client.searchMenus(description), ws.getOrgName()));
             }
         } catch (RestaurantClientException e) {
             throw new RuntimeException();
-        } catch (BadTextFault_Exception e) {
+        }catch (BadTextFault_Exception e){
             throw new BadTextException("O texto de procura é invalido!");
         }
         return foodList;
@@ -306,9 +312,7 @@ public class Hub {
     //Builds HubFood fom a menu and a given restaurant
     private HubFood buildHubFood(Menu menu, String restaurantId) {
         HubFood hubFood = new HubFood();
-        HubFoodId hubFoodId = new HubFoodId();
-        hubFoodId.setMenuId(menu.getId().getId());
-        hubFoodId.setRestaurantId(restaurantId);
+        HubFoodId hubFoodId = new HubFoodId(menu.getId().getId(), restaurantId);
         hubFood.setId(hubFoodId);
         hubFood.setEntree(menu.getEntree());
         hubFood.setPlate(menu.getPlate());
@@ -317,18 +321,17 @@ public class Hub {
         hubFood.setPreparationTime(menu.getPreparationTime());
         return hubFood;
     }
-
-
     //Builds HubFoodList for one restaurant from a munuList
-    private List<HubFood> buildHubList(List<Menu> menuList, String restaurantId) {
+    private List<HubFood> buildHubList(List<Menu> menuList, String restaurantId){
         List<HubFood> hubFoodList = new ArrayList<>();
 
-        for (Menu menu : menuList) {
+        for(Menu menu : menuList){
             hubFoodList.add(buildHubFood(menu, restaurantId));
         }
 
         return hubFoodList;
     }
+
 
     private MenuId buildMenuId(HubFoodId hfi){
         MenuId menuId = new MenuId();
@@ -355,7 +358,6 @@ public class Hub {
 
         return mi;
     }
-
 
 }
 
