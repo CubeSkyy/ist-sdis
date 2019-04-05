@@ -145,6 +145,7 @@ public class RestaurantPortImpl implements RestaurantPortType {
     @Override
     public void ctrlInit(List<MenuInit> initialMenus) throws BadInitFault_Exception {
         // TODO Auto-generated method stub
+        System.out.println(initialMenus);
         if (initialMenus == null || initialMenus.isEmpty()) throwBadInit("Lista de Menus Invalida!");
 
         Restaurant r = Restaurant.getInstance();

@@ -12,7 +12,7 @@ public class ctrlClearIT extends BaseIT {
 			//client.ctrlInitUserPoints(100);
 			client.activateAccount("joaomaria@gmail.pt");
 	        client.ctrlClear();
-	        //client.accountBalance("joaomaria@gmail.pt");
+	        client.accountBalance("joaomaria@gmail.pt");
    		}catch (InvalidUserIdFault_Exception e) {
    			System.out.println(e.getMessage());
    			throw e;

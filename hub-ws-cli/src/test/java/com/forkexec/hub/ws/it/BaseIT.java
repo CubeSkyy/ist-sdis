@@ -11,7 +11,7 @@ import com.forkexec.hub.ws.FoodId;
 
 import com.forkexec.hub.ws.cli.HubClient;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.BeforeClass;
 
 /**
@@ -120,7 +120,7 @@ public class BaseIT {
 
 		protected FoodId createFoodId2(){
 		FoodId foodId = new FoodId();
-		foodId.setRestaurantId("T02_Restaurant2");
+		foodId.setRestaurantId("T02_Restaurant1");
 		foodId.setMenuId("Menu3");
 		return foodId;
 		}
@@ -157,12 +157,14 @@ public class BaseIT {
 		protected List<FoodInit> createFoodInitList(){
 			List<FoodInit> l = new ArrayList<>();
 			l.add(createFoodInit());
+			l.add(createFoodInit2());
 			
 			return l;
 		}
 
-	@AfterClass
-	public static void cleanup() {
+	@After
+	public void cleanup() {
+		client.ctrlClear();
 	}
 
 }
