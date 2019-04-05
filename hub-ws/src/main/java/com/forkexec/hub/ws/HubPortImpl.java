@@ -1,5 +1,6 @@
 package com.forkexec.hub.ws;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -9,6 +10,7 @@ import javax.xml.soap.SOAPFault;
 
 import com.forkexec.hub.domain.*;
 
+import com.forkexec.rst.ws.Menu;
 import com.forkexec.rst.ws.cli.RestaurantClient;
 import com.forkexec.rst.ws.cli.RestaurantClientException;
 import com.sun.xml.ws.fault.ServerSOAPFaultException;
@@ -81,13 +83,27 @@ public class HubPortImpl implements HubPortType {
 
     @Override
     public List<Food> searchDeal(String description) throws InvalidTextFault_Exception {
-        // TODO return lowest price menus first
-        return null;
+        List<HubFood> hubFoodList = new ArrayList<>();
+
+        try {
+            Hub h = Hub.getInstance();
+            hubFoodList = h.searchDeal(getRestaurants(), description);
+        }catch (BadTextException e){
+            throwBadText(e.getMessage());
+        }
+
+        List<Food> foodList = buildFoodList(hubFoodList);
+        return foodList;
     }
 
     @Override
     public List<Food> searchHungry(String description) throws InvalidTextFault_Exception {
-        // TODO return lowest preparation time first
+        try {
+            Hub h = Hub.getInstance();
+            h.searchHungry(getRestaurants(), description);
+        }catch (BadTextException e){
+            throwBadText(e.getMessage());
+        }
         return null;
     }
 
@@ -199,18 +215,49 @@ public class HubPortImpl implements HubPortType {
     }
 
 
+    private Collection<UDDIRecord> getRestaurants(){
+        UDDINaming uddiNaming = endpointManager.getUddiNaming();
+        Collection<UDDIRecord> restaurants;
+        try{
+            restaurants = uddiNaming.listRecords("T02_Restaurant%");
+        }catch (UDDINamingException e){
+            throw new RuntimeException();
+        }
+
+        return restaurants;
+    }
+
     // View helpers ----------------------------------------------------------
 
      /** Helper to convert a domain object to a view. */
-    /* private ParkInfo buildParkInfo(Park park) {
-     ParkInfo info = new ParkInfo();
-     info.setId(park.getId());
-     info.setCoords(buildCoordinatesView(park.getCoordinates()));
-     info.setCapacity(park.getMaxCapacity());
-     info.setFreeSpaces(park.getFreeDocks());
-     info.setAvailableCars(park.getAvailableCars());
-     return info;
-     }*/
+
+     private List<Food> buildFoodList(List<HubFood> hubFoodList){
+         List<Food> foodList = new ArrayList<>();
+
+         for(HubFood hf : hubFoodList){
+             foodList.add(buildFood(hf));
+         }
+
+         return foodList;
+     }
+
+     private Food buildFood(HubFood hf){
+         Food f = new Food();
+         f.setId(buildFoodId(hf.getId()));
+         f.setEntree(hf.getEntree());
+         f.setPlate(hf.getPlate());
+         f.setDessert(hf.getDessert());
+         f.setPrice(hf.getPrice());
+         f.setPreparationTime(hf.getPreparationTime());
+         return f;
+     }
+
+    private FoodId buildFoodId(HubFoodId hfi){
+        FoodId fi = new FoodId();
+        fi.setMenuId(hfi.getMenuId());
+        fi.setRestaurantId(hfi.getRestaurantId());
+        return fi;
+    }
 
     // Exception helpers -----------------------------------------------------
 
@@ -256,6 +303,12 @@ public class HubPortImpl implements HubPortType {
     InvalidInitFault faultInfo = new InvalidInitFault();
     faultInfo.message = message;
     throw new InvalidInitFault_Exception(message, faultInfo);            
+    }
+
+    private void throwBadText(final String message) throws InvalidTextFault_Exception{
+        InvalidTextFault faultInfo = new InvalidTextFault();
+        faultInfo.message = message;
+        throw new InvalidTextFault_Exception(message, faultInfo);
     }
 
 }
