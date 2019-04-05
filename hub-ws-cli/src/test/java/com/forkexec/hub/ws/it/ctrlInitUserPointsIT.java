@@ -14,6 +14,14 @@ public class ctrlInitUserPointsIT extends BaseIT {
 
     @Test
     public void success() throws InvalidUserIdFault_Exception, InvalidCreditCardFault_Exception, InvalidMoneyFault_Exception, InvalidInitFault_Exception {
+        client.ctrlInitUserPoints(NEW_INIT_POINTS);
+        client.activateAccount(VALID_EMAIL);
+        Assert.assertEquals(client.accountBalance(VALID_EMAIL),NEW_INIT_POINTS);
+    }
+
+
+    @Test
+    public void success_changeUserWallets() throws InvalidUserIdFault_Exception, InvalidCreditCardFault_Exception, InvalidMoneyFault_Exception, InvalidInitFault_Exception {
         client.activateAccount(VALID_EMAIL);
         client.loadAccount(VALID_EMAIL,MONEY_TO_ADD,VALID_FAKE_CC_NUMBER);
         Assert.assertEquals(client.accountBalance(VALID_EMAIL), DEFAULT_INITIAL_BALANCE + POINTS_TO_ADD);
