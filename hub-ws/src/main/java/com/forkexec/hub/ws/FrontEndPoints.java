@@ -58,21 +58,29 @@ public class FrontEndPoints {
     }
 
     // remote invocation methods ----------------------------------------------
-    public void activateUser(String userEmail) throws EmailAlreadyExistsFault_Exception, InvalidEmailException {
+    public void activateUser(String userEmail) throws InvalidEmailException {
         //catch EmailAlreadyExistsFault_Exception
         //catch InvalidEmailFault_Exception
         //catch PointsClientException
     }
 
     public int pointsBalance(String userEmail) {
+        //catch InvalidEmailFault_Exception
+        //catch PointsClientException
         return 0;
     }
 
     public int addPoints(String userEmail, int pointsToAdd) {
-        return 0;
+        //catch InvalidPointsFault_Exception
+        //catch InvalidEmailFault_Exception
+        //catch PointsClientException
+         return 0;
     }
 
     public int spendPoints(String userEmail, int pointsToSpend) {
+        //catch InvalidEmailFault_Exception
+        //catch InvalidPointsFault_Exception
+        //catch NotEnoughBalanceException
         return 0;
     }
 
@@ -101,9 +109,12 @@ public class FrontEndPoints {
     }
 
     public void ctrlClear() {
+        //catch PointsClientException
     }
 
     public void ctrlInit(int startPoints) {
+        //catch BadInitFault_Exception
+        //catch PointsClientException
 
     }
 

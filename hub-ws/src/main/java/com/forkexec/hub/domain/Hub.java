@@ -1,17 +1,15 @@
 package com.forkexec.hub.domain;
 
-import javax.jws.WebService;
 
 import com.forkexec.cc.ws.cli.CCClient;
 import com.forkexec.cc.ws.cli.CCClientException;
-import com.forkexec.pts.ws.BadInitFault_Exception;
-import com.forkexec.pts.ws.cli.PointsClient;
+import com.forkexec.hub.ws.FrontEndPoints;
+
 import com.forkexec.pts.ws.cli.PointsClientException;
 import com.forkexec.rst.ws.*;
 import com.forkexec.rst.ws.cli.RestaurantClient;
 import com.forkexec.rst.ws.cli.RestaurantClientException;
 
-import com.forkexec.pts.ws.*;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDIRecord;
 
 import java.io.IOException;
@@ -32,8 +30,8 @@ public class Hub {
 
     private final AtomicInteger orderNumber = new AtomicInteger(0);
     private final String uddiURL;
-    private final String pointsWsName;
     private final String ccWsName = "CC";
+    private FrontEndPoints fe = FrontEndPoints.getInstance();
 
 
     private static final Map<Integer, Integer> traductionT = new ConcurrentHashMap<Integer, Integer>();
@@ -44,6 +42,7 @@ public class Hub {
         traductionT.put(30, 3300);
         traductionT.put(50, 5500);
     }
+
     private Map<String, HubFoodOrder> cartMap = new ConcurrentHashMap<>();
     // Singleton -------------------------------------------------------------
 
@@ -59,7 +58,6 @@ public class Hub {
             System.out.println(msg);
         }
         uddiURL = properties.getProperty("uddi.url");
-        pointsWsName = properties.getProperty("test.ws.pts.url");
     }
 
     /**
@@ -76,32 +74,7 @@ public class Hub {
     }
 
     public void activateAccount(String userId) throws InvalidEmailException {
-        try {
-            PointsClient client = getPointsClient();
-            client.activateUser(userId);
-        } catch (EmailAlreadyExistsFault_Exception e) {
-            throw new InvalidEmailException("O email já está registado!");
-        } catch (InvalidEmailFault_Exception e) {
-            throw new InvalidEmailException("O email e invalido!");
-        } catch (PointsClientException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    public PointsClient getPointsClient() throws PointsClientException {
-        PointsClient client = null;
-        client = new PointsClient(uddiURL, pointsWsName);
-        return client;
-    }
-
-    public RestaurantClient getRestaurantClient() throws RestaurantClientException {
-        RestaurantClient client = null;
-        client = new RestaurantClient(uddiURL, "T02_Points1");
-        return client;
-    }
-
-    public Map<Integer, Integer> getTraductionTable() {
-        return traductionT;
+        fe.activateUser(userId);
     }
 
 
@@ -112,102 +85,85 @@ public class Hub {
     public void loadAccount(String uId, int euros, String ccnumber) throws InvalidEmailException, InvalidPointsException, InvalidChargeException, InvalidCCException {
         try {
             CCClient ccClient = new CCClient(uddiURL, ccWsName);
-            if (!ccClient.validateNumber(ccnumber)) {
+            if (!ccClient.validateNumber(ccnumber))
                 throw new InvalidCCException("Numero de CC invalido!");
-            }
-            PointsClient client = getPointsClient();
-
-            Integer points = traductionT.get(euros);
-
-            if (points != null)
-                client.addPoints(uId, points);
-            else
-                throw new InvalidChargeException("Por favor carregue com 10, 20, 30 ou 50 euros!");
-
-        } catch (PointsClientException | CCClientException e) {
+        } catch (CCClientException e) {
             throw new RuntimeException();
-        } catch (InvalidEmailFault_Exception e) {
-            throw new InvalidEmailException("O email nao e valido!");
-        } catch (InvalidPointsFault_Exception e) {
-            throw new InvalidPointsException("Os pontos tem de ser positivos!");
         }
+
+        Integer points = traductionT.get(euros);
+        if (points != null)
+            fe.addPoints(uId, points);
+        else
+            throw new InvalidChargeException("Por favor carregue com 10, 20, 30 ou 50 euros!");
+
 
     }
 
     public int accountBalance(String uID) throws InvalidEmailException {
-        try {
-            PointsClient client = getPointsClient();
-            return client.pointsBalance(uID);
-        } catch (InvalidEmailFault_Exception e) {
-            throw new InvalidEmailException("O email nao e valido!");
-        } catch (PointsClientException e) {
-            throw new RuntimeException();
-        }
+        return fe.pointsBalance(uID);
     }
 
     public void ctrlInitUserPoints(int startPts) throws BadInitException {
-        try {
-            PointsClient client = getPointsClient();
-            client.ctrlInit(startPts);
-        } catch (BadInitFault_Exception e) {
-            throw new BadInitException("Nao pode ter pontos negativos!");
-        } catch (PointsClientException e) {
-            throw new RuntimeException();
-        }
+        fe.ctrlInit(startPts);
     }
 
     /**
      * Verifica a eligibilidade do user por ir buscar o saldo dele ao points e deveolve o carrinho dele
+     *
      * @param userId
      * @return HubFoodOrder
      * @throws InvalidEmailException
      */
-	public HubFoodOrder getFoodCart(String userId) throws InvalidEmailException {
-        if (accountBalance(userId)>=0) {
+    public HubFoodOrder getFoodCart(String userId) throws InvalidEmailException {
+        if (accountBalance(userId) >= 0) {
             return cartMap.get(userId);
         }
-		return null;
-	}
+        return null;
+    }
 
     /**
      * Verifica a eligibilidade do user ao ir buscar o saldo desse e devolve a HubOrder dessa pessoa
+     *
      * @param userId
      * @return
      * @throws InvalidEmailException
      */
-	public HubFoodOrder createFoodCart(String userId) throws InvalidEmailException {
+    public HubFoodOrder createFoodCart(String userId) throws InvalidEmailException {
 
-        if (accountBalance(userId)>=0) {
+        if (accountBalance(userId) >= 0) {
             HubFoodOrder hfo = new HubFoodOrder();
             HubFoodOrderId hofi = new HubFoodOrderId();
-            hofi.setId("HUBORDER"+ orderNumber.getAndIncrement());
+            hofi.setId("HUBORDER" + orderNumber.getAndIncrement());
             hfo.setFoodOrderId(hofi);
             cartMap.put(userId, hfo);
             return hfo;
         }
 
         return null;
-	}
-	public void clearFoodCart(String userId) throws InvalidEmailException {
-        if (accountBalance(userId)>=0) {
+    }
+
+    public void clearFoodCart(String userId) throws InvalidEmailException {
+        if (accountBalance(userId) >= 0) {
             cartMap.remove(userId);
         }
-	}
+    }
 
 
-	public int getPoints(HubFoodOrderItem hfoi)  {
-		return getCorrespondingPoints(hfoi.getFoodPrice());
-	}
+    public int getPoints(HubFoodOrderItem hfoi) {
+        return getCorrespondingPoints(hfoi.getFoodPrice());
+    }
 
     /**
      * Percorre a lista de restaurantList e faz orderMenu para cada uma das entradas
      * E faz spendPoints do total de pontos do menu ao user.
+     *
      * @param userId
      * @param restaurantList
      * @param totalPoints
      * @throws BadOrderException
      */
-	public void confirmOrder(String userId,Map<String, List<HubFoodOrderItem>> restaurantList,int totalPoints) throws BadOrderException, PointsClientException {
+    public void confirmOrder(String userId, Map<String, List<HubFoodOrderItem>> restaurantList, int totalPoints) throws BadOrderException, PointsClientException {
         for (Map.Entry<String, List<HubFoodOrderItem>> entry : restaurantList.entrySet()) {
             String wsUrl = entry.getKey();
             List<HubFoodOrderItem> hubFoodInitList = entry.getValue();
@@ -227,26 +183,19 @@ public class Hub {
             }
         }
 
-        PointsClient client = getPointsClient();
+        fe.spendPoints(userId, totalPoints);
 
-        try {
-            client.spendPoints(userId, totalPoints);
-        } catch (com.forkexec.pts.ws.InvalidEmailFault_Exception
-                | com.forkexec.pts.ws.InvalidPointsFault_Exception
-                | com.forkexec.pts.ws.cli.NotEnoughBalanceException e) {
-            throw new PointsClientException(e.getMessage());
-        }
     }
 
 
-    public List<HubFood> searchHungry(Collection<UDDIRecord> restaurants, String description) throws BadTextException{
+    public List<HubFood> searchHungry(Collection<UDDIRecord> restaurants, String description) throws BadTextException {
         List<HubFood> foodList = searchMenus(restaurants, description);
 
         foodList.sort(HubFood.preparationTimeComparator);
         return foodList;
     }
 
-    public List<HubFood> searchDeal(Collection<UDDIRecord> restaurants, String description) throws BadTextException{
+    public List<HubFood> searchDeal(Collection<UDDIRecord> restaurants, String description) throws BadTextException {
         List<HubFood> foodList = searchMenus(restaurants, description);
 
 
@@ -254,16 +203,15 @@ public class Hub {
         return foodList;
     }
 
-    public void ctrlClear(Collection<UDDIRecord>  restaurant_list) {
+    public void ctrlClear(Collection<UDDIRecord> restaurant_list) {
         cartMap.clear();
         try {
-            PointsClient ptsClient = getPointsClient();
-            ptsClient.ctrlClear();
-            for(UDDIRecord uddiRecord : restaurant_list){
+            fe.ctrlClear();
+            for (UDDIRecord uddiRecord : restaurant_list) {
                 RestaurantClient restaurantClient = new RestaurantClient(uddiRecord.getUrl());
                 restaurantClient.ctrlClear();
             }
-        } catch (PointsClientException | RestaurantClientException e) {
+        } catch (RestaurantClientException e) {
             throw new RuntimeException(e.getMessage());
         }
 
@@ -299,14 +247,14 @@ public class Hub {
             try {
                 RestaurantClient client = new RestaurantClient(wsUrl);
                 List<MenuInit> menuInitList = new LinkedList<>();
-                for(HubFoodInit hfi: hubFoodInitList){
+                for (HubFoodInit hfi : hubFoodInitList) {
                     menuInitList.add(buildMenuInit(hfi));
                 }
 
                 client.ctrlInit(menuInitList);
             } catch (RestaurantClientException e) {
                 throw new RuntimeException();
-            }catch (com.forkexec.rst.ws.BadInitFault_Exception e){
+            } catch (com.forkexec.rst.ws.BadInitFault_Exception e) {
                 throw new BadInitException(e.getMessage());
             }
 
@@ -324,7 +272,7 @@ public class Hub {
             }
         } catch (RestaurantClientException e) {
             throw new RuntimeException();
-        }catch (BadTextFault_Exception e){
+        } catch (BadTextFault_Exception e) {
             throw new BadTextException("O texto de procura é invalido!");
         }
         return foodList;
@@ -342,11 +290,12 @@ public class Hub {
         hubFood.setPreparationTime(menu.getPreparationTime());
         return hubFood;
     }
+
     //Builds HubFoodList for one restaurant from a munuList
-    private List<HubFood> buildHubList(List<Menu> menuList, String restaurantId){
+    private List<HubFood> buildHubList(List<Menu> menuList, String restaurantId) {
         List<HubFood> hubFoodList = new ArrayList<>();
 
-        for(Menu menu : menuList){
+        for (Menu menu : menuList) {
             hubFoodList.add(buildHubFood(menu, restaurantId));
         }
 
@@ -354,13 +303,13 @@ public class Hub {
     }
 
 
-    private MenuId buildMenuId(HubFoodId hfi){
+    private MenuId buildMenuId(HubFoodId hfi) {
         MenuId menuId = new MenuId();
         menuId.setId(hfi.getMenuId());
         return menuId;
     }
 
-    private Menu buildMenu(HubFood hf){
+    private Menu buildMenu(HubFood hf) {
         Menu m = new Menu();
         m.setId(buildMenuId(hf.getId()));
         m.setEntree(hf.getEntree());
@@ -372,7 +321,7 @@ public class Hub {
         return m;
     }
 
-    private MenuInit buildMenuInit(HubFoodInit hfi){
+    private MenuInit buildMenuInit(HubFoodInit hfi) {
         MenuInit mi = new MenuInit();
         mi.setMenu(buildMenu(hfi.getFood()));
         mi.setQuantity(hfi.getQuantity());
