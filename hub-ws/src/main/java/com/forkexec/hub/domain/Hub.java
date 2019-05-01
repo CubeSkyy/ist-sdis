@@ -59,7 +59,7 @@ public class Hub {
             System.out.println(msg);
         }
         uddiURL = properties.getProperty("uddi.url");
-        pointsWsName = properties.getProperty("pts.ws.name");
+        pointsWsName = properties.getProperty("test.ws.pts.url");
     }
 
     /**
@@ -233,7 +233,7 @@ public class Hub {
             client.spendPoints(userId, totalPoints);
         } catch (com.forkexec.pts.ws.InvalidEmailFault_Exception
                 | com.forkexec.pts.ws.InvalidPointsFault_Exception
-                | com.forkexec.pts.ws.NotEnoughBalanceFault_Exception e) {
+                | com.forkexec.pts.ws.cli.NotEnoughBalanceException e) {
             throw new PointsClientException(e.getMessage());
         }
     }

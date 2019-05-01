@@ -56,50 +56,52 @@ public class PointsPortImpl implements PointsPortType {
         return -1;
     }
 
-    // Adicionar verificacoes em baixo para se o user nao estiver registado ainda e se tentar addPoints ou spendPoints
-
     @Override
-    public int addPoints(final String userEmail, final int pointsToAdd)
-	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
-        if (userEmail == null
-                || userEmail.trim().length() == 0)
-            throwInvalidEmailFault("Email invalido!");
-
-        if(pointsToAdd <= 0)
-            throwInvalidPointsFault("Quantidade de pontos a ser adicionada invalida!");
-        Points p = Points.getInstance();
-        try {
-            return p.addPoints(userEmail, pointsToAdd);
-        } catch (InvalidEmailException ief) {
-            throwInvalidEmailFault("Email invalido!" + ief.getMessage());
-        }
-        return -1;
+    public int write(final String userEmail, int value) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception{
+        return 1;
     }
 
-    @Override
-    public int spendPoints(final String userEmail, final int pointsToSpend)
-	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceFault_Exception {
-        if (userEmail == null
-                || userEmail.trim().length() == 0)
-            throwInvalidEmailFault("Email invalido!");
 
-        if(pointsToSpend <= 0)
-            throwInvalidPointsFault("Quantidade de pontos a ser gasto invalida!");
-        Points p = Points.getInstance();
-
-        try {
-            return p.subtractPoints(userEmail, pointsToSpend);
-        } catch (InvalidEmailException ief) {
-            throwInvalidEmailFault("Email invalido!" + ief.getMessage());
-        } catch (NotEnoughBalanceException nebf) {
-            throwNotEnoughBalanceFault("Não tem saldo suficiente!" + nebf.getMessage());
-        }
-        return -1;
-    }
+//    @Override
+//    public int addPoints(final String userEmail, final int pointsToAdd)
+//	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
+//        if (userEmail == null
+//                || userEmail.trim().length() == 0)
+//            throwInvalidEmailFault("Email invalido!");
+//
+//        if(pointsToAdd <= 0)
+//            throwInvalidPointsFault("Quantidade de pontos a ser adicionada invalida!");
+//        Points p = Points.getInstance();
+//        try {
+//            return p.addPoints(userEmail, pointsToAdd);
+//        } catch (InvalidEmailException ief) {
+//            throwInvalidEmailFault("Email invalido!" + ief.getMessage());
+//        }
+//        return -1;
+//    }
+//
+//    @Override
+//    public int spendPoints(final String userEmail, final int pointsToSpend)
+//	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceFault_Exception {
+//        if (userEmail == null
+//                || userEmail.trim().length() == 0)
+//            throwInvalidEmailFault("Email invalido!");
+//
+//        if(pointsToSpend <= 0)
+//            throwInvalidPointsFault("Quantidade de pontos a ser gasto invalida!");
+//        Points p = Points.getInstance();
+//
+//        try {
+//            return p.subtractPoints(userEmail, pointsToSpend);
+//        } catch (InvalidEmailException ief) {
+//            throwInvalidEmailFault("Email invalido!" + ief.getMessage());
+//        } catch (NotEnoughBalanceException nebf) {
+//            throwNotEnoughBalanceFault("Não tem saldo suficiente!" + nebf.getMessage());
+//        }
+//        return -1;
+//    }
 
     // Control operations ----------------------------------------------------
-    // TODO
-    /** Diagnostic operation to check if service is running. */
     @Override
     public String ctrlPing(String inputMessage) {
 	// If no input is received, return a default name.
@@ -155,11 +157,11 @@ public class PointsPortImpl implements PointsPortType {
         throw new InvalidPointsFault_Exception(message, faultInfo);
     }
 
-    private void throwNotEnoughBalanceFault(final String message) throws NotEnoughBalanceFault_Exception {
-        final NotEnoughBalanceFault faultInfo = new NotEnoughBalanceFault();
-        faultInfo.message = message;
-        throw new NotEnoughBalanceFault_Exception(message, faultInfo);
-    }
+//    private void throwNotEnoughBalanceFault(final String message) throws NotEnoughBalanceFault_Exception {
+//        final NotEnoughBalanceFault faultInfo = new NotEnoughBalanceFault();
+//        faultInfo.message = message;
+//        throw new NotEnoughBalanceFault_Exception(message, faultInfo);
+//    }
 
     private void throwEmailAlreadyExistsFault(final String message) throws EmailAlreadyExistsFault_Exception {
         final EmailAlreadyExistsFault faultInfo = new EmailAlreadyExistsFault();
