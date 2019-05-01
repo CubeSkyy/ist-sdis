@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.AbstractMap.SimpleEntry;
 
 /**
  * Points
@@ -23,7 +24,8 @@ public class Points {
 
     private static final String VALID_EMAIL_REGEX = "[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*";
 
-    private Map<String, Integer> users = new ConcurrentHashMap<String, Integer>();
+    //private Entry<Integer,Integer> TagValue = new SimpleEntry<Integer, Integer>();
+    private Map<String,  SimpleEntry<Integer, Integer>> users = new ConcurrentHashMap<String,  SimpleEntry<Integer, Integer>>();
 
     // Singleton -------------------------------------------------------------
 
@@ -49,7 +51,7 @@ public class Points {
     * Returns the map with all the users
     */
 
-    public Map<String, Integer> getUsers(){
+    public Map<String,  SimpleEntry<Integer, Integer>> getUsers(){
         return users;
     }
 
@@ -69,7 +71,7 @@ public class Points {
         if (!checkRegexPattern(userEmail, VALID_EMAIL_REGEX))
             throw new InvalidEmailException("Email é definido por user@dominio!");
 
-        Integer points = users.get(userEmail);
+        Integer points = users.get(userEmail).getValue();
         if (points == null) throw new InvalidEmailException("User não presente!");
 
         return points;
@@ -79,18 +81,18 @@ public class Points {
      * @param userEmail     email of authenticated user.
      * @param pointsToSpend amount of points to spend
      */
-    public int subtractPoints(String userEmail, Integer pointsToSpend)
+  /*  public int subtractPoints(String userEmail, Integer pointsToSpend)
             throws InvalidEmailException, NotEnoughBalanceException {
 
         Integer points = getPoints(userEmail);
 
         if (pointsToSpend > points) throw new NotEnoughBalanceException("Não tem saldo suficiente!");
         points -= pointsToSpend;
-        users.put(userEmail, points);
+        users.put(userEmail, new SimpleEntry<>(users.get(userEmail).getKey(), points));
 
         return points;
 
-    }
+    }*/
 
     /**
     @param userEmail     email of new user.
@@ -106,23 +108,23 @@ public class Points {
             }
         }
 
-        users.put(userEmail, initialBalance.get());
+        users.put(userEmail, new SimpleEntry<>(0, initialBalance.get()));
     }
 
     /**
      * @param userEmail     email of authenticated user.
      * @param pointsToAdd amount of points to add
      */
-    public int addPoints(String userEmail, Integer pointsToAdd)
+    /*public int addPoints(String userEmail, Integer pointsToAdd)
             throws InvalidEmailException {
 
         Integer points = getPoints(userEmail);
 
         points += pointsToAdd;
-        users.put(userEmail, points);
+        users.put(userEmail, new SimpleEntry<>(users.get(userEmail).getKey(), points));
         return points;
 
-    }
+    }*/
 
     public void resetState() {
         users.clear();
