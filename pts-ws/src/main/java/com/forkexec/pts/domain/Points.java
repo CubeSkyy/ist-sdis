@@ -66,15 +66,16 @@ public class Points {
      * @param userEmail email of authenticated user.
      * @return the amounts of points that user has.
      */
-    public Integer getPoints(String userEmail) throws InvalidEmailException {
+    public SimpleEntry getPoints(String userEmail) throws InvalidEmailException {
 
         if (!checkRegexPattern(userEmail, VALID_EMAIL_REGEX))
             throw new InvalidEmailException("Email é definido por user@dominio!");
 
         Integer points = users.get(userEmail).getValue();
         if (points == null) throw new InvalidEmailException("User não presente!");
-
-        return points;
+        Integer[] pair = new Integer[2];
+        pair[0] =
+        return  ;
     }
 
     /**
@@ -135,5 +136,11 @@ public class Points {
         return Pattern.compile(regex).matcher(text).matches();
     }
 
+    public Boolean checkUserExists(final String userEmail){
+        return users.containsKey(userEmail);
+    }
 
+    public void setUserBalance(final String userEmail, int ammount, int tag){
+        users.put(userEmail, new SimpleEntry<>(ammount, tag));
+    }
 }

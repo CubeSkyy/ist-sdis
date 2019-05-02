@@ -2,7 +2,7 @@ package com.forkexec.pts.ws;
 
 import javax.jws.WebService;
 import com.forkexec.pts.domain.*;
-import java.util.regex.Pattern;
+import java.util.AbstractMap.SimpleEntry;
 /**
  * This class implements the Web Service port type (interface). The annotations
  * below "map" the Java class to the WSDL definitions.
@@ -42,22 +42,40 @@ public class PointsPortImpl implements PointsPortType {
     }
 
     @Override
-    public int pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
+    public Integer[] pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
         if (userEmail == null
                 || userEmail.trim().length() == 0)
         throwInvalidEmailFault("Email invalido!");
 
         try{
             Points p = Points.getInstance();
-            return p.getPoints(userEmail);
+            SimpleEntry<Integer,Integer> s = p.getPoints(userEmail);
+            Integer[] pair = new Integer[2];
+            pair[0] = s.getKey();
+            pair[1] = s.getValue();
+            return pair;
         } catch (InvalidEmailException iee) {
             throwInvalidEmailFault("Email invalido!" + iee.getMessage());
         }
-        return -1;
+        return null;
     }
 
     @Override
-    public int write(final String userEmail, int value) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception{
+    public int write(final String userEmail, int ammount, int tag) throws /*InvalidEmailFault_Exception, InvalidPointsFault_Exception,*/ EmailAlreadyExistsException, InvalidEmailException {
+        if (userEmail == null
+                || userEmail.trim().length() == 0)
+            throwInvalidEmailFault("Email invalido!");
+
+        if(ammount < 0)
+            throwInvalidPointsFault("Quantidade de pontos a ser adicionada invalida!");
+
+        Points p = Points.getInstance();
+        if (!p.checkUserExists(userEmail)){
+            p.addUser(userEmail);
+        }
+
+        p.setUserBalance(userEmail, ammount, tag);
+
         return 1;
     }
 
