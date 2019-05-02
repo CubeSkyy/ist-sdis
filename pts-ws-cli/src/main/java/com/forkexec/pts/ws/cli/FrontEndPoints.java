@@ -22,7 +22,7 @@ public class FrontEndPoints {
 
     private final String uddiURL;
     private final String pointsWsName;
-    private int quantity;
+    private final int Q;
 
     private ConcurrentHashMap<String, Integer> tags = new ConcurrentHashMap<>();
 
@@ -37,7 +37,6 @@ public class FrontEndPoints {
         }
         uddiURL = properties.getProperty("uddi.url");
         pointsWsName = properties.getProperty("pts.ws.name");
-        setQuantity(3);
     }
 
     private static class SingletonHolder {
@@ -80,12 +79,12 @@ public class FrontEndPoints {
                 pc.activateUser(userEmail);
             } catch (EmailAlreadyExistsFault_Exception e) {
                 nExceptions++;
-                if (nExceptions == this.quantity)
+                if (nExceptions == this.Q)
                     throwEmailAlreadyExistsFault("O e-mail escolhido já está em uso. Por favor escolha outro!");
 
             } catch (InvalidEmailFault_Exception e) {
                 nExceptions2++;
-                if (nExceptions2 == this.quantity)
+                if (nExceptions2 == this.Q)
                     throwInvalidEmailFault("O e-mail é inválido!");
             }
         }
@@ -137,8 +136,8 @@ public class FrontEndPoints {
     }
 
 
-    public void setQuantity(int numberPS) {
-        quantity = (int) Math.floor(numberPS / 2) + 1;
+    public void setQ(int numberPS) {
+        this.Q = (int) Math.floor(numberPS / 2) + 1;
     }
 
     // control operations -----------------------------------------------------
