@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.forkexec.pts.ws.cli.PointsClient;
-import com.forkexec.hub.ws.FrontEndPoints;
+import com.forkexec.pts.ws.cli.FrontEndPoints;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

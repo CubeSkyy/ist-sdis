@@ -1,6 +1,5 @@
 package com.forkexec.pts.ws.it;
 
-import com.forkexec.hub.domain.InvalidEmailException;
 import com.forkexec.pts.ws.EmailAlreadyExistsFault_Exception;
 import com.forkexec.pts.ws.InvalidEmailFault_Exception;
 import com.forkexec.pts.ws.InvalidPointsFault_Exception;
@@ -12,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 public class PointsBalanceIT extends BaseIT {
 
     @Test
-    public void success() throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception, InvalidPointsFault_Exception, InvalidEmailException {
+    public void success() throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception, InvalidPointsFault_Exception {
         client.activateUser(EMAIL);
         client.addPoints(EMAIL, 100);
         assertEquals(client.pointsBalance(EMAIL), DEFAULT_INITIAL_BALANCE + 100);

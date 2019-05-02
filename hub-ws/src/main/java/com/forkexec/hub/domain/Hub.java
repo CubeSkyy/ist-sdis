@@ -3,7 +3,10 @@ package com.forkexec.hub.domain;
 
 import com.forkexec.cc.ws.cli.CCClient;
 import com.forkexec.cc.ws.cli.CCClientException;
-import com.forkexec.hub.ws.FrontEndPoints;
+import com.forkexec.pts.ws.EmailAlreadyExistsFault_Exception;
+import com.forkexec.pts.ws.InvalidEmailFault_Exception;
+import com.forkexec.pts.ws.InvalidPointsFault_Exception;
+import com.forkexec.pts.ws.cli.FrontEndPoints;
 
 import com.forkexec.pts.ws.cli.PointsClientException;
 import com.forkexec.rst.ws.*;
@@ -74,7 +77,14 @@ public class Hub {
     }
 
     public void activateAccount(String userId) throws InvalidEmailException {
-        fe.activateUser(userId);
+        try {
+            fe.activateUser(userId);
+        } catch (EmailAlreadyExistsFault_Exception e) {
+            throw new InvalidEmailException(e.getMessage());
+        } catch (InvalidEmailFault_Exception e) {
+            throw new InvalidEmailException(e.getMessage());
+        }
+
     }
 
 
@@ -93,7 +103,15 @@ public class Hub {
 
         Integer points = traductionT.get(euros);
         if (points != null)
-            fe.addPoints(uId, points);
+            try {
+                fe.addPoints(uId, points);
+            } catch (InvalidPointsFault_Exception e) {
+                throw new InvalidPointsException(e.getMessage());
+            } catch (EmailAlreadyExistsFault_Exception e) {
+                throw new InvalidEmailException(e.getMessage());
+            } catch (InvalidEmailFault_Exception e) {
+                throw new InvalidEmailException(e.getMessage());
+            }
         else
             throw new InvalidChargeException("Por favor carregue com 10, 20, 30 ou 50 euros!");
 
@@ -105,7 +123,11 @@ public class Hub {
     }
 
     public void ctrlInitUserPoints(int startPts) throws BadInitException {
-        fe.ctrlInit(startPts);
+        try {
+            fe.ctrlInit(startPts);
+        } catch (com.forkexec.pts.ws.BadInitFault_Exception e) {
+            throw new BadInitException(e.getMessage());
+        }
     }
 
     /**
@@ -163,7 +185,7 @@ public class Hub {
      * @param totalPoints
      * @throws BadOrderException
      */
-    public void confirmOrder(String userId, Map<String, List<HubFoodOrderItem>> restaurantList, int totalPoints) throws BadOrderException, PointsClientException {
+    public void confirmOrder(String userId, Map<String, List<HubFoodOrderItem>> restaurantList, int totalPoints) throws BadOrderException, PointsClientException, NotEnoughBalanceException, InvalidPointsException, InvalidEmailException {
         for (Map.Entry<String, List<HubFoodOrderItem>> entry : restaurantList.entrySet()) {
             String wsUrl = entry.getKey();
             List<HubFoodOrderItem> hubFoodInitList = entry.getValue();
@@ -182,8 +204,18 @@ public class Hub {
                 throw new BadOrderException(e.getMessage());
             }
         }
+        try{
+            fe.spendPoints(userId, totalPoints);
 
-        fe.spendPoints(userId, totalPoints);
+        } catch (com.forkexec.pts.ws.cli.NotEnoughBalanceException e){
+            throw new InvalidPointsException(e.getMessage());
+        } catch (InvalidPointsFault_Exception e) {
+            throw new InvalidPointsException(e.getMessage());
+        } catch (EmailAlreadyExistsFault_Exception e) {
+            throw new InvalidEmailException(e.getMessage());
+        } catch (InvalidEmailFault_Exception e) {
+            throw new InvalidEmailException(e.getMessage());
+        }
 
     }
 
@@ -330,4 +362,3 @@ public class Hub {
     }
 
 }
-

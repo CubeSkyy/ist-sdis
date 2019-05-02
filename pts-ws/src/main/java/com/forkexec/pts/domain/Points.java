@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
-import java.util.AbstractMap.SimpleEntry;
 
 /**
  * Points
@@ -25,7 +24,7 @@ public class Points {
     private static final String VALID_EMAIL_REGEX = "[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*";
 
     //private Entry<Integer,Integer> TagValue = new SimpleEntry<Integer, Integer>();
-    private Map<String,  SimpleEntry<Integer, Integer>> users = new ConcurrentHashMap<String,  SimpleEntry<Integer, Integer>>();
+    private Map<String, Tuple> users = new ConcurrentHashMap<String, Tuple>();
 
     // Singleton -------------------------------------------------------------
 
@@ -48,10 +47,10 @@ public class Points {
     }
 
     /**
-    * Returns the map with all the users
-    */
+     * Returns the map with all the users
+     */
 
-    public Map<String,  SimpleEntry<Integer, Integer>> getUsers(){
+    public Map<String, Tuple> getUsers() {
         return users;
     }
 
@@ -66,18 +65,22 @@ public class Points {
      * @param userEmail email of authenticated user.
      * @return the amounts of points that user has.
      */
-    public SimpleEntry getPoints(String userEmail) throws InvalidEmailException {
 
+    public int getPoints(String userEmail) throws InvalidEmailException {
+        return 0;
+    }
+
+      /*
         if (!checkRegexPattern(userEmail, VALID_EMAIL_REGEX))
             throw new InvalidEmailException("Email é definido por user@dominio!");
 
         Integer points = users.get(userEmail).getValue();
         if (points == null) throw new InvalidEmailException("User não presente!");
         Integer[] pair = new Integer[2];
-//        pair[0] =
-        return null ;
+        pair[0] =
+        return  ;
     }
-
+*/
     /**
      * @param userEmail     email of authenticated user.
      * @param pointsToSpend amount of points to spend
@@ -96,24 +99,24 @@ public class Points {
     }*/
 
     /**
-    @param userEmail     email of new user.
-    */
+     * @param userEmail email of new user.
+     */
 
     public void addUser(String userEmail) throws EmailAlreadyExistsException, InvalidEmailException {
 
         if (!checkRegexPattern(userEmail, VALID_EMAIL_REGEX)) throw new InvalidEmailException("Email invalido!");
 
-        for(String key: getUsers().keySet()){
+        for (String key : getUsers().keySet()) {
             if (userEmail.equals(key)) {
                 throw new EmailAlreadyExistsException("O email ja existe!");
             }
         }
 
-        users.put(userEmail, new SimpleEntry<>(0, initialBalance.get()));
+        users.put(userEmail, new Tuple(0, initialBalance.get()));
     }
 
     /**
-     * @param userEmail     email of authenticated user.
+     * @param userEmail   email of authenticated user.
      * @param pointsToAdd amount of points to add
      */
     /*public int addPoints(String userEmail, Integer pointsToAdd)
@@ -126,7 +129,6 @@ public class Points {
         return points;
 
     }*/
-
     public void resetState() {
         users.clear();
         setInitialBalance(DEFAULT_INITIAL_BALANCE);
@@ -136,11 +138,11 @@ public class Points {
         return Pattern.compile(regex).matcher(text).matches();
     }
 
-    public Boolean checkUserExists(final String userEmail){
+    public Boolean checkUserExists(final String userEmail) {
         return users.containsKey(userEmail);
     }
 
-    public void setUserBalance(final String userEmail, int ammount, int tag){
-        users.put(userEmail, new SimpleEntry<>(ammount, tag));
+    public void setUserBalance(final String userEmail, int ammount, int tag) {
+        users.put(userEmail, new Tuple(ammount, tag));
     }
 }

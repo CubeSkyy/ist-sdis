@@ -17,6 +17,10 @@ import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINamingException;
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDIRecord;
 import com.forkexec.pts.ws.cli.PointsClient;
 import com.forkexec.pts.ws.cli.PointsClientException;
+//import com.forkexec.pts.ws.NotEnoughBalanceFault_Exception;
+//import com.forkexec.pts.ws.NotEnoughBalanceFault;
+
+
 
 import com.sun.xml.ws.fault.ServerSOAPFaultException;
 
@@ -221,6 +225,12 @@ public class HubPortImpl implements HubPortType {
             throwInvalidUserIdInit(be.getMessage());
         } catch (PointsClientException pc) {
             throwNotEnoughPointsFault(pc.getMessage());
+        } catch(NotEnoughBalanceException ne) {
+            throwNotEnoughPointsFault(ne.getMessage());
+        } catch(InvalidPointsException ip) {
+            throwInvalidPoints(ip.getMessage());
+        } catch(InvalidEmailException ie) {
+          throwInvalidEmail(ie.getMessage());
         }
         return fo;
     }
@@ -528,4 +538,11 @@ public class HubPortImpl implements HubPortType {
         faultInfo.message = message;
         throw new InvalidUserIdFault_Exception(message, faultInfo);
     }
+
+    private void throwInvalidEmail(final String message) throws InvalidUserIdFault_Exception {
+        InvalidUserIdFault faultInfo = new InvalidUserIdFault();
+        faultInfo.message = message;
+        throw new InvalidUserIdFault_Exception(message, faultInfo);
+    }
+
 }

@@ -11,7 +11,7 @@ import java.util.AbstractMap.SimpleEntry;
  * below "map" the Java class to the WSDL definitions.
  */
 @WebService(endpointInterface = "com.forkexec.pts.ws.PointsPortType", wsdlLocation = "PointsService.wsdl", name = "PointsWebService", portName = "PointsPort", targetNamespace = "http://ws.pts.forkexec.com/", serviceName = "PointsService")
-public class PointsPortImpl implements PointsPortType {
+public class PointsPortImpl {
 
 
     /**
@@ -29,7 +29,6 @@ public class PointsPortImpl implements PointsPortType {
 
     // Main operations -------------------------------------------------------
 
-    @Override
     public void activateUser(final String userEmail) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception {
         if (userEmail == null
                 || userEmail.trim().length() == 0)
@@ -46,27 +45,35 @@ public class PointsPortImpl implements PointsPortType {
         }
     }
 
-    @Override
-    public int pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
-        if (userEmail == null
-                || userEmail.trim().length() == 0)
+    /*
+        public Integer[] pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
+            if (userEmail == null
+                    || userEmail.trim().length() == 0)
             throwInvalidEmailFault("Email invalido!");
 
-        try {
-            Points p = Points.getInstance();
-            SimpleEntry<Integer, Integer> s = p.getPoints(userEmail);
-            Integer[] pair = new Integer[2];
-            pair[0] = s.getKey();
-            pair[1] = s.getValue();
-//            return pair;
-        } catch (InvalidEmailException iee) {
-            throwInvalidEmailFault("Email invalido!" + iee.getMessage());
+            try{
+                Points p = Points.getInstance();
+                SimpleEntry<Integer,Integer> s = p.getPoints(userEmail);
+                Integer[] pair = new Integer[2];
+                pair[0] = s.getKey();
+                pair[1] = s.getValue();
+                return pair;
+            } catch (InvalidEmailException iee) {
+                throwInvalidEmailFault("Email invalido!" + iee.getMessage());
+            }
+            return null;
         }
+    */
+    public int pointsBalance(String UserEmail) {
         return 0;
     }
 
-    @Override
-    public int write(final String userEmail, int ammount, int tag) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, EmailAlreadyExistsFault_Exception {/* EmailAlreadyExistsException, InvalidEmailException {*/
+    public int write(String s, int amount, int tag) {
+        return 0;
+    }
+/*
+    public int write(final String userEmail, int ammount, int tag) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, EmailAlreadyExistsFault_Exception  {
+
         Points p = Points.getInstance();
 
         if (!p.checkUserExists(userEmail)) {
@@ -86,14 +93,13 @@ public class PointsPortImpl implements PointsPortType {
         if (ammount < 0)
             throwInvalidPointsFault("Quantidade de pontos a ser adicionada invalida!");
 
-
         p.setUserBalance(userEmail, ammount, tag);
 
         return 1;
     }
+    */
 
 
-//    @Override
 //    public int addPoints(final String userEmail, final int pointsToAdd)
 //	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
 //        if (userEmail == null
@@ -111,7 +117,6 @@ public class PointsPortImpl implements PointsPortType {
 //        return -1;
 //    }
 //
-//    @Override
 //    public int spendPoints(final String userEmail, final int pointsToSpend)
 //	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceFault_Exception {
 //        if (userEmail == null
@@ -133,7 +138,6 @@ public class PointsPortImpl implements PointsPortType {
 //    }
 
     // Control operations ----------------------------------------------------
-    @Override
     public String ctrlPing(String inputMessage) {
         // If no input is received, return a default name.
         if (inputMessage == null || inputMessage.trim().length() == 0)
@@ -154,7 +158,6 @@ public class PointsPortImpl implements PointsPortType {
     /**
      * Return all variables to default values.
      */
-    @Override
     public void ctrlClear() {
         Points p = Points.getInstance();
         p.resetState();
@@ -163,7 +166,6 @@ public class PointsPortImpl implements PointsPortType {
     /**
      * Set variables with specific values.
      */
-    @Override
     public void ctrlInit(final int startPoints) throws BadInitFault_Exception {
         if (startPoints < 0)
             throwBadInit("Cannot have negative points");

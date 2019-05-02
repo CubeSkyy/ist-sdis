@@ -25,11 +25,6 @@ public class PointsEndpointManager {
 	/** Port implementation */
 	private PointsPortImpl portImpl = new PointsPortImpl(this);
 
-	/** Obtain Port implementation */
-	public PointsPortType getPort() {
-		return portImpl;
-	}
-
 	/** Web Service end point */
 	private Endpoint endpoint = null;
 	/** UDDI Naming instance for contacting UDDI server */

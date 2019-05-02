@@ -155,6 +155,9 @@
   <message name="InvalidPointsFault">
     <part element="tns:InvalidPointsFault" name="fault" />
   </message>
+  <message name="NotEnoughBalanceFault">
+    <part element="tns:NotEnoughBalanceFault" name="fault" />
+  </message>
   <message name="write">
     <part element="tns:write" name="parameters" />
   </message>
