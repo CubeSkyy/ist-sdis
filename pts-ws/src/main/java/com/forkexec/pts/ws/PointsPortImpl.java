@@ -41,6 +41,7 @@ public class PointsPortImpl implements PointsPortType {
         }
     }
 
+    /*
     @Override
     public Integer[] pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
         if (userEmail == null
@@ -58,10 +59,18 @@ public class PointsPortImpl implements PointsPortType {
             throwInvalidEmailFault("Email invalido!" + iee.getMessage());
         }
         return null;
+    }*/
+
+    public int pointsBalance(String UserEmail){
+      return 0;
     }
 
+    public int write (String s, int t){
+      return 0;
+    }
+/*
     @Override
-    public int write(final String userEmail, int ammount, int tag) throws /*InvalidEmailFault_Exception, InvalidPointsFault_Exception,*/ EmailAlreadyExistsException, InvalidEmailException {
+    public int write(final String userEmail, int ammount, int tag) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception,EmailAlreadyExistsException, InvalidEmailException {
         if (userEmail == null
                 || userEmail.trim().length() == 0)
             throwInvalidEmailFault("Email invalido!");
@@ -77,7 +86,7 @@ public class PointsPortImpl implements PointsPortType {
         p.setUserBalance(userEmail, ammount, tag);
 
         return 1;
-    }
+    }*/
 
 
 //    @Override

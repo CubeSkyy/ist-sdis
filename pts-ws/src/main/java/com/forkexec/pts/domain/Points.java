@@ -66,7 +66,9 @@ public class Points {
      * @param userEmail email of authenticated user.
      * @return the amounts of points that user has.
      */
-    public SimpleEntry getPoints(String userEmail) throws InvalidEmailException {
+
+    public int getPoints(String userEmail) throws InvalidEmailException {
+      /*
 
         if (!checkRegexPattern(userEmail, VALID_EMAIL_REGEX))
             throw new InvalidEmailException("Email é definido por user@dominio!");
@@ -76,6 +78,9 @@ public class Points {
         Integer[] pair = new Integer[2];
         pair[0] =
         return  ;
+        */
+
+        return 0;
     }
 
     /**
@@ -141,6 +146,6 @@ public class Points {
     }
 
     public void setUserBalance(final String userEmail, int ammount, int tag){
-        users.put(userEmail, new SimpleEntry<>(ammount, tag));
+        users.put(userEmail, new Tuple(ammount, tag));
     }
 }
