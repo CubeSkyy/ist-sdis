@@ -12,7 +12,7 @@ public class Tuple implements java.io.Serializable, Comparable<Tuple> {
     this.value = v;
   }
 
-  public int getTag(){
+  public Integer getTag(){
     return this.tag;
   }
 
@@ -30,9 +30,6 @@ public class Tuple implements java.io.Serializable, Comparable<Tuple> {
 
   @Override
   public int compareTo(Tuple t) {
-    Integer mytag = new Integer(this.getTag());
-    Integer othertag = new Integer(this.getTag());
-    
-    return mytag.compareTo(othertag);
+    return this.getTag().compareTo(t.getTag());
   }
 }
