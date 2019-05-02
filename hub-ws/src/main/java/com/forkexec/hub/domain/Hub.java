@@ -163,7 +163,7 @@ public class Hub {
      * @param totalPoints
      * @throws BadOrderException
      */
-    public void confirmOrder(String userId, Map<String, List<HubFoodOrderItem>> restaurantList, int totalPoints) throws BadOrderException, PointsClientException {
+    public void confirmOrder(String userId, Map<String, List<HubFoodOrderItem>> restaurantList, int totalPoints) throws BadOrderException, PointsClientException,NotEnoughBalanceException, InvalidPointsException, InvalidEmailException{
         for (Map.Entry<String, List<HubFoodOrderItem>> entry : restaurantList.entrySet()) {
             String wsUrl = entry.getKey();
             List<HubFoodOrderItem> hubFoodInitList = entry.getValue();
@@ -330,4 +330,3 @@ public class Hub {
     }
 
 }
-

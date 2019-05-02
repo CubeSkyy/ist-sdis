@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
-import java.util.AbstractMap.SimpleEntry;
+//import java.util.AbstractMap.SimpleEntry;
 
 /**
  * Points
@@ -25,7 +25,7 @@ public class Points {
     private static final String VALID_EMAIL_REGEX = "[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*";
 
     //private Entry<Integer,Integer> TagValue = new SimpleEntry<Integer, Integer>();
-    private Map<String,  SimpleEntry<Integer, Integer>> users = new ConcurrentHashMap<String,  SimpleEntry<Integer, Integer>>();
+    private Map<String,  Tuple> users = new ConcurrentHashMap<String,  Tuple>();
 
     // Singleton -------------------------------------------------------------
 
@@ -51,7 +51,7 @@ public class Points {
     * Returns the map with all the users
     */
 
-    public Map<String,  SimpleEntry<Integer, Integer>> getUsers(){
+    public Map<String, Tuple> getUsers(){
         return users;
     }
 
@@ -108,7 +108,7 @@ public class Points {
             }
         }
 
-        users.put(userEmail, new SimpleEntry<>(0, initialBalance.get()));
+        users.put(userEmail, new Tuple(0, initialBalance.get()));
     }
 
     /**

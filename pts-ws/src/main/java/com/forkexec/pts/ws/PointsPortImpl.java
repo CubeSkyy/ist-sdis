@@ -46,7 +46,7 @@ public class PointsPortImpl implements PointsPortType {
         if (userEmail == null
                 || userEmail.trim().length() == 0)
         throwInvalidEmailFault("Email invalido!");
-    
+
         try{
             Points p = Points.getInstance();
             return p.getPoints(userEmail);

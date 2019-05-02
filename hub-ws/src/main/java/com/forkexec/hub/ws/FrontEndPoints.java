@@ -1,6 +1,14 @@
+
 package com.forkexec.hub.ws;
 
+import java.util.concurrent.ConcurrentHashMap;
 import com.forkexec.hub.domain.InvalidEmailException;
+import com.forkexec.hub.domain.NotEnoughBalanceException;
+import com.forkexec.hub.domain.BadInitException;
+import com.forkexec.hub.domain.InvalidPointsException;
+import com.forkexec.pts.ws.BadInitFault_Exception;
+import com.forkexec.pts.ws.InvalidPointsFault_Exception;
+import com.forkexec.pts.ws.NotEnoughBalanceFault_Exception;
 import com.forkexec.pts.ws.EmailAlreadyExistsFault_Exception;
 import com.forkexec.pts.ws.InvalidEmailFault_Exception;
 import com.forkexec.pts.ws.cli.PointsClient;
@@ -23,6 +31,9 @@ public class FrontEndPoints {
 
     private final String uddiURL;
     private final String pointsWsName;
+    private int quantity;
+
+    private ConcurrentHashMap<String, Integer> tags = new ConcurrentHashMap<>();
 
     // Singleton
     private FrontEndPoints(){
@@ -35,6 +46,7 @@ public class FrontEndPoints {
         }
         uddiURL =  properties.getProperty("uddi.url");
         pointsWsName = properties.getProperty("pts.ws.name");
+        setQuantity(3);
     }
 
     private static class SingletonHolder {
@@ -48,8 +60,8 @@ public class FrontEndPoints {
 
     // replicas read/write ----------------------------------------------
 
-    //Mudar para retornar Int,Tag
-    public int read(String userEmail){
+    public int pointsBalance(String userEmail) {
+        //TO DO (read)
         return 0;
     }
 
@@ -59,29 +71,69 @@ public class FrontEndPoints {
 
     // remote invocation methods ----------------------------------------------
     public void activateUser(String userEmail) throws InvalidEmailException {
-        //catch EmailAlreadyExistsFault_Exception
-        //catch InvalidEmailFault_Exception
-        //catch PointsClientException
+
+        int nServers = 0;
+        int nServers2 = 0;
+        int nServers3 = 0;
+
+        for (PointsClient pc : getPointsServers()) {
+          try {
+            pc.activateUser(userEmail);
+          } catch (EmailAlreadyExistsFault_Exception e){
+            nServers++;
+            if(nServers == this.quantity){
+              throw new InvalidEmailException("O e-mail escolhido já está em uso. Por favor escolha outro!");
+            }
+          } catch (InvalidEmailFault_Exception e){
+            nServers2++;
+            if(nServers2 == this.quantity){
+              throw new InvalidEmailException("O e-mail é inválido!");
+            }
+          } //catch (PointsClientException e) {
+            //nServers3++;
+            //if(nServers3 == this.quantity){
+            //  throw new RuntimeException(e.getMessage());
+            //}
+        //  }
+        }
     }
 
-    public int pointsBalance(String userEmail) {
-        //catch InvalidEmailFault_Exception
-        //catch PointsClientException
-        return 0;
-    }
 
-    public int addPoints(String userEmail, int pointsToAdd) {
+    public void addPoints(String userEmail, int pointsToAdd) throws InvalidPointsException, InvalidPointsException {
         //catch InvalidPointsFault_Exception
         //catch InvalidEmailFault_Exception
         //catch PointsClientException
-         return 0;
+
+        if(pointsToAdd <= 0) {
+          throw new InvalidPointsException("Os pontos não podem ser negativos!");
+        }
+      //  try {
+          int var = pointsBalance(userEmail);
+          write(userEmail, var + pointsToAdd);
+      //  } catch (InvalidEmailFault_Exception e) {
+      //    throw new InvalidEmailException("E-mail invalido!");
+      //  } catch (InvalidPointsFault_Exception e) {
+      //    throw new InvalidPointsException("Os pontos não podem ser negativos!");
+      //  } catch (PointsClientException e) {
+      //    throw new RuntimeException(e.getMessage());
+      //  }
     }
 
-    public int spendPoints(String userEmail, int pointsToSpend) {
+    public void spendPoints(String userEmail, int pointsToSpend) throws NotEnoughBalanceException, InvalidPointsException, InvalidEmailException {
         //catch InvalidEmailFault_Exception
         //catch InvalidPointsFault_Exception
         //catch NotEnoughBalanceException
-        return 0;
+        if (pointsToSpend <= 0) {
+          throw new InvalidPointsException("Os pontos não podem ser negativos!");
+        }
+        //try{
+          int var = pointsBalance(userEmail);
+          write(userEmail, var - pointsToSpend);
+        //} catch (InvalidEmailFault_Exception e) {
+        //  throw new InvalidEmailException("E-mail invalido!");
+        //} catch (InvalidPointsFault_Exception e) {
+        //  throw new InvalidPointsException("Os pontos não podem ser negativos!");
+        //}
     }
 
     // helper functions -----------------------------------------------------
@@ -102,21 +154,49 @@ public class FrontEndPoints {
         return pClients;
     }
 
+
+    public void setQuantity(int numberPS) {
+      quantity = (int) Math.floor(numberPS / 2) + 1;
+    }
+
     // control operations -----------------------------------------------------
 
     public String ctrlPing(String inputMessage) {
-        return "";
+
+      String str = "";
+
+      //try{
+        for(PointsClient pc: getPointsServers()) {
+          str = str + pc.ctrlPing(inputMessage);
+        }
+      //} catch (PointsClientException e){
+      //  throw new RuntimeException(e.getMessage());
+      //}
+
+      return str;
     }
 
     public void ctrlClear() {
-        //catch PointsClientException
+      //try {
+        for(PointsClient pc: getPointsServers()) {
+          pc.ctrlClear();
+        }
+    //  } catch (PointsClientException e){
+    //    throw new RuntimeException(e.getMessage());
+    //  }
     }
 
-    public void ctrlInit(int startPoints) {
-        //catch BadInitFault_Exception
-        //catch PointsClientException
+    public void ctrlInit(int startPoints) throws BadInitException {
 
+        try {
+          for(PointsClient pc: getPointsServers()) {
+            pc.ctrlInit(startPoints);
+          }
+        } catch (BadInitFault_Exception e) {
+          throw new BadInitException("Os pontos não podem ser negativos!");
+        } //catch (PointsClientException e) {
+          //throw new RuntimeException(e.getMessage());
+        //}
     }
-
 
 }
