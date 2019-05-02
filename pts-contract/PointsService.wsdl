@@ -100,6 +100,7 @@
       <xs:complexType name="write">
         <xs:sequence>
           <xs:element minOccurs="0" name="userEmail" type="xs:string" />
+          <xs:element name="tag" type="xs:int" />
           <xs:element name="pointsToWrite" type="xs:int" />
         </xs:sequence>
       </xs:complexType>
@@ -195,6 +196,8 @@
       <output message="tns:writeResponse" wsam:Action="http://ws.pts.forkexec.com/PointsPortType/writeResponse" />
       <fault message="tns:InvalidEmailFault" name="InvalidEmailFault" wsam:Action="http://ws.pts.forkexec.com/PointsPortType/spendPoints/Fault/InvalidEmailFault" />
       <fault message="tns:InvalidPointsFault" name="InvalidPointsFault" wsam:Action="http://ws.pts.forkexec.com/PointsPortType/spendPoints/Fault/InvalidPointsFault" />
+      <fault message="tns:EmailAlreadyExistsFault" name="EmailAlreadyExistsFault" wsam:Action="http://ws.pts.forkexec.com/PointsPortType/activateUser/Fault/EmailAlreadyExistsFault" />
+
     </operation>
   </portType>
 

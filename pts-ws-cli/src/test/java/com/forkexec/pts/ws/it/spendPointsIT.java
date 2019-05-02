@@ -1,6 +1,7 @@
 package com.forkexec.pts.ws.it;
 
 
+import com.forkexec.hub.domain.InvalidEmailException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ import com.forkexec.pts.ws.EmailAlreadyExistsFault_Exception;
 public class spendPointsIT extends BaseIT {
 
     @Test
-    public void success() throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceException, EmailAlreadyExistsFault_Exception{
+    public void success() throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceException, EmailAlreadyExistsFault_Exception, InvalidEmailException{
 
       	client.activateUser(EMAIL);
       	client.spendPoints(EMAIL, 30);
@@ -48,7 +49,7 @@ public class spendPointsIT extends BaseIT {
     }
 
     @Test (expected = NotEnoughBalanceException.class)
-    public void NotEnoughBalance() throws NotEnoughBalanceException, EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception, InvalidPointsFault_Exception{
+    public void NotEnoughBalance() throws NotEnoughBalanceException, EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception, InvalidPointsFault_Exception, InvalidEmailException {
     	client.activateUser(EMAIL);
     	client.spendPoints(EMAIL, 1000);
     }

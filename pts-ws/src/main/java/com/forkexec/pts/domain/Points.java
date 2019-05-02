@@ -74,8 +74,8 @@ public class Points {
         Integer points = users.get(userEmail).getValue();
         if (points == null) throw new InvalidEmailException("User não presente!");
         Integer[] pair = new Integer[2];
-        pair[0] =
-        return  ;
+//        pair[0] =
+        return null ;
     }
 
     /**

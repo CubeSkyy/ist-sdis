@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.forkexec.pts.ws.cli.PointsClient;
+import com.forkexec.hub.ws.FrontEndPoints;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -17,7 +18,8 @@ public class BaseIT {
 	private static final String TEST_PROP_FILE = "/test.properties";
 	protected static Properties testProps;
 
-	protected static PointsClient client;
+//	protected static PointsClient client;
+	protected static FrontEndPoints client;
 	public static final int DEFAULT_INITIAL_BALANCE = 100;
 	protected static final String EMAIL = "test.email@test.com";
 	protected static final String INVALID_EMAIL = "test.email.test.com";
@@ -42,16 +44,19 @@ public class BaseIT {
 		final String uddiEnabled = testProps.getProperty("uddi.enabled");
 		final String verboseEnabled = testProps.getProperty("verbose.enabled");
 
-		final String uddiURL = testProps.getProperty("uddi.url");
-		final String wsName = testProps.getProperty("ws.name");
-		final String wsURL = testProps.getProperty("ws.url");
+		client = FrontEndPoints.getInstance();
 
-		if ("true".equalsIgnoreCase(uddiEnabled)) {
-			client = new PointsClient(uddiURL, wsName);
-		} else {
-			client = new PointsClient(wsURL);
-		}
-		client.setVerbose("true".equalsIgnoreCase(verboseEnabled));
+
+//		final String uddiURL = testProps.getProperty("uddi.url");
+//		final String wsName = testProps.getProperty("ws.name");
+//		final String wsURL = testProps.getProperty("ws.url");
+
+//		if ("true".equalsIgnoreCase(uddiEnabled)) {
+//			client = new PointsClient(uddiURL, wsName);
+//		} else {
+//			client = new PointsClient(wsURL);
+//		}
+//		client.setVerbose("true".equalsIgnoreCase(verboseEnabled));
 	}
 
 	@After

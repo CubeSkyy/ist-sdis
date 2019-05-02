@@ -111,26 +111,9 @@ public class PointsClient {
 		return port.pointsBalance(userEmail);
 	}
 
-//	public int addPoints(String userEmail, int pointsToAdd)
-//			throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
-//		return port.addPoints(userEmail, pointsToAdd);
-//	}
-//
-//	public int spendPoints(String userEmail, int pointsToSpend)
-//			throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceFault_Exception {
-//		return port.spendPoints(userEmail, pointsToSpend);
-//	}
-
-	public int addPoints(String userEmail, int pointsToAdd) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
-		return port.write(userEmail, pointsToAdd);
-
+	public int write(final String userEmail, int ammount, int tag) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception, InvalidPointsFault_Exception{
+		return port.write(userEmail, ammount, tag);
 	}
-
-	public int spendPoints(String userEmail, int pointsToSpend)throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceException  {
-
-		return 0;
-	}
-
 
 
 	// control operations -----------------------------------------------------

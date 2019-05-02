@@ -1,8 +1,11 @@
 package com.forkexec.pts.ws;
 
 import javax.jws.WebService;
+
 import com.forkexec.pts.domain.*;
+
 import java.util.AbstractMap.SimpleEntry;
+
 /**
  * This class implements the Web Service port type (interface). The annotations
  * below "map" the Java class to the WSDL definitions.
@@ -17,17 +20,19 @@ public class PointsPortImpl implements PointsPortType {
      */
     private final PointsEndpointManager endpointManager;
 
-    /** Constructor receives a reference to the endpoint manager. */
+    /**
+     * Constructor receives a reference to the endpoint manager.
+     */
     public PointsPortImpl(final PointsEndpointManager endpointManager) {
-	this.endpointManager = endpointManager;
+        this.endpointManager = endpointManager;
     }
 
     // Main operations -------------------------------------------------------
 
     @Override
-	public void activateUser(final String userEmail) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception {
-         if (userEmail == null
-                 || userEmail.trim().length() == 0)
+    public void activateUser(final String userEmail) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception {
+        if (userEmail == null
+                || userEmail.trim().length() == 0)
             throwInvalidEmailFault("Email invalido!");
 
         Points p = Points.getInstance();
@@ -42,37 +47,45 @@ public class PointsPortImpl implements PointsPortType {
     }
 
     @Override
-    public Integer[] pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
-        if (userEmail == null
-                || userEmail.trim().length() == 0)
-        throwInvalidEmailFault("Email invalido!");
-    
-        try{
-            Points p = Points.getInstance();
-            SimpleEntry<Integer,Integer> s = p.getPoints(userEmail);
-            Integer[] pair = new Integer[2];
-            pair[0] = s.getKey();
-            pair[1] = s.getValue();
-            return pair;
-        } catch (InvalidEmailException iee) {
-            throwInvalidEmailFault("Email invalido!" + iee.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public int write(final String userEmail, int ammount, int tag) throws /*InvalidEmailFault_Exception, InvalidPointsFault_Exception,*/ EmailAlreadyExistsException, InvalidEmailException {
+    public int pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
         if (userEmail == null
                 || userEmail.trim().length() == 0)
             throwInvalidEmailFault("Email invalido!");
 
-        if(ammount < 0)
+        try {
+            Points p = Points.getInstance();
+            SimpleEntry<Integer, Integer> s = p.getPoints(userEmail);
+            Integer[] pair = new Integer[2];
+            pair[0] = s.getKey();
+            pair[1] = s.getValue();
+//            return pair;
+        } catch (InvalidEmailException iee) {
+            throwInvalidEmailFault("Email invalido!" + iee.getMessage());
+        }
+        return 0;
+    }
+
+    @Override
+    public int write(final String userEmail, int ammount, int tag) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, EmailAlreadyExistsFault_Exception {/* EmailAlreadyExistsException, InvalidEmailException {*/
+        Points p = Points.getInstance();
+
+        if (!p.checkUserExists(userEmail)) {
+            try {
+                p.addUser(userEmail);
+            } catch (EmailAlreadyExistsException e) {
+                throwEmailAlreadyExistsFault("O email ja existe!");
+            } catch (InvalidEmailException e) {
+                throwInvalidEmailFault("Email invalido!");
+            }
+        }
+
+        if (userEmail == null
+                || userEmail.trim().length() == 0)
+            throwInvalidEmailFault("Email invalido!");
+
+        if (ammount < 0)
             throwInvalidPointsFault("Quantidade de pontos a ser adicionada invalida!");
 
-        Points p = Points.getInstance();
-        if (!p.checkUserExists(userEmail)){
-            p.addUser(userEmail);
-        }
 
         p.setUserBalance(userEmail, ammount, tag);
 
@@ -122,30 +135,34 @@ public class PointsPortImpl implements PointsPortType {
     // Control operations ----------------------------------------------------
     @Override
     public String ctrlPing(String inputMessage) {
-	// If no input is received, return a default name.
-	if (inputMessage == null || inputMessage.trim().length() == 0)
-	    inputMessage = "friend";
+        // If no input is received, return a default name.
+        if (inputMessage == null || inputMessage.trim().length() == 0)
+            inputMessage = "friend";
 
-	// If the park does not have a name, return a default.
-	String wsName = endpointManager.getWsName();
-	if (wsName == null || wsName.trim().length() == 0)
-	    wsName = "Park";
+        // If the park does not have a name, return a default.
+        String wsName = endpointManager.getWsName();
+        if (wsName == null || wsName.trim().length() == 0)
+            wsName = "Park";
 
-	// Build a string with a message to return.
-	final StringBuilder builder = new StringBuilder();
-	builder.append("Hello ").append(inputMessage);
-	builder.append(" from ").append(wsName);
-	return builder.toString();
+        // Build a string with a message to return.
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Hello ").append(inputMessage);
+        builder.append(" from ").append(wsName);
+        return builder.toString();
     }
 
-    /** Return all variables to default values. */
+    /**
+     * Return all variables to default values.
+     */
     @Override
     public void ctrlClear() {
         Points p = Points.getInstance();
         p.resetState();
     }
 
-    /** Set variables with specific values. */
+    /**
+     * Set variables with specific values.
+     */
     @Override
     public void ctrlInit(final int startPoints) throws BadInitFault_Exception {
         if (startPoints < 0)
@@ -156,7 +173,9 @@ public class PointsPortImpl implements PointsPortType {
 
     // Exception helpers -----------------------------------------------------
 
-    /** Helper to throw a new BadInit exception. */
+    /**
+     * Helper to throw a new BadInit exception.
+     */
     private void throwBadInit(final String message) throws BadInitFault_Exception {
         final BadInitFault faultInfo = new BadInitFault();
         faultInfo.message = message;
