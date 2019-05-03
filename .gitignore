@@ -1,3 +1,7 @@
+.gitignore
+
+runServers.bat
+
 # Compiled class file
 *.class
 
