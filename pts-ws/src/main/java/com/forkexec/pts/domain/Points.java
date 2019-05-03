@@ -102,7 +102,7 @@ public class Points {
      * @param userEmail email of new user.
      */
 
-    public void addUser(String userEmail) throws EmailAlreadyExistsException, InvalidEmailException {
+    public Tuple addUser(String userEmail) throws EmailAlreadyExistsException, InvalidEmailException {
 
         if (!checkRegexPattern(userEmail, VALID_EMAIL_REGEX)) throw new InvalidEmailException("Email invalido!");
 
@@ -111,8 +111,10 @@ public class Points {
                 throw new EmailAlreadyExistsException("O email ja existe!");
             }
         }
+        Tuple val = new Tuple(0, initialBalance.get());
+        users.put(userEmail, val);
+        return val;
 
-        users.put(userEmail, new Tuple(0, initialBalance.get()));
     }
 
     /**
