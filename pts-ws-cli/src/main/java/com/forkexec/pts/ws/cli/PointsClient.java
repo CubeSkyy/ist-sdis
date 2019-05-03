@@ -108,7 +108,7 @@ public class PointsClient {
 	}
 
 	public int pointsBalance(String userEmail) throws InvalidEmailFault_Exception {
-		return port.pointsBalance(userEmail);
+		return port.pointsBalance(userEmail).getValue();
 	}
 
 	public int write(final String userEmail, int ammount, int tag) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception, InvalidPointsFault_Exception{

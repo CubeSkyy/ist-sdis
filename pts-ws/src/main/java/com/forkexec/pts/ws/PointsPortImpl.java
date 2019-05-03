@@ -1,10 +1,16 @@
 package com.forkexec.pts.ws;
 
 import javax.jws.WebService;
-
 import com.forkexec.pts.domain.*;
+import java.util.concurrent.Future;
+
+import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Response;
+
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Map;
 
 /**
  * This class implements the Web Service port type (interface). The annotations
@@ -45,31 +51,51 @@ public class PointsPortImpl {
         }
     }
 
-    /*
-        public Integer[] pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
+        public TupleView pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
             if (userEmail == null
                     || userEmail.trim().length() == 0)
             throwInvalidEmailFault("Email invalido!");
 
-            try{
-                Points p = Points.getInstance();
-                SimpleEntry<Integer,Integer> s = p.getPoints(userEmail);
-                Integer[] pair = new Integer[2];
-                pair[0] = s.getKey();
-                pair[1] = s.getValue();
-                return pair;
-            } catch (InvalidEmailException iee) {
-                throwInvalidEmailFault("Email invalido!" + iee.getMessage());
-            }
-            return null;
-        }
-    */
-    public int pointsBalance(String UserEmail) {
-        return 0;
-    }
+            Points p = Points.getInstance();
 
-    public int write(String s, int amount, int tag) {
-        return 0;
+            Map<String, Tuple> mapOfUsers = p.getUsers();
+            Tuple value = mapOfUsers.get(userEmail);
+            if(value == null){
+                try{
+                    value = p.addUser(userEmail);
+                } catch (InvalidEmailException | EmailAlreadyExistsException e) {
+                    throwInvalidEmailFault("Email invalido!");
+                }
+            }
+            return buildTupleView(value);
+        }
+
+
+    public int write(String userEmail, int amount, int tag) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
+        if (userEmail == null
+                || userEmail.trim().length() == 0)
+            throwInvalidEmailFault("Email invalido!");
+
+        if(amount < 0)
+            throwInvalidPointsFault("Quantidade de pontos a ser adicionada invalida!");
+
+        Points p = Points.getInstance();
+
+        Map<String, Tuple> mapOfUsers = p.getUsers();
+        Tuple value = mapOfUsers.get(userEmail);
+        if (value == null) {
+            try {
+                value = p.addUser(userEmail);
+            } catch (EmailAlreadyExistsException | InvalidEmailException e) {
+                throwInvalidEmailFault("Email Invalido!");
+            }
+        }
+
+        if (tag > value.getTag()){
+            p.getUsers().put(userEmail, new Tuple(amount,tag));
+        }
+
+        return 1;
     }
 /*
     public int write(final String userEmail, int ammount, int tag) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, EmailAlreadyExistsFault_Exception  {
@@ -172,6 +198,18 @@ public class PointsPortImpl {
         Points p = Points.getInstance();
         p.setInitialBalance(startPoints);
     }
+
+
+    // View helpers ----------------------------------------------------------
+    private TupleView buildTupleView (Tuple t){
+        TupleView tv = new TupleView();
+
+        tv.setTag(t.getTag());
+        tv.setValue(t.getValue());
+
+        return tv;
+    }
+
 
     // Exception helpers -----------------------------------------------------
 

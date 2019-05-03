@@ -30,6 +30,12 @@
       <xs:element name="write" type="tns:write" />
       <xs:element name="writeResponse" type="tns:writeResponse"/>
 
+      <xs:complexType name="tupleView">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="tag" type="xs:int" />
+          <xs:element minOccurs="0" name="value" type="xs:int" />
+        </xs:sequence>
+      </xs:complexType>
       <xs:complexType name="ctrlClear">
         <xs:sequence />
       </xs:complexType>
@@ -53,7 +59,7 @@
       </xs:complexType>
       <xs:complexType name="activateUserResponse">
         <xs:sequence />
-      </xs:complexType>
+      </xs:complexType>q
       <xs:complexType name="EmailAlreadyExistsFault">
         <xs:sequence>
           <xs:element minOccurs="0" name="message" type="xs:string" />
@@ -66,7 +72,7 @@
       </xs:complexType>
       <xs:complexType name="pointsBalanceResponse">
         <xs:sequence>
-          <xs:element name="return" type="xs:int" />
+          <xs:element name="return" type="tns:tupleView" />
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="ctrlPing">
