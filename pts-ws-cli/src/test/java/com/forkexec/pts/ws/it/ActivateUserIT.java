@@ -16,7 +16,7 @@ public class ActivateUserIT extends BaseIT {
             client.activateUser(EMAIL);
             assertEquals(client.pointsBalance(EMAIL), DEFAULT_INITIAL_BALANCE);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+                Assert.fail(e.getMessage());
         }
     }
 

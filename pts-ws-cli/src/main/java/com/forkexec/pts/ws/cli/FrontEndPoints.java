@@ -111,7 +111,7 @@ public class FrontEndPoints {
                 }
             if (done >= getQ()) break;
             else try {
-                Thread.sleep(420);
+                Thread.sleep(70);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -119,12 +119,12 @@ public class FrontEndPoints {
         return max.getValue();
     }
 
-    public int write(String userEmail, int value) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
+    public void write(String userEmail, int value) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
         if (userEmail == null
                 || userEmail.trim().length() == 0)
             throwInvalidEmailFault("Email invalido!");
         if (value < 0){
-
+            throwInvalidPointsFault("O valor a escrever tem que ser positivo!");
         }
 
         TupleView tv = new TupleView();
@@ -160,12 +160,11 @@ public class FrontEndPoints {
                 }
             if (done >= getQ()) break;
             else try {
-                Thread.sleep(420);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.sleep(70);
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
             }
         }
-        return 1;
     }
 
     // remote invocation methods ----------------------------------------------
