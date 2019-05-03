@@ -5,6 +5,7 @@ import static javax.xml.ws.BindingProvider.ENDPOINT_ADDRESS_PROPERTY;
 import java.util.Map;
 
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Response;
 
 import com.forkexec.pts.ws.*;
 
@@ -111,14 +112,22 @@ public class PointsClient {
 		return port.pointsBalance(userEmail);
 	}
 
-	public int write(final String userEmail, int ammount, int tag) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception, InvalidPointsFault_Exception{
-		return port.write(userEmail, ammount, tag);
+	public int write(final String userEmail, int amount, int tag) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception, InvalidPointsFault_Exception{
+		return port.write(userEmail, amount, tag);
 	}
 
+	public Response<PointsBalanceResponse> pointsBalanceAsync(String userEmail) {
+		return port.pointsBalanceAsync(userEmail);
+	}
+
+	public Response<WriteResponse> writeAsync(String userEmail, int amount, int tag) {
+		return port.writeAsync(userEmail, amount, tag);
+	}
 
 	// control operations -----------------------------------------------------
 
 	public String ctrlPing(String inputMessage) {
+
 		return port.ctrlPing(inputMessage);
 	}
 

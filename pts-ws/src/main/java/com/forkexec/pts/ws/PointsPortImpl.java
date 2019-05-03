@@ -33,7 +33,6 @@ public class PointsPortImpl {
         if (userEmail == null
                 || userEmail.trim().length() == 0)
             throwInvalidEmailFault("Email invalido!");
-
         Points p = Points.getInstance();
 
         try {
@@ -45,25 +44,6 @@ public class PointsPortImpl {
         }
     }
 
-    /*
-        public Integer[] pointsBalance(final String userEmail) throws InvalidEmailFault_Exception {
-            if (userEmail == null
-                    || userEmail.trim().length() == 0)
-            throwInvalidEmailFault("Email invalido!");
-
-            try{
-                Points p = Points.getInstance();
-                SimpleEntry<Integer,Integer> s = p.getPoints(userEmail);
-                Integer[] pair = new Integer[2];
-                pair[0] = s.getKey();
-                pair[1] = s.getValue();
-                return pair;
-            } catch (InvalidEmailException iee) {
-                throwInvalidEmailFault("Email invalido!" + iee.getMessage());
-            }
-            return null;
-        }
-    */
     public int pointsBalance(String UserEmail) {
         return 0;
     }
@@ -71,71 +51,6 @@ public class PointsPortImpl {
     public int write(String s, int amount, int tag) {
         return 0;
     }
-/*
-    public int write(final String userEmail, int ammount, int tag) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, EmailAlreadyExistsFault_Exception  {
-
-        Points p = Points.getInstance();
-
-        if (!p.checkUserExists(userEmail)) {
-            try {
-                p.addUser(userEmail);
-            } catch (EmailAlreadyExistsException e) {
-                throwEmailAlreadyExistsFault("O email ja existe!");
-            } catch (InvalidEmailException e) {
-                throwInvalidEmailFault("Email invalido!");
-            }
-        }
-
-        if (userEmail == null
-                || userEmail.trim().length() == 0)
-            throwInvalidEmailFault("Email invalido!");
-
-        if (ammount < 0)
-            throwInvalidPointsFault("Quantidade de pontos a ser adicionada invalida!");
-
-        p.setUserBalance(userEmail, ammount, tag);
-
-        return 1;
-    }
-    */
-
-
-//    public int addPoints(final String userEmail, final int pointsToAdd)
-//	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
-//        if (userEmail == null
-//                || userEmail.trim().length() == 0)
-//            throwInvalidEmailFault("Email invalido!");
-//
-//        if(pointsToAdd <= 0)
-//            throwInvalidPointsFault("Quantidade de pontos a ser adicionada invalida!");
-//        Points p = Points.getInstance();
-//        try {
-//            return p.addPoints(userEmail, pointsToAdd);
-//        } catch (InvalidEmailException ief) {
-//            throwInvalidEmailFault("Email invalido!" + ief.getMessage());
-//        }
-//        return -1;
-//    }
-//
-//    public int spendPoints(final String userEmail, final int pointsToSpend)
-//	    throws InvalidEmailFault_Exception, InvalidPointsFault_Exception, NotEnoughBalanceFault_Exception {
-//        if (userEmail == null
-//                || userEmail.trim().length() == 0)
-//            throwInvalidEmailFault("Email invalido!");
-//
-//        if(pointsToSpend <= 0)
-//            throwInvalidPointsFault("Quantidade de pontos a ser gasto invalida!");
-//        Points p = Points.getInstance();
-//
-//        try {
-//            return p.subtractPoints(userEmail, pointsToSpend);
-//        } catch (InvalidEmailException ief) {
-//            throwInvalidEmailFault("Email invalido!" + ief.getMessage());
-//        } catch (NotEnoughBalanceException nebf) {
-//            throwNotEnoughBalanceFault("Não tem saldo suficiente!" + nebf.getMessage());
-//        }
-//        return -1;
-//    }
 
     // Control operations ----------------------------------------------------
     public String ctrlPing(String inputMessage) {

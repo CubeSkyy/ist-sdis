@@ -56,6 +56,7 @@ public class FrontEndPoints {
         return 0;
     }
 
+
     public int write(String userEmail, int value) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception, InvalidPointsFault_Exception {
         PointsClient p;
         try {
@@ -144,28 +145,19 @@ public class FrontEndPoints {
     // control operations -----------------------------------------------------
 
     public String ctrlPing(String inputMessage) {
-
         String str = "";
 
-        //try{
         for (PointsClient pc : getPointsServers()) {
             str = str + pc.ctrlPing(inputMessage);
         }
-        //} catch (PointsClientException e){
-        //  throw new RuntimeException(e.getMessage());
-        //}
 
         return str;
     }
 
     public void ctrlClear() {
-        //try {
         for (PointsClient pc : getPointsServers()) {
             pc.ctrlClear();
         }
-        //  } catch (PointsClientException e){
-        //    throw new RuntimeException(e.getMessage());
-        //  }
     }
 
     public void ctrlInit(int startPoints) throws BadInitFault_Exception {
