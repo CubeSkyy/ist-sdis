@@ -123,9 +123,6 @@ public class FrontEndPoints {
         if (userEmail == null
                 || userEmail.trim().length() == 0)
             throwInvalidEmailFault("Email invalido!");
-        if (value < 0){
-            throwInvalidPointsFault("O valor a escrever tem que ser positivo!");
-        }
 
         TupleView tv = new TupleView();
 
@@ -191,7 +188,9 @@ public class FrontEndPoints {
 
 
     public void addPoints(String userEmail, int pointsToAdd) throws InvalidPointsFault_Exception, EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception {
+        System.out.println("TO ADD:");
 
+        System.out.println(pointsToAdd);
         if (pointsToAdd <= 0) {
             throwInvalidPointsFault("Os pontos não podem ser negativos!");
         }

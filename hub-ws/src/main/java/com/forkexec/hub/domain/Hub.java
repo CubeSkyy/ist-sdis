@@ -104,6 +104,7 @@ public class Hub {
         Integer points = traductionT.get(euros);
         if (points != null)
             try {
+                System.out.println(points);
                 fe.addPoints(uId, points);
             } catch (InvalidPointsFault_Exception e) {
                 throw new InvalidPointsException(e.getMessage());
