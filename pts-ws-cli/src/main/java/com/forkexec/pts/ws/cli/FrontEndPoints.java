@@ -120,6 +120,12 @@ public class FrontEndPoints {
     }
 
     public int write(String userEmail, int value) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
+        if (userEmail == null
+                || userEmail.trim().length() == 0)
+            throwInvalidEmailFault("Email invalido!");
+        if (value < 0){
+
+        }
 
         TupleView tv = new TupleView();
 
