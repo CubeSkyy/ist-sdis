@@ -120,6 +120,7 @@ public class Hub {
 
     public int accountBalance(String uID) throws InvalidEmailException {
         try{
+            System.out.println("hub.accountBalance");
             return fe.pointsBalance(uID);
         }catch (InvalidEmailFault_Exception e){
             throw new InvalidEmailException(e.getMessage());

@@ -1,6 +1,8 @@
 
 package com.forkexec.pts.ws.cli;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.concurrent.ConcurrentHashMap;
 
 import java.util.ArrayList;
@@ -70,62 +72,69 @@ public class FrontEndPoints {
         return SingletonHolder.INSTANCE;
     }
 
-    private int getQ(){ return Q;}
+    private int getQ() {
+        return Q;
+    }
 
     // replicas read/write ----------------------------------------------
 
     public int pointsBalance(String userEmail) throws InvalidEmailFault_Exception {
-        System.out.println("ola");
-        List<Future<PointsBalanceResponse> > futures = new ArrayList<>();
+        List<Future<PointsBalanceResponse>> futures = new ArrayList<>();
         List<PointsClient> lpc = getPointsServers();
 
-        for(PointsClient pc : lpc){
+        for (PointsClient pc : lpc) {
             futures.add(pc.pointsBalanceAsync(userEmail));
         }
 
         int done;
         TupleView max = new TupleView();
         max.setTag(-1);
-        while(true){
+        while (true) {
             done = 0;
-            for ( Future<PointsBalanceResponse> fu : futures)
-                if( fu.isDone()) {
+            for (Future<PointsBalanceResponse> fu : futures)
+                if (fu.isDone()) {
                     done++;
                     TupleView tvTemp;
-                    try{
+                    try {
                         tvTemp = fu.get().getReturn();
                         if (tvTemp.getTag() > max.getTag()) {
                             max = tvTemp;
                         }
-                    }catch (ExecutionException ee) {
+                    } catch (ExecutionException ee) {
                         Throwable t = ee.getCause();
-                        if(t instanceof InvalidEmailFault_Exception)
-                            throw (InvalidEmailFault_Exception)t;
+                        if (t instanceof InvalidEmailFault_Exception)
+                            throw (InvalidEmailFault_Exception) t;
                         else ee.printStackTrace();
-                    }catch ( InterruptedException ie) {
+                    } catch (InterruptedException ie) {
                         ie.printStackTrace();
                     }
                 }
-            if(done >= getQ()) break;
+            if (done >= getQ()) break;
             else try {
-                    Thread.sleep(420);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Thread.sleep(420);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return max.getValue();
     }
 
     public int write(String userEmail, int value) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
+        if (userEmail == null
+                || userEmail.trim().length() == 0)
+            throwInvalidEmailFault("Email invalido!");
+        if (value < 0){
+
+        }
 
         TupleView tv = new TupleView();
 
         int tag = tags.get(userEmail);
-        tv.setTag(tag+1);
-        tags.put(userEmail, tag+1);
+        tv.setTag(tag + 1);
+        tags.put(userEmail, tag + 1);
         tv.setValue(value);
 
-        List<Future<WriteResponse> > futures = new ArrayList<>();
+        List<Future<WriteResponse>> futures = new ArrayList<>();
         List<PointsClient> lpc = getPointsServers();
         for (PointsClient pc : lpc) {
             futures.add(pc.writeAsync(userEmail, tv.getValue(), tv.getTag()));
@@ -149,19 +158,18 @@ public class FrontEndPoints {
                         ie.printStackTrace();
                     }
                 }
-                    if (done >= getQ()) break;
-                    else try {
-                        Thread.sleep(420);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            if (done >= getQ()) break;
+            else try {
+                Thread.sleep(420);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return 1;
     }
 
     // remote invocation methods ----------------------------------------------
     public void activateUser(String userEmail) throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception {
-
         int nExceptions = 0;
         int nExceptions2 = 0;
 
@@ -202,7 +210,7 @@ public class FrontEndPoints {
         }
 
         int newBalance = pointsBalance(userEmail) - pointsToSpend;
-        if (newBalance < 0 ){
+        if (newBalance < 0) {
             throw new NotEnoughBalanceException("Não tem saldo suficiente.");
         }
 
@@ -222,7 +230,7 @@ public class FrontEndPoints {
             }
         } catch (UDDINamingException e) {
             System.out.println("No points servers found.");
-        }catch (PointsClientException e){
+        } catch (PointsClientException e) {
             throw new RuntimeException(e.getMessage());
         }
 
@@ -246,6 +254,7 @@ public class FrontEndPoints {
         for (PointsClient pc : getPointsServers()) {
             pc.ctrlClear();
         }
+        tags.clear();
     }
 
     public void ctrlInit(int startPoints) throws BadInitFault_Exception {
