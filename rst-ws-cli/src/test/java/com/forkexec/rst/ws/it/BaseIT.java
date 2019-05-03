@@ -40,7 +40,6 @@ public class BaseIT {
 		testProps = new Properties();
 		try {
 			testProps.load(BaseIT.class.getResourceAsStream(TEST_PROP_FILE));
-			System.out.println("Loaded test properties:");
 			System.out.println(testProps);
 		} catch (IOException e) {
 			final String msg = String.format("Could not load properties file {}", TEST_PROP_FILE);

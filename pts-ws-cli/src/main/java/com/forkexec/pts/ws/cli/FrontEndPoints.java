@@ -55,7 +55,6 @@ public class FrontEndPoints {
             properties.load(FrontEndPoints.class.getResourceAsStream(PROP_FILE));
         } catch (IOException e) {
             final String msg = String.format("Could not load properties file {}", PROP_FILE);
-            System.out.println(msg);
         }
         uddiURL = properties.getProperty("uddi.url");
         pointsWsName = properties.getProperty("pts.ws.name");
@@ -188,16 +187,12 @@ public class FrontEndPoints {
 
 
     public void addPoints(String userEmail, int pointsToAdd) throws InvalidPointsFault_Exception, EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception {
-        System.out.println("TO ADD:");
 
-        System.out.println(pointsToAdd);
         if (pointsToAdd <= 0) {
             throwInvalidPointsFault("Os pontos não podem ser negativos!");
         }
 
         int var = pointsBalance(userEmail);
-        System.out.println(var);
-        System.out.println(pointsToAdd);
         write(userEmail, var + pointsToAdd);
     }
 

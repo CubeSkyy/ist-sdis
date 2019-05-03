@@ -239,7 +239,6 @@ public class HubPortImpl implements HubPortType {
     public int accountBalance(String userId) throws InvalidUserIdFault_Exception {
         Hub h = Hub.getInstance();
         try {
-            System.out.println("Impl.accountbalance");
             return h.accountBalance(userId);
         } catch (InvalidEmailException e) {
             throwInvalidUserIdInit("O email nao e valido!");

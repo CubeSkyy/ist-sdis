@@ -103,7 +103,6 @@ public class Points {
      */
 
     public Tuple addUser(String userEmail) throws EmailAlreadyExistsException, InvalidEmailException {
-        System.out.println("added "+ userEmail);
         if (!checkRegexPattern(userEmail, VALID_EMAIL_REGEX)) throw new InvalidEmailException("Email invalido!");
 
         for (String key : getUsers().keySet()) {

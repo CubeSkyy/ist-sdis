@@ -4,7 +4,7 @@ import java.util.Collection;
 
 /**
  * Utility App(lication) to run UDDINaming commands in the console.
- * 
+ *
  * @author Miguel Pardal
  */
 public class UDDINamingApp {
@@ -30,7 +30,7 @@ public class UDDINamingApp {
 	 * If the command is successful, nothing is printed to standard output.<br>
 	 * <br>
 	 * Standard error is used to print error messages.<br>
-	 * 
+	 *
 	 * @param args
 	 *            Command line arguments
 	 */

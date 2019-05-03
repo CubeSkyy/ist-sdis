@@ -85,7 +85,6 @@ public class PointsPortImpl {
 
         Map<String, Tuple> mapOfUsers = p.getUsers();
         Tuple value = mapOfUsers.get(userEmail);
-        System.out.println("READ " + userEmail);
         if (value == null) {
             try {
                 value = p.addUser(userEmail);
