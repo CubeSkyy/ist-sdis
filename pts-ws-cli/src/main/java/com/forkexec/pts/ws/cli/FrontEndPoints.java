@@ -40,7 +40,8 @@ public class FrontEndPoints {
 
     private final String uddiURL;
     private final String pointsWsName;
-    private int Q;
+
+    private final int Q;
 
     private ConcurrentHashMap<String, Integer> tags = new ConcurrentHashMap<>();
 
@@ -55,6 +56,8 @@ public class FrontEndPoints {
         }
         uddiURL = properties.getProperty("uddi.url");
         pointsWsName = properties.getProperty("pts.ws.name");
+        int N = Integer.parseInt(properties.getProperty("pts.ws.n"));
+        Q = (N / 2) + 1;
     }
 
     private static class SingletonHolder {
@@ -71,7 +74,7 @@ public class FrontEndPoints {
     // replicas read/write ----------------------------------------------
 
     public TupleView pointsBalance(String userEmail) throws InvalidEmailFault_Exception {
-        List<Future<TupleView> > futures = new ArrayList<>();
+        List<Future<PointsBalanceResponse> > futures = new ArrayList<>();
         List<PointsClient> lpc = getPointsServers();
 
         for(PointsClient pc : lpc){
@@ -83,12 +86,12 @@ public class FrontEndPoints {
         max.setTag(-1);
         while(true){
             done = 0;
-            for ( Future<TupleView> fu : futures)
+            for ( Future<PointsBalanceResponse> fu : futures)
                 if( fu.isDone()) {
                     done++;
                     TupleView tvTemp;
                     try{
-                        tvTemp = fu.get();
+                        tvTemp = fu.get().getReturn();
                         if (tvTemp.getTag() > max.getTag()) {
                             max = tvTemp;
                         }
@@ -114,8 +117,9 @@ public class FrontEndPoints {
     public int write(String userEmail, int value) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
         TupleView tv = pointsBalance(userEmail);
         tv.setTag(tv.getTag()+1);
+        tv.setValue(value);
 
-        List<Future<Integer> > futures = new ArrayList<>();
+        List<Future<WriteResponse> > futures = new ArrayList<>();
         List<PointsClient> lpc = getPointsServers();
         for (PointsClient pc : lpc) {
             futures.add(pc.writeAsync(userEmail, tv.getValue(), tv.getTag()));
@@ -123,30 +127,28 @@ public class FrontEndPoints {
         int done;
         while (true) {
             done = 0;
-            for (Future<Integer> fu : futures)
+            for (Future<WriteResponse> fu : futures)
                 if (fu.isDone()) {
                     done++;
-
-                    try{
+                    try {
                         fu.get();
-                    }catch (ExecutionException ee) {
+                    } catch (ExecutionException ee) {
                         Throwable t = ee.getCause();
-                        if(t instanceof InvalidEmailFault_Exception)
-                            throw (InvalidEmailFault_Exception)t;
-                        else if(t instanceof InvalidPointsFault_Exception)
-                            throw (InvalidPointsFault_Exception)t;
+                        if (t instanceof InvalidEmailFault_Exception)
+                            throw (InvalidEmailFault_Exception) t;
+                        else if (t instanceof InvalidPointsFault_Exception)
+                            throw (InvalidPointsFault_Exception) t;
                         else ee.printStackTrace();
-                    }catch ( InterruptedException ie) {
+                    } catch (InterruptedException ie) {
                         ie.printStackTrace();
                     }
-
+                }
                     if (done >= getQ()) break;
                     else try {
                         Thread.sleep(420);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
         }
         return 1;
     }
@@ -219,35 +221,22 @@ public class FrontEndPoints {
     }
 
 
-    public void setQ(int numberPS) {
-        this.Q = (int) Math.floor(numberPS / 2) + 1;
-    }
-
     // control operations -----------------------------------------------------
 
     public String ctrlPing(String inputMessage) {
-
         String str = "";
 
-        //try{
         for (PointsClient pc : getPointsServers()) {
             str = str + pc.ctrlPing(inputMessage);
         }
-        //} catch (PointsClientException e){
-        //  throw new RuntimeException(e.getMessage());
-        //}
 
         return str;
     }
 
     public void ctrlClear() {
-        //try {
         for (PointsClient pc : getPointsServers()) {
             pc.ctrlClear();
         }
-        //  } catch (PointsClientException e){
-        //    throw new RuntimeException(e.getMessage());
-        //  }
     }
 
     public void ctrlInit(int startPoints) throws BadInitFault_Exception {
