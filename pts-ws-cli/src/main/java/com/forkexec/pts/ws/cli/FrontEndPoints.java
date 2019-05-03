@@ -14,10 +14,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+
 public class FrontEndPoints {
 
     protected static Properties properties;
-    private static final String PROP_FILE = "/pom.properties";
+    private static final String PROP_FILE = "/FrontEnd.properties";
 
 
     private final String uddiURL;
