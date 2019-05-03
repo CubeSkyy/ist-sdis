@@ -74,7 +74,8 @@ public class FrontEndPoints {
 
     // replicas read/write ----------------------------------------------
 
-    public TupleView pointsBalance(String userEmail) throws InvalidEmailFault_Exception {
+    public int pointsBalance(String userEmail) throws InvalidEmailFault_Exception {
+        System.out.println("ola");
         List<Future<PointsBalanceResponse> > futures = new ArrayList<>();
         List<PointsClient> lpc = getPointsServers();
 
@@ -112,12 +113,16 @@ public class FrontEndPoints {
                     e.printStackTrace();
                 }
         }
-        return max;
+        return max.getValue();
     }
 
     public int write(String userEmail, int value) throws InvalidEmailFault_Exception, InvalidPointsFault_Exception {
-        TupleView tv = pointsBalance(userEmail);
-        tv.setTag(tv.getTag()+1);
+
+        TupleView tv = new TupleView();
+
+        int tag = tags.get(userEmail);
+        tv.setTag(tag+1);
+        tags.put(userEmail, tag+1);
         tv.setValue(value);
 
         List<Future<WriteResponse> > futures = new ArrayList<>();
@@ -174,6 +179,7 @@ public class FrontEndPoints {
                     throwInvalidEmailFault("O e-mail é inválido!");
             }
         }
+        tags.put(userEmail, 0);
     }
 
 
@@ -183,7 +189,9 @@ public class FrontEndPoints {
             throwInvalidPointsFault("Os pontos não podem ser negativos!");
         }
 
-        int var = pointsBalance(userEmail).getValue();
+        int var = pointsBalance(userEmail);
+        System.out.println(var);
+        System.out.println(pointsToAdd);
         write(userEmail, var + pointsToAdd);
     }
 
@@ -193,7 +201,7 @@ public class FrontEndPoints {
             throwInvalidPointsFault("Os pontos não podem ser negativos!");
         }
 
-        int newBalance = pointsBalance(userEmail).getValue() - pointsToSpend;
+        int newBalance = pointsBalance(userEmail) - pointsToSpend;
         if (newBalance < 0 ){
             throw new NotEnoughBalanceException("Não tem saldo suficiente.");
         }
@@ -209,9 +217,9 @@ public class FrontEndPoints {
             UDDINaming uddi = new UDDINaming(uddiURL);
             Collection<UDDIRecord> uddiRecords = uddi.listRecords(pointsWsName + "%");
 
-            for (UDDIRecord record : uddiRecords)
+            for (UDDIRecord record : uddiRecords) {
                 pClients.add(new PointsClient(record.getUrl()));
-
+            }
         } catch (UDDINamingException e) {
             System.out.println("No points servers found.");
         }catch (PointsClientException e){

@@ -22,8 +22,7 @@ public class PointsBalanceIT extends BaseIT {
         client.pointsBalance(INVALID_EMAIL);
     }
 
-
-    @Test(expected = InvalidEmailFault_Exception.class)
+    @Test
     public void validEmail() throws InvalidEmailFault_Exception {
         client.pointsBalance(EMAIL);
     }

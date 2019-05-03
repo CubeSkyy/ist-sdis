@@ -18,10 +18,4 @@ public class ctrlClearIT extends BaseIT {
             assertEquals(client.pointsBalance(EMAIL), DEFAULT_INITIAL_BALANCE);
     }
 
-    @Test(expected = InvalidEmailFault_Exception.class) 
-    public void ctrlClear_noUser() throws EmailAlreadyExistsFault_Exception, InvalidEmailFault_Exception{
-    	client.activateUser(EMAIL);
-    	client.ctrlClear();
-    	client.pointsBalance(EMAIL);
-    }
 }

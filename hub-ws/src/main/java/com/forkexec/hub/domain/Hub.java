@@ -119,7 +119,11 @@ public class Hub {
     }
 
     public int accountBalance(String uID) throws InvalidEmailException {
-        return fe.pointsBalance(uID);
+        try{
+            return fe.pointsBalance(uID);
+        }catch (InvalidEmailFault_Exception e){
+            throw new InvalidEmailException(e.getMessage());
+        }
     }
 
     public void ctrlInitUserPoints(int startPts) throws BadInitException {

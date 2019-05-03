@@ -57,6 +57,7 @@ public class PointsPortImpl {
             throwInvalidEmailFault("Email invalido!");
 
             Points p = Points.getInstance();
+            System.out.print("Read " + userEmail + " ");
 
             Map<String, Tuple> mapOfUsers = p.getUsers();
             Tuple value = mapOfUsers.get(userEmail);
@@ -67,6 +68,8 @@ public class PointsPortImpl {
                     throwInvalidEmailFault("Email invalido!");
                 }
             }
+            System.out.print(value.getValue());
+            System.out.println();
             return buildTupleView(value);
         }
 
@@ -82,6 +85,7 @@ public class PointsPortImpl {
 
         Map<String, Tuple> mapOfUsers = p.getUsers();
         Tuple value = mapOfUsers.get(userEmail);
+
         if (value == null) {
             try {
                 value = p.addUser(userEmail);
@@ -91,7 +95,7 @@ public class PointsPortImpl {
         }
 
         if (tag > value.getTag()){
-            p.getUsers().put(userEmail, new Tuple(amount,tag));
+            p.getUsers().put(userEmail, new Tuple(tag,amount));
         }
 
         return 1;

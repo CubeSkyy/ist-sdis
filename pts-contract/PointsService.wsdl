@@ -206,7 +206,6 @@
       <fault message="tns:InvalidEmailFault" name="InvalidEmailFault" wsam:Action="http://ws.pts.forkexec.com/PointsPortType/spendPoints/Fault/InvalidEmailFault" />
       <fault message="tns:InvalidPointsFault" name="InvalidPointsFault" wsam:Action="http://ws.pts.forkexec.com/PointsPortType/spendPoints/Fault/InvalidPointsFault" />
       <fault message="tns:EmailAlreadyExistsFault" name="EmailAlreadyExistsFault" wsam:Action="http://ws.pts.forkexec.com/PointsPortType/activateUser/Fault/EmailAlreadyExistsFault" />
-
     </operation>
   </portType>
 

@@ -103,7 +103,7 @@ public class Points {
      */
 
     public Tuple addUser(String userEmail) throws EmailAlreadyExistsException, InvalidEmailException {
-
+        System.out.println("added "+ userEmail);
         if (!checkRegexPattern(userEmail, VALID_EMAIL_REGEX)) throw new InvalidEmailException("Email invalido!");
 
         for (String key : getUsers().keySet()) {
@@ -145,6 +145,6 @@ public class Points {
     }
 
     public void setUserBalance(final String userEmail, int ammount, int tag) {
-        users.put(userEmail, new Tuple(ammount, tag));
+        users.put(userEmail, new Tuple(tag, ammount));
     }
 }
