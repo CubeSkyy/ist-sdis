@@ -22,7 +22,9 @@ public class FrontEndPoints {
 
     private final String uddiURL;
     private final String pointsWsName;
+
     private final int Q;
+
 
     private ConcurrentHashMap<String, Integer> tags = new ConcurrentHashMap<>();
 
@@ -37,6 +39,8 @@ public class FrontEndPoints {
         }
         uddiURL = properties.getProperty("uddi.url");
         pointsWsName = properties.getProperty("pts.ws.name");
+        int N = Integer.parseInt(properties.getProperty("pts.ws.n"));
+        Q = (N / 2) + 1;
     }
 
     private static class SingletonHolder {
@@ -136,10 +140,6 @@ public class FrontEndPoints {
         return pClients;
     }
 
-
-    public void setQ(int numberPS) {
-        this.Q = (int) Math.floor(numberPS / 2) + 1;
-    }
 
     // control operations -----------------------------------------------------
 
