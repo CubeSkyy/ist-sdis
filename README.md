@@ -4,6 +4,9 @@
 
 Distributed Systems 2018-2019, 2nd semester project
 
+![image](https://user-images.githubusercontent.com/16226383/174673457-08b41308-b106-4845-a7d6-3303cde1a8e7.png)
+
+
 ## Authors
 
 Group T02
